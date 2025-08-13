@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ghostify Tarama (MVP)</title>
+    <style>
+      body{background:#0b1220;color:#dff; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; display:flex; min-height:100vh; align-items:center; justify-content:center;}
+      .card{background:#0f1a2b;border:1px solid #15e0ff33;border-radius:14px;padding:28px;max-width:560px;width:92%;box-shadow:0 0 40px #00e5ff22}
+      h1{margin-top:0; font-size:22px; letter-spacing:.5px}
+      input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #2a3b55;background:#0b1525;color:#e9feff;outline:none}
+      button{margin-top:12px;width:100%;padding:12px 14px;border-radius:10px;border:1px solid #18d1ff;background:#0e2236;color:#bff;cursor:pointer}
+      pre{background:#07101d;border:1px solid #1b304a; border-radius:10px; padding:14px; overflow:auto; max-height:300px}
+      .muted{opacity:.75;font-size:12px;margin-top:8px}
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Ghostify E‑posta Taraması</h1>
+      <input id="email" placeholder="ornek@domain.com" />
+      <button id="scan">TARA</button>
+      <div class="muted">Sadece demo: Sonuçlar HIBP ve LeakCheck üzerinden özetlenir.</div>
+      <pre id="out">{ "status": "hazır" }</pre>
+    </div>
+    <script>
+      const scanBtn = document.getElementById('scan');
+      const out = document.getElementById('out');
+      scanBtn.onclick = async () => {
+        const email = document.getElementById('email').value.trim();
+        out.textContent = "Taranıyor...";
+        const r = await fetch('/api/scan-email', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+        const j = await r.json().catch(()=>({error:'json'}));
+        out.textContent = JSON.stringify(j, null, 2);
+      };
+    </script>
+  </body>
+</html>

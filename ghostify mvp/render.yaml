@@ -1,0 +1,12 @@
+services:
+- type: web
+  name: ghostify-tarama
+  env: node
+  plan: free
+  buildCommand: "npm install"
+  startCommand: "npm start"
+  envVars:
+  - key: HIBP_API_KEY
+    sync: false
+  - key: LEAKCHECK_API_KEY
+    sync: false
