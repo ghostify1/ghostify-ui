@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ghostify – E‑posta Taraması</title>
+  <link rel="stylesheet" href="/public/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Ghostify E‑posta Taraması</h1>
+    <form id="scanForm" class="card">
+      <input id="email" type="email" required placeholder="ornek@eposta.com" />
+      <button type="submit" class="ghost">TARA</button>
+      <p class="hint">Demo: Sonuçlar HIBP ve LeakCheck üzerinden derlenir.</p>
+    </form>
+
+    <section id="summary" class="card hidden">
+      <h2>Özet</h2>
+      <div class="kpis">
+        <div class="metric">
+          <div class="kpi" id="kpiRisk">0</div>
+          <div class="label">Risk Skoru</div>
+        </div>
+        <div class="metric">
+          <div class="kpi" id="kpiHibp">0</div>
+          <div class="label">HIBP İhlali</div>
+        </div>
+        <div class="metric">
+          <div class="kpi" id="kpiLeak">0</div>
+          <div class="label">LeakCheck Kayıt</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="copyJson" class="ghost ghost-outline">JSON’u Kopyala</button>
+      </div>
+    </section>
+
+    <section id="breaches" class="card hidden">
+      <h2>Detaylar</h2>
+      <div id="breachList"></div>
+    </section>
+
+    <section class="card hidden" id="rawJson">
+      <h2>Ham Sonuç</h2>
+      <pre id="jsonBox">{ }</pre>
+    </section>
+  </main>
+
+  <script src="/public/script.js"></script>
+</body>
+</html>
