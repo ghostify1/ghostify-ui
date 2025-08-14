@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghostify — E‑posta Taraması (Demo)</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">👻</div>
+    <div class="title">GHOSTIFY</div>
+    <div class="subtitle">Dijital İz Taraması (Demo)</div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h1>E‑posta Taraması</h1>
+    <div class="row">
+      <input id="email" type="email" placeholder="ornek@eposta.com" />
+      <button id="scan">TARA</button>
+    </div>
+    <p class="hint">Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-number" id="risk">0</div><div class="kpi-label">Risk Skoru</div></div>
+      <div class="kpi"><div class="kpi-number" id="hibpCount">0</div><div class="kpi-label">HIBP İhlali</div></div>
+      <div class="kpi"><div class="kpi-number" id="leakTotal">0</div><div class="kpi-label">LeakCheck Kayıt</div></div>
+    </div>
+
+    <div class="actions">
+      <button id="copy">JSON'u Kopyala</button>
+    </div>
+
+    <h3>Detaylar</h3>
+    <pre id="json">{ }</pre>
+  </section>
+
+  <section class="card">
+    <h3>Son Taramalar</h3>
+    <ul id="history"></ul>
+  </section>
+</main>
+
+<footer>© Ghostify MVP 1.2b</footer>
+<script src="./app.js"></script>
+</body>
+</html>

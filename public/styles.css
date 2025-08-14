@@ -1,0 +1,26 @@
+:root{
+  --bg:#0b1220; --card:#111a2b; --text:#dfe7ff; --muted:#9fb0d0; --accent:#16e0ff; --accent2:#0bd3a6;
+}
+*{box-sizing:border-box} body{margin:0; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color:var(--text); background: radial-gradient(1000px 600px at 15% -10%, rgba(22,224,255,.1), transparent), var(--bg);}
+header{padding:20px 0; border-bottom:1px solid rgba(255,255,255,.06);}
+.brand{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:0 16px}
+.logo{width:36px;height:36px;background:#0b3d4c;border:1px solid rgba(22,224,255,.5);border-radius:10px;display:grid;place-items:center;font-size:20px}
+.title{font-weight:700;letter-spacing:.12em}
+.subtitle{margin-left:auto;color:var(--muted)}
+.container{max-width:980px;margin:30px auto;padding:0 16px;display:grid;gap:16px}
+.card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:18px 18px 12px; box-shadow: 0 20px 60px rgba(0,0,0,.35);}
+h1,h3{margin:6px 0 12px}
+.row{display:flex;gap:10px}
+.row input{flex:1; padding:12px 14px; background:#0e1626; border:1px solid rgba(255,255,255,.08); border-radius:10px; color:var(--text); outline:none}
+.row button{padding:12px 16px; border-radius:10px; border:1px solid rgba(22,224,255,.45); background:linear-gradient(180deg, rgba(22,224,255,.3), rgba(22,224,255,.15)); color:#00232b; font-weight:700; cursor:pointer}
+.hint{color:var(--muted);margin:8px 0 6px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.kpi{background:#0f192a;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;text-align:center}
+.kpi-number{font-size:28px;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;color:transparent}
+.kpi-label{color:var(--muted);font-size:12px;margin-top:4px}
+.actions{display:flex;gap:10px;margin:12px 0}
+.actions button{padding:10px 12px;border-radius:10px;background:#0e1626;border:1px solid rgba(255,255,255,.08);color:var(--text);cursor:pointer}
+pre{background:#0a1322;border:1px solid rgba(255,255,255,.06); border-radius:10px; padding:12px; overflow:auto; max-height:320px}
+ul#history{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+#history li{display:flex;justify-content:space-between;align-items:center;background:#0e1626;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:10px}
+footer{max-width:980px;margin:20px auto 30px;color:var(--muted);padding:0 16px}
