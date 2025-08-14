@@ -1,52 +1,122 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ghostify – E‑posta Taraması</title>
-  <link rel="stylesheet" href="/public/style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ghostify — E‑posta Taraması</title>
+<style>
+:root{
+  --bg:#050b16; --panel:#0a1627; --panel2:#0d1d33;
+  --stroke:#13314d; --neon:#00e5ff; --text:#e8fbff; --muted:#9bd4e3;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 700px at 70% -10%,#07203a22,transparent),var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,Roboto,Arial}
+.wrap{max-width:980px;margin:38px auto;padding:0 20px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px;opacity:.9}
+.logo{width:28px;height:28px;border-radius:8px;border:1px solid var(--neon);box-shadow:0 0 18px #00e5ff55 inset,0 0 12px #00e5ff77}
+.brand b{letter-spacing:.8px}
+
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--stroke);border-radius:16px;padding:22px;box-shadow:0 20px 50px #0007}
+h1{margin:0 0 14px;font-size:24px}
+.muted{color:var(--muted);font-size:.93rem}
+
+.row{display:flex;gap:10px;align-items:center;margin:14px 0 6px}
+input[type="email"]{flex:1;min-width:260px;background:#081427;border:1px solid var(--stroke);border-radius:12px;padding:13px 14px;color:var(--text);outline:none}
+button{background:var(--neon);color:#00212a;border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.kpi{background:#081427;border:1px solid var(--stroke);border-radius:14px;padding:14px}
+.kpi .v{font-size:28px;font-weight:800}
+.kpi .l{opacity:.8}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.action{background:#081427;border:1px solid var(--stroke);color:var(--muted);padding:10px 12px;border-radius:10px;cursor:pointer}
+.action:hover{border-color:#21d4ff;color:var(--text)}
+
+h2{margin:18px 0 8px;font-size:18px}
+pre{background:#071224;border:1px solid var(--stroke);border-radius:14px;padding:14px;overflow:auto;color:#b9ecff}
+.footer{opacity:.65;margin-top:12px;font-size:.9rem}
+.hr{height:1px;background:linear-gradient(90deg,transparent,#143a58,transparent);margin:16px 0}
+</style>
 </head>
 <body>
-  <main class="container">
-    <h1>Ghostify E‑posta Taraması</h1>
-    <form id="scanForm" class="card">
-      <input id="email" type="email" required placeholder="ornek@eposta.com" />
-      <button type="submit" class="ghost">TARA</button>
-      <p class="hint">Demo: Sonuçlar HIBP ve LeakCheck üzerinden derlenir.</p>
-    </form>
+  <div class="wrap">
+    <div class="brand">
+      <div class="logo"></div><b>GHOSTIFY</b><span class="muted">— Dijital İz Taraması (Demo)</span>
+    </div>
 
-    <section id="summary" class="card hidden">
-      <h2>Özet</h2>
-      <div class="kpis">
-        <div class="metric">
-          <div class="kpi" id="kpiRisk">0</div>
-          <div class="label">Risk Skoru</div>
-        </div>
-        <div class="metric">
-          <div class="kpi" id="kpiHibp">0</div>
-          <div class="label">HIBP İhlali</div>
-        </div>
-        <div class="metric">
-          <div class="kpi" id="kpiLeak">0</div>
-          <div class="label">LeakCheck Kayıt</div>
-        </div>
+    <div class="card">
+      <h1>E‑posta Taraması</h1>
+      <div class="row">
+        <input id="email" type="email" placeholder="ornek@eposta.com" autocomplete="email">
+        <button id="scanBtn">TARA</button>
       </div>
+      <div class="muted">Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.</div>
+
+      <div class="grid">
+        <div class="kpi"><div class="v" id="kpiRisk">0</div><div class="l">Risk Skoru</div></div>
+        <div class="kpi"><div class="v" id="kpiHibp">0</div><div class="l">HIBP İhlali</div></div>
+        <div class="kpi"><div class="v" id="kpiLeak">0</div><div class="l">LeakCheck Kayıt</div></div>
+      </div>
+
       <div class="actions">
-        <button id="copyJson" class="ghost ghost-outline">JSON’u Kopyala</button>
+        <div class="action" id="copyJson">JSON’u Kopyala</div>
+        <div class="action" id="downloadPdf">PDF İndir</div>
+        <div class="action muted" title="yakında">Silme Talebi Taslağı (yakında)</div>
       </div>
-    </section>
 
-    <section id="breaches" class="card hidden">
+      <div class="hr"></div>
+
       <h2>Detaylar</h2>
-      <div id="breachList"></div>
-    </section>
+      <pre id="jsonOut">{ }</pre>
 
-    <section class="card hidden" id="rawJson">
-      <h2>Ham Sonuç</h2>
-      <pre id="jsonBox">{ }</pre>
-    </section>
-  </main>
+      <div class="footer">© Ghostify — MVP v1.1 • <span id="stamp"></span></div>
+    </div>
+  </div>
 
-  <script src="/public/script.js"></script>
+<script>
+const $ = s=>document.querySelector(s);
+const btn = $('#scanBtn'), inp = $('#email'), out = $('#jsonOut');
+const kRisk=$('#kpiRisk'), kHibp=$('#kpiHibp'), kLeak=$('#kpiLeak');
+$('#stamp').textContent=new Date().toLocaleString('tr-TR');
+
+async function scan(){
+  const email = (inp.value||'').trim();
+  if(!email || !email.includes('@')){ alert('Geçerli e‑posta girin'); inp.focus(); return; }
+  btn.disabled=true; btn.textContent='Taranıyor…'; out.textContent='';
+  try{
+    const res = await fetch('/api/scan-email',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email})});
+    const data = await res.json();
+
+    const hibp  = (data.hibp && data.hibp.count) || 0;
+    const leak  = (data.leakcheck && (data.leakcheck.total ?? data.leakcheck.found)) || 0;
+    const risk  = Math.min(99, hibp*30 + leak*10);
+
+    kHibp.textContent = hibp;
+    kLeak.textContent = leak;
+    kRisk.textContent = risk;
+
+    out.textContent = JSON.stringify(data,null,2);
+  }catch(e){
+    out.textContent = JSON.stringify({error:e.message},null,2);
+  }finally{
+    btn.disabled=false; btn.textContent='TARA';
+  }
+}
+btn.addEventListener('click',scan);
+inp.addEventListener('keydown',e=>{ if(e.key==='Enter') scan(); });
+
+$('#copyJson').addEventListener('click', async ()=>{
+  await navigator.clipboard.writeText(out.textContent || '{}');
+  alert('JSON panoya kopyalandı.');
+});
+
+$('#downloadPdf').addEventListener('click', ()=>{
+  // Basit “print to PDF” akışı; tarayıcıdan PDF’e yazdırılır.
+  window.print();
+});
+</script>
 </body>
 </html>
