@@ -1,89 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Ghostify — E‑posta Taraması (Demo)</title>
-  <link rel="stylesheet" href="/styles.css">
-  <!-- PDF indirme için küçük bir kütüphane -->
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
-  <script src="/app.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghostify — Dijital İz Tarama (Demo)</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <!-- Basit Ghostify SVG (tema renkleriyle) -->
-      <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
-        <path fill="none" stroke="#1EE6FF" stroke-width="4" d="M16 52v-22a16 16 0 1 1 32 0v22l-6-4-6 4-6-4-6 4-8-4z"/>
-        <circle cx="28" cy="28" r="3.5" fill="#1EE6FF"/>
-        <circle cx="40" cy="28" r="3.5" fill="#1EE6FF"/>
-      </svg>
-      <span>GHOSTIFY</span>
-      <small class="tag">Dijital İz Taraması (Demo)</small>
-    </div>
+  <header>
+    <h1>👻 GHOSTIFY</h1>
+    <p>Dijital İz Tarama (Demo)</p>
   </header>
 
-  <main class="container">
-    <!-- Arama Paneli -->
-    <section class="card">
-      <h1>E‑posta Taraması</h1>
-      <div class="formRow">
-        <input id="email" type="email" placeholder="ornek@eposta.com" autocomplete="email" />
-        <button id="scan" class="primary">TARA</button>
-      </div>
-      <p class="muted">
-        Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.
+  <main>
+    <section class="scanner">
+      <h2>E-posta Taraması</h2>
+      <input type="email" id="email" placeholder="ornek@eposta.com" />
+      <button id="scan">TARA</button>
+      <p class="note">
+        Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e-posta taraması yapılır.
       </p>
+    </section>
 
-      <!-- KPI’lar -->
-      <div class="kpis">
-        <div class="kpi">
-          <div class="gauge">
-            <div id="gaugeArc" class="gaugeArc"></div>
-            <div id="risk" class="gaugeVal">0</div>
-          </div>
-          <div class="kpiLabel">Risk Skoru</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiVal" id="hibp">0</div>
-          <div class="kpiLabel">HIBP İhlali</div>
-        </div>
-        <div class="kpi">
-          <div class="kpiVal" id="leakTotal">0</div>
-          <div class="kpiLabel">LeakCheck Kayıt</div>
-        </div>
+    <section class="results">
+      <div class="result-box">
+        <h3 id="risk">0</h3>
+        <p>Risk Skoru</p>
       </div>
-
-      <!-- Aksiyonlar -->
-      <div class="actions">
-        <button id="copyJson">JSON’u Kopyala</button>
-        <button id="pdf" class="ghost">PDF İndir</button>
-        <button id="draft" class="ghost" disabled>Silme Talebi Taslağı (yakında)</button>
+      <div class="result-box">
+        <h3 id="hibpTotal">0</h3>
+        <p>HIBP İhlali</p>
+      </div>
+      <div class="result-box">
+        <h3 id="leakTotal">0</h3>
+        <p>LeakCheck Kayıt</p>
       </div>
     </section>
 
-    <!-- Detay + Ham JSON -->
-    <section class="card">
+    <section class="actions">
+      <button id="copy">JSON'u Kopyala</button>
+      <button id="pdf">PDF İndir</button>
+      <button disabled>Silme Talebi Taslağı (yakında)</button>
+    </section>
+
+    <section class="details">
       <h2>Detaylar</h2>
-      <pre id="pretty">{ }</pre>
-      <details class="raw">
-        <summary>Ham Sonuç</summary>
-        <pre id="raw">{ }</pre>
-      </details>
+      <pre id="raw">{ }</pre>
     </section>
 
-    <!-- Kısa Geçmiş -->
-    <section class="card">
+    <section class="history">
       <h2>Geçmiş</h2>
-      <ul id="history" class="history"></ul>
+      <ul id="history"></ul>
     </section>
   </main>
 
-  <footer class="foot">
-    © Ghostify — Premium MVP
+  <footer>
+    <p>© Ghostify — Premium MVP</p>
   </footer>
 
-  <!-- Basit toast -->
-  <div id="toast" class="toast"></div>
+  <script src="/app.js" defer></script>
 </body>
 </html>
