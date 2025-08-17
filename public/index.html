@@ -2,80 +2,88 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ghostify — Dashboard (MVP)</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ghostify — E‑posta Taraması (Demo)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- PDF indirme için küçük bir kütüphane -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <!-- Logonu bu img yoluna koy: /public/logo.png (senin gönderdiğin görsel) -->
-      <img src="/logo.png" alt="Ghostify" class="logo" onerror="this.style.display='none';document.querySelector('.wordmark').style.display='block'">
-      <div class="wordmark" style="display:none;">GHOSTIFY</div>
+      <!-- Basit Ghostify SVG (tema renkleriyle) -->
+      <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+        <path fill="none" stroke="#1EE6FF" stroke-width="4" d="M16 52v-22a16 16 0 1 1 32 0v22l-6-4-6 4-6-4-6 4-8-4z"/>
+        <circle cx="28" cy="28" r="3.5" fill="#1EE6FF"/>
+        <circle cx="40" cy="28" r="3.5" fill="#1EE6FF"/>
+      </svg>
+      <span>GHOSTIFY</span>
+      <small class="tag">Dijital İz Taraması (Demo)</small>
     </div>
-    <div class="beta">Dijital İz Tarama (Demo)</div>
   </header>
 
   <main class="container">
-    <!-- Arama kutusu -->
+    <!-- Arama Paneli -->
     <section class="card">
-      <h2 class="card-title">E‑posta Taraması</h2>
-      <div class="search">
-        <input id="emailInput" type="email" placeholder="ornek@eposta.com" autocomplete="email" />
-        <button id="scanBtn" class="btn primary">TARA</button>
+      <h1>E‑posta Taraması</h1>
+      <div class="formRow">
+        <input id="email" type="email" placeholder="ornek@eposta.com" autocomplete="email" />
+        <button id="scan" class="primary">TARA</button>
       </div>
-      <p class="hint">Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.</p>
-    </section>
+      <p class="muted">
+        Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.
+      </p>
 
-    <!-- KPI’lar -->
-    <section class="kpis">
-      <div class="kpi">
-        <div class="kpi-label">Risk Skoru</div>
-        <div class="kpi-value" id="kpiRisk">0</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">HIBP İhlali</div>
-        <div class="kpi-value" id="kpiHibp">0</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-label">LeakCheck Kayıt</div>
-        <div class="kpi-value" id="kpiLeak">0</div>
-      </div>
-    </section>
-
-    <!-- Aksiyonlar -->
-    <section class="actions card">
-      <button id="copyJson" class="btn">JSON’u Kopyala</button>
-      <button id="downloadPdf" class="btn">PDF İndir</button>
-      <button class="btn ghost" disabled>Silme Talebi Taslağı (yakında)</button>
-    </section>
-
-    <!-- Detaylar -->
-    <section class="card">
-      <div class="card-header">
-        <h3>Detaylar</h3>
-        <span id="scannedAt" class="muted"></span>
-      </div>
-
-      <div class="grid">
-        <div>
-          <h4>Ham Sonuç</h4>
-          <pre id="rawJson" class="code">{ }</pre>
+      <!-- KPI’lar -->
+      <div class="kpis">
+        <div class="kpi">
+          <div class="gauge">
+            <div id="gaugeArc" class="gaugeArc"></div>
+            <div id="risk" class="gaugeVal">0</div>
+          </div>
+          <div class="kpiLabel">Risk Skoru</div>
         </div>
-        <div>
-          <h4>İhlaller</h4>
-          <ul id="breachList" class="list"></ul>
+        <div class="kpi">
+          <div class="kpiVal" id="hibp">0</div>
+          <div class="kpiLabel">HIBP İhlali</div>
+        </div>
+        <div class="kpi">
+          <div class="kpiVal" id="leakTotal">0</div>
+          <div class="kpiLabel">LeakCheck Kayıt</div>
         </div>
       </div>
+
+      <!-- Aksiyonlar -->
+      <div class="actions">
+        <button id="copyJson">JSON’u Kopyala</button>
+        <button id="pdf" class="ghost">PDF İndir</button>
+        <button id="draft" class="ghost" disabled>Silme Talebi Taslağı (yakında)</button>
+      </div>
+    </section>
+
+    <!-- Detay + Ham JSON -->
+    <section class="card">
+      <h2>Detaylar</h2>
+      <pre id="pretty">{ }</pre>
+      <details class="raw">
+        <summary>Ham Sonuç</summary>
+        <pre id="raw">{ }</pre>
+      </details>
+    </section>
+
+    <!-- Kısa Geçmiş -->
+    <section class="card">
+      <h2>Geçmiş</h2>
+      <ul id="history" class="history"></ul>
     </section>
   </main>
 
-  <footer class="footer">
-    <small>© Ghostify — Premium MVP</small>
+  <footer class="foot">
+    © Ghostify — Premium MVP
   </footer>
 
-  <script src="/app.js"></script>
+  <!-- Basit toast -->
+  <div id="toast" class="toast"></div>
 </body>
 </html>
