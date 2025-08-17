@@ -1,50 +1,81 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Ghostify — E‑posta Taraması (Demo)</title>
-  <link rel="stylesheet" href="./styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ghostify — Dashboard (MVP)</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-<header>
-  <div class="brand">
-    <div class="logo">👻</div>
-    <div class="title">GHOSTIFY</div>
-    <div class="subtitle">Dijital İz Taraması (Demo)</div>
-  </div>
-</header>
-
-<main class="container">
-  <section class="card">
-    <h1>E‑posta Taraması</h1>
-    <div class="row">
-      <input id="email" type="email" placeholder="ornek@eposta.com" />
-      <button id="scan">TARA</button>
+  <header class="topbar">
+    <div class="brand">
+      <!-- Logonu bu img yoluna koy: /public/logo.png (senin gönderdiğin görsel) -->
+      <img src="/logo.png" alt="Ghostify" class="logo" onerror="this.style.display='none';document.querySelector('.wordmark').style.display='block'">
+      <div class="wordmark" style="display:none;">GHOSTIFY</div>
     </div>
-    <p class="hint">Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.</p>
+    <div class="beta">Dijital İz Tarama (Demo)</div>
+  </header>
 
-    <div class="kpis">
-      <div class="kpi"><div class="kpi-number" id="risk">0</div><div class="kpi-label">Risk Skoru</div></div>
-      <div class="kpi"><div class="kpi-number" id="hibpCount">0</div><div class="kpi-label">HIBP İhlali</div></div>
-      <div class="kpi"><div class="kpi-number" id="leakTotal">0</div><div class="kpi-label">LeakCheck Kayıt</div></div>
-    </div>
+  <main class="container">
+    <!-- Arama kutusu -->
+    <section class="card">
+      <h2 class="card-title">E‑posta Taraması</h2>
+      <div class="search">
+        <input id="emailInput" type="email" placeholder="ornek@eposta.com" autocomplete="email" />
+        <button id="scanBtn" class="btn primary">TARA</button>
+      </div>
+      <p class="hint">Sonuçlar HIBP + LeakCheck kaynaklarından derlenir. Bu demoda yalnızca e‑posta taraması yapılır.</p>
+    </section>
 
-    <div class="actions">
-      <button id="copy">JSON'u Kopyala</button>
-    </div>
+    <!-- KPI’lar -->
+    <section class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Risk Skoru</div>
+        <div class="kpi-value" id="kpiRisk">0</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">HIBP İhlali</div>
+        <div class="kpi-value" id="kpiHibp">0</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">LeakCheck Kayıt</div>
+        <div class="kpi-value" id="kpiLeak">0</div>
+      </div>
+    </section>
 
-    <h3>Detaylar</h3>
-    <pre id="json">{ }</pre>
-  </section>
+    <!-- Aksiyonlar -->
+    <section class="actions card">
+      <button id="copyJson" class="btn">JSON’u Kopyala</button>
+      <button id="downloadPdf" class="btn">PDF İndir</button>
+      <button class="btn ghost" disabled>Silme Talebi Taslağı (yakında)</button>
+    </section>
 
-  <section class="card">
-    <h3>Son Taramalar</h3>
-    <ul id="history"></ul>
-  </section>
-</main>
+    <!-- Detaylar -->
+    <section class="card">
+      <div class="card-header">
+        <h3>Detaylar</h3>
+        <span id="scannedAt" class="muted"></span>
+      </div>
 
-<footer>© Ghostify MVP 1.2b</footer>
-<script src="./app.js"></script>
+      <div class="grid">
+        <div>
+          <h4>Ham Sonuç</h4>
+          <pre id="rawJson" class="code">{ }</pre>
+        </div>
+        <div>
+          <h4>İhlaller</h4>
+          <ul id="breachList" class="list"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>© Ghostify — Premium MVP</small>
+  </footer>
+
+  <script src="/app.js"></script>
 </body>
 </html>
