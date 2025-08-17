@@ -1,84 +1,94 @@
-const emailInput = document.getElementById('emailInput');
-const scanBtn    = document.getElementById('scanBtn');
-const kpiRisk    = document.getElementById('kpiRisk');
-const kpiHibp    = document.getElementById('kpiHibp');
-const kpiLeak    = document.getElementById('kpiLeak');
-const rawJson    = document.getElementById('rawJson');
-const breachList = document.getElementById('breachList');
-const copyJson   = document.getElementById('copyJson');
-const downloadPdf= document.getElementById('downloadPdf');
-const scannedAt  = document.getElementById('scannedAt');
+const emailEl  = document.getElementById('email');
+const btn      = document.getElementById('scan');
+const kRisk    = document.getElementById('risk');
+const kHibp    = document.getElementById('hibp');
+const kLeak    = document.getElementById('leakTotal');
+const pretty   = document.getElementById('pretty');
+const rawEl    = document.getElementById('raw');
+const historyEl= document.getElementById('history');
+const toast    = document.getElementById('toast');
+const gaugeArc = document.getElementById('gaugeArc');
 
-function calcRiskScore(result){
-  const hibpCount  = Array.isArray(result?.hibp?.breaches) ? result.hibp.breaches.length : (result?.hibp?.count||0);
-  const leakTotal  = result?.leakcheck?.total || 0;
-  // Basit ve anlaşılır bir formül:
-  let score = hibpCount * 22 + (leakTotal>0 ? 14 : 0);
-  if (score>100) score = 100;
-  return score;
+const HISTORY_KEY = 'ghostify_history_v1b';
+
+function toastMsg(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2000);
 }
-
-function renderBreaches(result){
-  breachList.innerHTML = '';
-  const breaches = result?.hibp?.breaches || [];
-  if(!breaches.length){
-    breachList.innerHTML = '<li>İhlal kaydı bulunamadı.</li>';
-    return;
-  }
-  breaches.forEach(b=>{
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>${b.name||'Breach'}</strong> — <span class="muted">${b.domain||''} ${b.breachDate?('· '+b.breachDate):''}</span>`;
-    breachList.appendChild(li);
-  });
+function setGauge(score){
+  // score 0..100 → yüzde yay
+  const pct = Math.max(0, Math.min(100, score));
+  gaugeArc.style.setProperty('--p', pct);
+  kRisk.textContent = pct;
+}
+function calcRisk(hibpCount, leakTotal){
+  // basit bir formül (MVP): ihlâl ve kayıt yoğunluğu
+  const base = hibpCount*35 + Math.min(leakTotal, 10)*6;
+  return Math.max(0, Math.min(100, Math.round(base)));
+}
+function addHistory(item){
+  const arr = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  arr.unshift(item); // en başa
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(arr.slice(0,8)));
+  renderHistory();
+}
+function renderHistory(){
+  const arr = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  historyEl.innerHTML = arr.map(x =>
+    `<li><span class="email">${x.email}</span>
+         <span class="risk">${x.risk}</span></li>`).join('');
 }
 
 async function scan(){
-  const email = (emailInput.value||'').trim();
-  if(!email){ alert('Lütfen e‑posta adresi girin.'); return; }
-
-  scanBtn.disabled = true; scanBtn.innerText = 'Taranıyor…';
+  const email = (emailEl.value || '').trim();
+  if(!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+    toastMsg('Geçerli bir e‑posta girin'); return;
+  }
+  btn.disabled = true; btn.textContent = 'Taranıyor…';
 
   try{
-    const r = await fetch('/api/scan-email', {
+    const res = await fetch('/api/scan-email', {
       method:'POST',
       headers:{'content-type':'application/json'},
       body: JSON.stringify({ email })
     });
-    const data = await r.json();
+    const data = await res.json();
 
-    // KPI’lar
-    const hibpCount = Array.isArray(data?.hibp?.breaches) ? data.hibp.breaches.length : (data?.hibp?.count||0);
-    const leakTotal = data?.leakcheck?.total || 0;
+    const hibpCount  = (data.hibp && Array.isArray(data.hibp.breaches)) ? data.hibp.breaches.length : (data.hibp?.count||0);
+    const leakTotal  = data.leakcheck?.total || 0;
+    const risk = calcRisk(hibpCount, leakTotal);
 
-    kpiHibp.textContent = hibpCount;
-    kpiLeak.textContent = leakTotal;
-    kpiRisk.textContent = calcRiskScore(data);
+    kHibp.textContent = hibpCount;
+    kLeak.textContent = leakTotal;
+    setGauge(risk);
 
-    // Detaylar
-    rawJson.textContent = JSON.stringify(data, null, 2);
-    scannedAt.textContent = data?.scannedAt ? new Date(data.scannedAt).toLocaleString() : '';
-    renderBreaches(data);
+    pretty.textContent = JSON.stringify({
+      email, risk, hibp:{count:hibpCount}, leakcheck:{total:leakTotal},
+      scannedAt: new Date().toISOString()
+    }, null, 2);
+    rawEl.textContent = JSON.stringify(data, null, 2);
 
+    addHistory({ email, risk });
+    toastMsg('Tarama tamamlandı');
   }catch(e){
-    alert('Tarama sırasında bir hata oluştu.');
-    console.error(e);
+    toastMsg('Hata: '+ e.message);
   }finally{
-    scanBtn.disabled = false; scanBtn.innerText = 'TARA';
+    btn.disabled = false; btn.textContent = 'TARA';
   }
 }
 
-scanBtn.addEventListener('click', scan);
-emailInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') scan(); });
-
-copyJson.addEventListener('click', async ()=>{
-  try{
-    await navigator.clipboard.writeText(rawJson.textContent);
-    copyJson.textContent = 'Kopyalandı ✓';
-    setTimeout(()=> copyJson.textContent = 'JSON’u Kopyala', 1200);
-  }catch{}
-});
-
-// Basit PDF: print diyaloğu (MVP)
-downloadPdf.addEventListener('click', ()=>{
-  window.print();
-});
+document.getElementById('copyJson').onclick = ()=>{
+  navigator.clipboard.writeText(pretty.textContent).then(()=>toastMsg('JSON kopyalandı'));
+};
+document.getElementById('pdf').onclick = ()=>{
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text('Ghostify Tarama Raporu', 14, 16);
+  doc.setFont('helvetica','normal'); doc.setFontSize(11);
+  doc.text(pretty.textContent, 14, 26, { maxWidth: 180 });
+  doc.save('ghostify-rapor.pdf');
+};
+btn.onclick = scan;
+renderHistory();
