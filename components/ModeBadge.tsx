@@ -9,3 +9,4 @@ export default function ModeBadge({ mode = "demo" }: { mode?: "demo" | "live" })
       : "bg-zinc-300/30 border-zinc-400/60 text-zinc-100");
   return <span className={cls}>{isLive ? "LIVE" : "DEMO"}</span>;
 }
+
