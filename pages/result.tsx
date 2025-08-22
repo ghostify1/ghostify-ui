@@ -17,9 +17,20 @@ export default function Result(){
     navigator.clipboard.writeText(text); alert("Silme talebi kopyalandı.");
   }
   function downloadPDF(){
-    const el=document.getElementById("report");
-    if(!(window).html2pdf||!el) return;
-    (window).html2pdf().set({margin:10,filename:"ghostify-raporu.pdf",image:{type:"jpeg",quality:0.98},html2canvas:{scale:2},jsPDF:{unit:"mm",format:"a4",orientation:"portrait"}}).from(el).save();
+  const el = document.getElementById("report");
+  // TypeScript'e "bunu any kabul et" diyerek uyarıyı kaldırıyoruz
+  const w = window as any;
+  if (!w.html2pdf || !el) return;
+  w.html2pdf()
+    .set({
+      margin: 10,
+      filename: "ghostify-raporu.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    })
+    .from(el)
+    .save();
   }
 
   if(!data){ return <main className="min-h-full flex items-center justify-center"><p className="text-cyan-100">Veri bulunamadı. Yeniden deneyin.</p></main> }
