@@ -1,23 +1,15 @@
+# Ghostify – User v1 (mock-flow)
 
-# Ghostify – Product v1 (DB'li)
-- Next.js 14 + Tailwind + Prisma (PostgreSQL)
-- 3 ekran (landing → scan → result + PDF)
-- Logo tıklanınca ana sayfa
-- Build'te `prisma generate` (migration'ı lokal çalıştırın)
+- Next.js 14 (pages router) + TailwindCSS
+- Mock verilerle **Invite → Auth → Input → Scan → Results → Breaches → Deletion Flow → Dashboard** akışı
+- Prisma/DB yok (deploy’da hata olmasın diye).
 
-## ENV
-- `DATABASE_URL` (Postgres)
-- `LEAKCHECK_API_KEY` (isteğe bağlı)
-- `HIBP_API_KEY` (isteğe bağlı)
-
-## Migration
-Lokal makinede:
-```
+## Geliştirme
+```bash
 npm i
-npx prisma migrate dev --name init
+npm run dev
 ```
-
-Veya şemayı doğrudan DB'ye itmek için (geçici):
-```
-npx prisma db push
-```
+## Deploy
+- Vercel Framework: **Next.js**
+- Build Command: `npm run build`
+- Output: Next.js default
