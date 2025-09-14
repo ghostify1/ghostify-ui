@@ -1,1 +1,0 @@
-export default function Scan() { return <div>Risk Score</div>; }
