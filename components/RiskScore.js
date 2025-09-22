@@ -1,0 +1,1 @@
+export default function RiskScore() { return <div>Risk Score: 87</div>; }

@@ -1,0 +1,1 @@
+export function sendDeleteRequest() { console.log('Delete request sent'); }
