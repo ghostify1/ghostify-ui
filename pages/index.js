@@ -1,1 +1,0 @@
-export default function Home() { return <h1>Ghostify PR1–4 Çalışıyor</h1>; }
