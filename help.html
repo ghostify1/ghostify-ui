@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ghostify - Yardım Merkezi</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="container help-container">
+    <header class="header">
+      <img src="assets/logo.png" alt="Ghostify Logo" class="logo-small" />
+      <h1>Yardım Merkezi</h1>
+    </header>
+
+    <main>
+      <section class="faq-section">
+        <h2>❓ Sık Sorulan Sorular (SSS)</h2>
+        <details>
+          <summary>Ghostify ne işe yarar?</summary>
+          <p>Ghostify, dijital platformlardaki hesaplarınızı silmenizi ve dijital izlerinizi temizlemenizi sağlar.</p>
+        </details>
+        <details>
+          <summary>Silme işlemleri ne kadar sürer?</summary>
+          <p>Platforma göre değişir, çoğu silme işlemi birkaç saat içinde tamamlanır.</p>
+        </details>
+        <details>
+          <summary>Verilerim güvende mi?</summary>
+          <p>Evet. Ghostify, verilerinizi yalnızca sizin onayınızla işler ve asla üçüncü taraflarla paylaşmaz.</p>
+        </details>
+        <details>
+          <summary>PDF raporunu nereden alabilirim?</summary>
+          <p>Tarama işlemi sonrası otomatik olarak oluşturulan PDF dosyasını indirebilirsiniz.</p>
+        </details>
+      </section>
+
+      <section class="contact-support">
+        <h2>📩 Bize Ulaşın</h2>
+        <p>Yardım mı gerekiyor? Aşağıdaki formu doldurun, en kısa sürede size ulaşalım.</p>
+        <form action="https://formspree.io/f/mayvjzqy" method="POST" class="contact-form">
+          <input type="text" name="name" placeholder="Adınız" required />
+          <input type="email" name="email" placeholder="E-posta adresiniz" required />
+          <textarea name="message" placeholder="Mesajınız" rows="5" required></textarea>
+          <button type="submit" class="btn-primary">Gönder</button>
+        </form>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
