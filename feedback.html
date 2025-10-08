@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ghostify - Geri Bildirim</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="container feedback-container">
+    <header class="header">
+      <img src="assets/logo.png" alt="Ghostify Logo" class="logo-small" />
+      <h1>Geri Bildirim</h1>
+    </header>
+
+    <main>
+      <p>Ghostify deneyiminizi önemsiyoruz. Lütfen geri bildirim bırakın.</p>
+
+      <form id="feedback-form">
+        <div class="form-group">
+          <label for="name">Adınız:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">E-Posta Adresiniz:</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="message">Mesajınız:</label>
+          <textarea id="message" name="message" rows="5" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-primary">Gönder</button>
+      </form>
+
+      <div id="thank-you" class="hidden">
+        <h3>🙏 Teşekkürler!</h3>
+        <p>Geri bildiriminiz alınmıştır. Destek ekibimiz en kısa sürede sizinle iletişime geçebilir.</p>
+        <a href="dashboard.html" class="btn-secondary">Dashboard’a Dön</a>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById("feedback-form");
+    const thankYou = document.getElementById("thank-you");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      form.style.display = "none";
+      thankYou.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>
