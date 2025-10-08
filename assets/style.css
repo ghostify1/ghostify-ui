@@ -67,3 +67,60 @@ button:hover {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+body.login-page {
+  background-color: #0d0d0d;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.forgot {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.forgot a {
+  color: #00eaff;
+  text-decoration: none;
+}
+
+.alt-login {
+  margin-top: 25px;
+}
+
+.alt-login p {
+  margin: 10px 0;
+}
+
+.google-login,
+.apple-login {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  background-color: #1a1a1a;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.terms {
+  font-size: 12px;
+  margin-top: 20px;
+  color: #aaa;
+}
