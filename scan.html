@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ghostify - E-Posta Taraması</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+  <div class="container scan-container">
+    <header class="header">
+      <img src="assets/logo.png" alt="Ghostify Logo" class="logo-small" />
+      <h1>E-Posta Taraması</h1>
+    </header>
+
+    <main>
+      <form action="result.html" method="GET" class="form-box">
+        <label for="email">E-posta adresinizi girin:</label>
+        <input type="email" id="email" name="email" placeholder="ornek@email.com" required />
+
+        <button type="submit" class="btn-primary">Taramayı Başlat</button>
+      </form>
+
+      <p class="info-text">Ghostify, e-posta adresinizi tarayarak internetteki veri sızıntılarını analiz eder. Verileriniz 3. kişilerle paylaşılmaz.</p>
+    </main>
+
+    <footer>
+      <a href="dashboard.html" class="btn-secondary">← Geri Dön</a>
+    </footer>
+  </div>
+</body>
+</html>
