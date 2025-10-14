@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Dijital İz Raporu</title>
+  <link rel="stylesheet" href="report.css">
+</head>
+<body>
+  <div class="matrix-bg"></div>
+
+  <header class="topbar">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Ghostify Logo">
+      <h1>GHOSTIFY</h1>
+    </div>
+    <nav>
+      <a href="dashboard.html">Panel</a>
+      <a href="settings.html">Ayarlar</a>
+      <a href="index.html" class="logout">Çıkış</a>
+    </nav>
+  </header>
+
+  <main class="report-container">
+    <h2>Tarama Sonuçları</h2>
+    <p class="desc">Dijital iz analizi tamamlandı. Sonuçlar aşağıda listelenmiştir.</p>
+
+    <div class="score-section">
+      <div class="score-circle">
+        <span id="score-value">72</span>
+      </div>
+      <p class="risk-label">Risk Seviyesi: <span id="risk-level">Orta</span></p>
+    </div>
+
+    <div class="leak-list">
+      <h3>Sızıntı Tespit Edilen Platformlar</h3>
+      <ul id="platform-list">
+        <li><span>Facebook</span> – E-posta ve telefon numarası sızıntısı</li>
+        <li><span>LinkedIn</span> – Profesyonel veri ihlali</li>
+        <li><span>Dropbox</span> – Parola hash sızıntısı</li>
+        <li><span>Adobe</span> – Eski hesap bilgisi sızıntısı</li>
+      </ul>
+    </div>
+
+    <div class="buttons">
+      <button class="btn" onclick="downloadPDF()">📄 PDF İndir</button>
+      <button class="btn alt" onclick="window.location.href='delete.html'">🧹 Silme Talebi Oluştur</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Ghostify. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <script>
+    // Matrix efekti
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.querySelector('.matrix-bg').appendChild(canvas);
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const chars = "01";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffff";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 35);
+
+    // Risk skoru animasyonu
+    let score = 0;
+    const targetScore = 72;
+    const scoreValue = document.getElementById("score-value");
+    const riskLevel = document.getElementById("risk-level");
+
+    const interval = setInterval(() => {
+      if (score < targetScore) {
+        score++;
+        scoreValue.textContent = score;
+      } else {
+        clearInterval(interval);
+        riskLevel.textContent = score < 40 ? "Düşük" : score < 80 ? "Orta" : "Yüksek";
+        riskLevel.style.color = score < 40 ? "#00ff99" : score < 80 ? "#ffcc00" : "#ff0066";
+      }
+    }, 30);
+
+    // PDF İndir (örnek)
+    function downloadPDF() {
+      alert("Rapor PDF olarak indiriliyor...");
+      // Gerçek sistemde backend bağlantısı burada olacak
+    }
+  </script>
+</body>
+</html>
