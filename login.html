@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Giriş Yap</title>
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="matrix-bg"></div>
+
+  <div class="login-container">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Ghostify Logo">
+      <h1>GHOSTIFY</h1>
+    </div>
+
+    <div class="form-box">
+      <div class="tabs">
+        <button class="tab active" onclick="showTab('login')">Giriş Yap</button>
+        <button class="tab" onclick="window.location.href='register.html'">Kayıt Ol</button>
+      </div>
+
+      <form id="login" class="tab-content active">
+        <input type="email" id="email" placeholder="E-posta adresiniz" required>
+        <input type="password" id="password" placeholder="Şifre" required>
+        <button type="submit" class="btn">Giriş Yap</button>
+      </form>
+
+      <div class="options">
+        <a href="#">Şifremi Unuttum</a>
+      </div>
+
+      <div class="social-login">
+        <p>veya şununla devam et</p>
+        <div class="social-icons">
+          <button class="social-btn apple"> Apple</button>
+          <button class="social-btn google">Google</button>
+        </div>
+      </div>
+
+      <p class="terms">Giriş yaparak <a href="#">hizmet şartlarını</a> kabul etmiş olursunuz.</p>
+    </div>
+  </div>
+
+  <script>
+    // Matrix animasyonu (index.html ile aynı)
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.querySelector('.matrix-bg').appendChild(canvas);
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const chars = "01";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffff";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 35);
+  </script>
+</body>
+</html>
