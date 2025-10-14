@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Ayarlar</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="matrix-bg"></div>
+
+  <header class="topbar">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Ghostify Logo">
+      <h1>GHOSTIFY</h1>
+    </div>
+    <nav>
+      <a href="dashboard.html">Panel</a>
+      <a href="report.html">Rapor</a>
+      <a href="delete.html">Silme Talebi</a>
+      <a href="feedback.html">Geri Bildirim</a>
+      <a href="index.html" class="logout">Çıkış</a>
+    </nav>
+  </header>
+
+  <main class="settings-container">
+    <h2>Hesap Ayarları</h2>
+    <p class="desc">Kişisel bilgilerini güncelle veya hesabını yönet.</p>
+
+    <form id="settings-form">
+      <div class="form-group">
+        <label for="username">Ad Soyad</label>
+        <input type="text" id="username" placeholder="Ad Soyad" value="Emre Yıldıztaç">
+      </div>
+
+      <div class="form-group">
+        <label for="email">E-posta</label>
+        <input type="email" id="email" placeholder="E-posta" value="emre@example.com">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Yeni Parola</label>
+        <input type="password" id="password" placeholder="Yeni parola">
+      </div>
+
+      <div class="form-group">
+        <label for="theme">Tema</label>
+        <select id="theme">
+          <option value="dark" selected>Karanlık</option>
+          <option value="light">Aydınlık</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="language">Dil</label>
+        <select id="language">
+          <option value="tr" selected>Türkçe</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-save">💾 Kaydet</button>
+      <button type="button" class="btn-delete">🗑 Hesabı Sil</button>
+    </form>
+  </main>
+
+  <footer>
+    <p>© 2025 Ghostify. Tüm hakları saklıdır.</p>
+  </footer>
+
+  <script>
+    // Matrix efekti
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.querySelector('.matrix-bg').appendChild(canvas);
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const chars = "01";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffff";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 35);
+
+    // Form işlemleri
+    document.querySelector('#settings-form').addEventListener('submit', e => {
+      e.preventDefault();
+      alert("Ayarlar başarıyla kaydedildi ✅");
+    });
+
+    document.querySelector('.btn-delete').addEventListener('click', () => {
+      const confirmDelete = confirm("Hesabınızı silmek istediğinize emin misiniz?");
+      if (confirmDelete) {
+        alert("Hesabınız silindi 🗑");
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>
