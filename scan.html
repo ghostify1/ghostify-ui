@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Tarama Başlatılıyor</title>
+  <link rel="stylesheet" href="scan.css">
+</head>
+<body>
+  <div class="matrix-bg"></div>
+
+  <div class="scan-container">
+    <div class="logo">
+      <img src="assets/logo.png" alt="Ghostify Logo">
+      <h1>GHOSTIFY</h1>
+    </div>
+
+    <h2>Dijital İzler Taranıyor...</h2>
+    <p class="sub">Lütfen bekleyin, sistem verilerinizi analiz ediyor.</p>
+
+    <div class="progress-bar">
+      <div class="progress"></div>
+    </div>
+
+    <div class="status">
+      <p id="scan-status">E-posta hesapları inceleniyor...</p>
+    </div>
+
+    <button class="cancel-btn" onclick="cancelScan()">İptal Et</button>
+  </div>
+
+  <script>
+    // Matrix efekti
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    document.querySelector('.matrix-bg').appendChild(canvas);
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    const chars = "01";
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ffff";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 35);
+
+    // Tarama ilerleme simülasyonu
+    const progress = document.querySelector('.progress');
+    const statusText = document.getElementById('scan-status');
+    const steps = [
+      "E-posta hesapları inceleniyor...",
+      "Veri sızıntısı kaynakları kontrol ediliyor...",
+      "Risk seviyesi analiz ediliyor...",
+      "Kişisel bilgiler eşleştiriliyor...",
+      "Sonuç raporu hazırlanıyor..."
+    ];
+    let step = 0;
+
+    function updateScan() {
+      progress.style.width = (step * 20) + "%";
+      statusText.textContent = steps[step];
+      step++;
+      if (step < steps.length) {
+        setTimeout(updateScan, 1500);
+      } else {
+        progress.style.width = "100%";
+        statusText.textContent = "Tarama tamamlandı. Rapor hazırlanıyor...";
+        setTimeout(() => {
+          window.location.href = "report.html";
+        }, 2500);
+      }
+    }
+
+    setTimeout(updateScan, 1000);
+
+    function cancelScan() {
+      alert("Tarama iptal edildi.");
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>
