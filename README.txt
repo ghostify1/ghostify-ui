@@ -1,1 +1,0 @@
-Ghostify Final Versiyon Dosya Yapısı Açıklaması
