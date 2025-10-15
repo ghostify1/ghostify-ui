@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghostify - Giriş Yap</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Inter:wght@400&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="login-wrapper">
+    <img src="assets/logo.png" alt="Ghostify Logo" class="logo" />
+    <h1 class="ghostify-title">GHOSTIFY</h1>
+
+    <div class="tab-container">
+      <button class="tab active">GİRİŞ YAP</button>
+      <button class="tab">KAYIT OL</button>
+    </div>
+
+    <form class="login-form">
+      <input type="email" placeholder="E-POSTA ADRESİNİZİ YAZIN" required />
+      <input type="password" placeholder="ŞİFRENİZİ YAZIN" required />
+
+      <div class="forgot-password">
+        <a href="#">Şifremi Unuttum?</a>
+      </div>
+
+      <button type="submit" class="button">GİRİŞ YAP</button>
+
+      <div class="divider">
+        <span>veya</span>
+      </div>
+
+      <div class="social-login">
+        <button class="social-btn google">Google ile Giriş</button>
+        <button class="social-btn apple">Apple ile Giriş</button>
+      </div>
+    </form>
+
+    <p class="footer">
+      Devam ederek <a href="#">Hizmet Şartlarını</a> ve <a href="#">Gizlilik Politikasını</a> kabul etmiş olursunuz.
+    </p>
+  </div>
+
+  <script src="matrix.js"></script>
+</body>
+</html>
