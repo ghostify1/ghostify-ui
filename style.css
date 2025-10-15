@@ -605,3 +605,35 @@ html, body {
     width: 90%;
   }
 }
+/* SAYFA GEÇİŞ ANİMASYONU - SLIDE STİLİ */
+body {
+  opacity: 0;
+  transform: translateX(30px);
+  animation: slideIn 0.8s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-out {
+  animation: slideOut 0.5s ease forwards;
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+}
