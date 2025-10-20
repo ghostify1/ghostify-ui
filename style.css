@@ -307,3 +307,112 @@ html, body {
   accent-color: #00FFFF;
   cursor: pointer;
 }
+/* =====================
+   DASHBOARD PAGE STYLE
+   ===================== */
+
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid rgba(0,255,255,0.2);
+  box-shadow: 0 0 15px rgba(0,255,255,0.2);
+}
+
+.logo-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-logo {
+  width: 35px;
+  filter: drop-shadow(0 0 10px #00FFFF);
+}
+
+.dash-title {
+  font-family: 'Orbitron', sans-serif;
+  color: #00FFFF;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.user-info {
+  color: #CFFBFF;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+.dashboard {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.welcome {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  color: #00FFFF;
+}
+
+.welcome span {
+  color: #CFFBFF;
+}
+
+.desc {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 30px;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px 25px;
+  width: 120px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 0 20px rgba(0,255,255,0.3);
+  border-color: #00FFFF;
+}
+
+.stat-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  color: #00FFFF;
+}
+
+.stat-card p {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+.primary-button {
+  padding: 14px 32px;
+  border: 1px solid #00FFFF;
+  background: rgba(0,255,255,0.15);
+  border-radius: 8px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  color: #00FFFF;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primary-button:hover {
+  background: rgba(0,255,255,0.3);
+  box-shadow: 0 0 20px #00FFFF;
+}
