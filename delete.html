@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Silme Talebi</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Üst Menü -->
+  <header class="dash-header">
+    <div class="logo-left">
+      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
+      <h1 class="dash-title">VERİ SİLME MERKEZİ</h1>
+    </div>
+    <div class="user-info">
+      <span>👤 Emre</span>
+    </div>
+  </header>
+
+  <!-- Silme Formu -->
+  <main class="delete-section">
+    <h2 class="delete-title">HESAPLARINIZI SEÇİN</h2>
+
+    <div class="account-list">
+      <button class="account-btn">Instagram</button>
+      <button class="account-btn">Twitter</button>
+      <button class="account-btn">LinkedIn</button>
+      <button class="account-btn">Spotify</button>
+      <button class="account-btn">Reddit</button>
+    </div>
+
+    <div class="delete-form">
+      <input type="text" class="auth-input" placeholder="AD SOYAD">
+      <input type="email" class="auth-input" placeholder="E-POSTA ADRESİNİZİ YAZIN">
+      <label class="checkbox-line">
+        <input type="checkbox" required>
+        <span>Bu hesapların silinmesini onaylıyorum.</span>
+      </label>
+      <button class="button delete-action" onclick="window.location='settings.html'">SİLME TALEBİ OLUŞTUR</button>
+    </div>
+  </main>
+
+  <script src="matrix.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("loaded");
+    document.querySelectorAll("a,button[onclick]").forEach(link => {
+      link.addEventListener("click", e => {
+        const href = link.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] || link.getAttribute('href');
+        if (href && !href.startsWith('#')) {
+          e.preventDefault();
+          document.body.classList.add("fade-out");
+          setTimeout(()=> window.location.href = href, 400);
+        }
+      });
+    });
+  });
+  </script>
+</body>
+</html>
