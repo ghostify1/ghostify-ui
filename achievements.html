@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Başarılar</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Üst Menü -->
+  <header class="dash-header">
+    <div class="logo-left">
+      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
+      <h1 class="dash-title">BAŞARILAR & ROZETLER</h1>
+    </div>
+  </header>
+
+  <!-- Rozetler -->
+  <main class="achievements-section">
+    <h2 class="achievements-title">KAZANILAN ROZETLER</h2>
+    <div class="badge-grid">
+      <div class="badge-card unlocked">
+        <img src="assets/badge1.png" alt="Rozet" class="badge-icon">
+        <p>Siber Güvenlik Ustası</p>
+      </div>
+      <div class="badge-card unlocked">
+        <img src="assets/badge2.png" alt="Rozet" class="badge-icon">
+        <p>Dijital İz Avcısı</p>
+      </div>
+      <div class="badge-card locked">
+        <img src="assets/badge3.png" alt="Rozet" class="badge-icon locked-icon">
+        <p>Ghost Mode Efsanesi</p>
+      </div>
+    </div>
+
+    <!-- Premium Özellikler -->
+    <div class="premium-section">
+      <h3>PREMIUM ÖZELLİKLER</h3>
+      <ul>
+        <li>⚡ Daha Hızlı Tarama</li>
+        <li>🛡️ Gelişmiş Veri Koruma</li>
+        <li>👻 Ghost Mode (Anonim Tarama)</li>
+        <li>🔒 Otomatik Hesap Silme</li>
+      </ul>
+      <button class="button ghost-mode">GHOST MODE AKTİF ET</button>
+      <button class="button back" onclick="window.location='dashboard.html'">DASHBOARD’A DÖN</button>
+    </div>
+  </main>
+
+  <script src="matrix.js"></script>
+</body>
+</html>
