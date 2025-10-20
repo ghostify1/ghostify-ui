@@ -607,3 +607,154 @@ html, body {
   background: rgba(255, 0, 0, 0.3);
   box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
 }
+/* =====================
+   SETTINGS PAGE STYLE
+   ===================== */
+
+.settings-section {
+  text-align: center;
+  margin-top: 60px;
+  color: #CFFBFF;
+}
+
+.profile-card {
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 12px;
+  padding: 25px;
+  width: 320px;
+  margin: 0 auto 40px;
+  box-shadow: 0 0 15px rgba(0,255,255,0.1);
+}
+
+.profile-avatar {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.profile-card h2 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00FFFF;
+  font-size: 1.2rem;
+}
+
+.profile-card p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: #FFD93D;
+}
+
+/* Ayarlar */
+.settings-options {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.option {
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 10px;
+  width: 320px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  font-size: 0.9rem;
+}
+
+.option-btn {
+  border: 1px solid #00FFFF;
+  background: transparent;
+  color: #00FFFF;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+  background: rgba(0,255,255,0.2);
+  box-shadow: 0 0 15px #00FFFF;
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,255,255,0.2);
+  transition: .4s;
+  border-radius: 22px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #CFFBFF;
+  transition: .4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: #00FFFF;
+  box-shadow: 0 0 10px #00FFFF;
+}
+input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Tema Seçici */
+.theme-select {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,255,255,0.3);
+  color: #CFFBFF;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+/* Çıkış Butonu */
+.logout-btn {
+  margin-top: 40px;
+  background: rgba(255,0,0,0.15);
+  border: 1px solid rgba(255,0,0,0.4);
+  color: #FF4D4D;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255,0,0,0.3);
+  box-shadow: 0 0 20px rgba(255,0,0,0.6);
+}
