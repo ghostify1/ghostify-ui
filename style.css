@@ -157,3 +157,132 @@ html, body {
     width: 90%;
   }
 }
+/* =====================
+   LOGIN & REGISTER STYLE
+   ===================== */
+
+/* Üst Logo Küçük Versiyon */
+.logo-container.small {
+  margin-top: 60px;
+}
+.ghost-logo.small {
+  width: 70px;
+  filter: drop-shadow(0 0 10px #00FFFF);
+}
+.ghostify-title.small {
+  font-size: 1.5rem;
+  text-shadow: 0 0 6px #00FFFF;
+}
+
+/* Giriş/Kayıt Form Alanı */
+.auth-container {
+  text-align: center;
+  margin-top: 60px;
+}
+
+.auth-tabs {
+  display: inline-flex;
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 25px;
+  box-shadow: 0 0 12px rgba(0,255,255,0.1);
+}
+
+.auth-tabs .tab {
+  background: transparent;
+  color: #CFFBFF;
+  border: none;
+  padding: 10px 28px;
+  font-family: 'Orbitron', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-tabs .tab.active {
+  background: rgba(0,255,255,0.2);
+  color: #00FFFF;
+  box-shadow: inset 0 0 10px rgba(0,255,255,0.4);
+}
+
+.auth-tabs .tab:hover {
+  background: rgba(0,255,255,0.15);
+}
+
+.auth-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-input {
+  width: 300px;
+  padding: 12px;
+  margin-bottom: 15px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(0,255,255,0.5);
+  border-radius: 8px;
+  color: #CFFBFF;
+  outline: none;
+  text-align: center;
+  font-size: 0.95rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.auth-input:focus {
+  box-shadow: 0 0 15px rgba(0,255,255,0.6);
+}
+
+.auth-link {
+  display: block;
+  font-size: 0.8rem;
+  color: #00C9FF;
+  margin-bottom: 20px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.auth-link:hover {
+  color: #FFFFFF;
+}
+
+.auth-button {
+  width: 300px;
+  padding: 12px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.95rem;
+  background: rgba(0,255,255,0.2);
+  border: 1px solid #00FFFF;
+  color: #00FFFF;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0,255,255,0.3);
+}
+
+.auth-button:hover {
+  background: rgba(0,255,255,0.35);
+  box-shadow: 0 0 20px #00FFFF;
+}
+
+.auth-button.social {
+  background: transparent;
+  border: 1px solid rgba(0,255,255,0.3);
+  color: #CFFBFF;
+}
+
+.divider {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  margin: 10px 0;
+}
+
+.auth-footer-text {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  width: 300px;
+  margin-top: 20px;
+  line-height: 1.4;
+}
