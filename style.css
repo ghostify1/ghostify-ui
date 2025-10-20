@@ -416,3 +416,124 @@ html, body {
   background: rgba(0,255,255,0.3);
   box-shadow: 0 0 20px #00FFFF;
 }
+/* =====================
+   SCAN PAGE STYLE
+   ===================== */
+
+.scan-section {
+  text-align: center;
+  margin-top: 70px;
+  color: #CFFBFF;
+}
+
+.scan-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  color: #00FFFF;
+  text-shadow: 0 0 10px #00FFFF;
+  margin-bottom: 40px;
+}
+
+/* Progress Circle */
+.progress-ring {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+.progress-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 3px solid rgba(0,255,255,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.progress-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  color: #00FFFF;
+  text-shadow: 0 0 10px #00FFFF;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px rgba(0,255,255,0.3); }
+  50% { box-shadow: 0 0 25px rgba(0,255,255,0.8); }
+  100% { box-shadow: 0 0 10px rgba(0,255,255,0.3); }
+}
+
+/* Stats */
+.scan-stats {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.scan-card {
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px 25px;
+  width: 120px;
+  transition: all 0.3s ease;
+}
+
+.scan-card:hover {
+  border-color: #00FFFF;
+  box-shadow: 0 0 20px rgba(0,255,255,0.4);
+}
+
+.scan-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00FFFF;
+  font-size: 1.4rem;
+}
+
+.scan-card p {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* Buttons */
+.scan-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.button {
+  padding: 12px 30px;
+  border-radius: 8px;
+  border: 1px solid #00FFFF;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button.stop {
+  background: rgba(255,0,0,0.1);
+  border-color: rgba(255,0,0,0.5);
+  color: #FF4D4D;
+}
+
+.button.stop:hover {
+  background: rgba(255,0,0,0.3);
+  box-shadow: 0 0 15px rgba(255,0,0,0.6);
+}
+
+.button.view {
+  background: rgba(0,255,255,0.2);
+  color: #00FFFF;
+}
+
+.button.view:hover {
+  background: rgba(0,255,255,0.35);
+  box-shadow: 0 0 20px #00FFFF;
+}
