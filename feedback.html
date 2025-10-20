@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Geri Bildirim</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Üst Menü -->
+  <header class="dash-header">
+    <div class="logo-left">
+      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
+      <h1 class="dash-title">GERİ BİLDİRİM MERKEZİ</h1>
+    </div>
+  </header>
+
+  <!-- Geri Bildirim Formu -->
+  <main class="feedback-section">
+    <h2 class="feedback-title">GÖRÜŞLERİNİZİ BİZİMLE PAYLAŞIN</h2>
+    <form class="feedback-form" id="feedbackForm">
+      <input type="text" class="auth-input" placeholder="Ad Soyad" required>
+      <input type="email" class="auth-input" placeholder="E-posta Adresi" required>
+      <textarea class="auth-input message-box" placeholder="Mesajınızı yazın..." required></textarea>
+      <button type="submit" class="button send">GÖNDER</button>
+    </form>
+
+    <div class="feedback-success" id="feedbackSuccess">
+      <p>🎉 Teşekkürler! Mesajınız başarıyla gönderildi.</p>
+      <div class="feedback-nav">
+        <button class="button" onclick="window.location='dashboard.html'">DASHBOARD’A DÖN</button>
+        <button class="button" onclick="window.location='index.html'">ANA SAYFAYA DÖN</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="matrix.js"></script>
+  <script>
+  document.getElementById("feedbackForm").addEventListener("submit", e => {
+    e.preventDefault();
+    document.getElementById("feedbackForm").style.display = "none";
+    document.getElementById("feedbackSuccess").style.display = "block";
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    document.body.classList.add("loaded");
+    document.querySelectorAll("a,button[onclick]").forEach(link => {
+      link.addEventListener("click", e => {
+        const href = link.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] || link.getAttribute('href');
+        if (href && !href.startsWith('#')) {
+          e.preventDefault();
+          document.body.classList.add("fade-out");
+          setTimeout(()=> window.location.href = href, 400);
+        }
+      });
+    });
+  });
+  </script>
+</body>
+</html>
