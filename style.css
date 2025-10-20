@@ -286,3 +286,24 @@ html, body {
   margin-top: 20px;
   line-height: 1.4;
 }
+/* =====================
+   REGISTER PAGE STYLE
+   ===================== */
+
+.checkbox-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0 20px;
+  font-size: 0.8rem;
+  color: #CFFBFF;
+  opacity: 0.8;
+}
+
+.checkbox-line input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #00FFFF;
+  cursor: pointer;
+}
