@@ -1168,3 +1168,106 @@ input:checked + .slider:before {
   justify-content: center;
   gap: 20px;
 }
+/* =====================
+   ACHIEVEMENTS PAGE STYLE
+   ===================== */
+
+.achievements-section {
+  text-align: center;
+  margin-top: 60px;
+  color: #CFFBFF;
+}
+
+.achievements-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  color: #00FFFF;
+  text-shadow: 0 0 10px #00FFFF;
+  margin-bottom: 30px;
+}
+
+/* Rozetler */
+.badge-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.badge-card {
+  width: 140px;
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0,255,255,0.1);
+  transition: all 0.3s ease;
+}
+
+.badge-card.unlocked:hover {
+  box-shadow: 0 0 20px #00FFFF;
+  border-color: #00FFFF;
+}
+
+.badge-card.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+
+.badge-icon {
+  width: 60px;
+  margin-bottom: 8px;
+}
+
+.badge-card p {
+  font-size: 0.85rem;
+  color: #CFFBFF;
+  opacity: 0.9;
+}
+
+/* Premium Özellikler */
+.premium-section {
+  background: rgba(0,255,255,0.05);
+  border: 1px solid rgba(0,255,255,0.3);
+  border-radius: 12px;
+  padding: 25px;
+  width: 320px;
+  margin: 0 auto;
+  box-shadow: 0 0 12px rgba(0,255,255,0.1);
+}
+
+.premium-section h3 {
+  font-family: 'Orbitron', sans-serif;
+  color: #00FFFF;
+  margin-bottom: 15px;
+}
+
+.premium-section ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.premium-section ul li {
+  font-size: 0.85rem;
+  margin: 6px 0;
+  opacity: 0.9;
+}
+
+.ghost-mode {
+  width: 100%;
+  background: rgba(0,255,255,0.2);
+  border: 1px solid rgba(0,255,255,0.5);
+  color: #00FFFF;
+  font-family: 'Orbitron', sans-serif;
+  border-radius: 8px;
+  padding: 10px;
+  transition: all 0.3s ease;
+}
+
+.ghost-mode:hover {
+  background: rgba(0,255,255,0.35);
+  box-shadow: 0 0 25px #00FFFF;
+}
