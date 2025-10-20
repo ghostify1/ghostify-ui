@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Bildirimler</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Üst Menü -->
+  <header class="dash-header">
+    <div class="logo-left">
+      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
+      <h1 class="dash-title">BİLDİRİM MERKEZİ</h1>
+    </div>
+  </header>
+
+  <!-- Bildirim İçerik -->
+  <main class="notifications-section">
+    <h2 class="notify-title">SİSTEM MESAJLARINIZ</h2>
+
+    <div class="notification-list">
+      <div class="notification-card success">
+        <span class="icon">✅</span>
+        <div class="content">
+          <h3>Silme Talebiniz Onaylandı</h3>
+          <p>Instagram hesabınız başarıyla silme sürecine alındı.</p>
+          <span class="time">5 dk önce</span>
+        </div>
+      </div>
+
+      <div class="notification-card warning">
+        <span class="icon">⚠️</span>
+        <div class="content">
+          <h3>Yeni Riskli Hesap Tespit Edildi</h3>
+          <p>Twitter hesabınız sızıntı veritabanlarında bulundu.</p>
+          <span class="time">2 saat önce</span>
+        </div>
+      </div>
+
+      <div class="notification-card info">
+        <span class="icon">🔔</span>
+        <div class="content">
+          <h3>Tarama Tamamlandı</h3>
+          <p>31 hesap analiz edildi. Raporunuz hazır!</p>
+          <span class="time">1 gün önce</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="notify-buttons">
+      <button class="button clear">TÜMÜNÜ TEMİZLE</button>
+      <button class="button back" onclick="window.location='dashboard.html'">DASHBOARD’A DÖN</button>
+    </div>
+  </main>
+
+  <script src="matrix.js"></script>
+</body>
+</html>
