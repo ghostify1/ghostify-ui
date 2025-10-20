@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Canlı Destek</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <header class="dash-header">
+    <div class="logo-left">
+      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
+      <h1 class="dash-title">CANLI DESTEK</h1>
+    </div>
+  </header>
+
+  <main class="support-section">
+    <div class="chat-box">
+      <div class="chat-message user">Merhaba, sistemimde bir hata var.</div>
+      <div class="chat-message ai">Merhaba 👋 Yardımcı olmamı ister misiniz? Hatanızla ilgili biraz detay verebilir misiniz?</div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" class="chat-input" placeholder="Mesajınızı yazın...">
+      <button class="button send">Gönder</button>
+    </div>
+
+    <button class="button back" onclick="window.location='dashboard.html'">Dashboard’a Dön</button>
+  </main>
+
+  <script src="matrix.js"></script>
+</body>
+</html>
