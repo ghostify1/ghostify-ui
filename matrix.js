@@ -1,36 +1,49 @@
-// matrix.js
-const canvas = document.getElementById('matrixCanvas');
+// GHOSTIFY MATRIX BACKGROUND - VIP EDITION
+const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
 
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 
-const chars = '01';
-const fontSize = 14;
-const columns = canvas.width / fontSize;
-const drops = [];
+// Karakter seti - Matrix efekti için
+const chars = "01";
+const font_size = 10; // Daha ince yazı
+const columns = canvas.width / font_size;
 
+// Düşen kod dizileri
+const drops = [];
 for (let x = 0; x < columns; x++) drops[x] = 1;
 
+// Ana çizim fonksiyonu
 function draw() {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+  // Arka planı hafif silerek akıcı efekt
+  ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = '#00FFFF';
-  ctx.font = fontSize + 'px monospace';
+  // Yazı stili - neon mavi ton
+  ctx.fillStyle = "rgba(0, 255, 255, 0.08)";
+  ctx.font = font_size + "px monospace";
 
+  // Karakterleri çiz
   for (let i = 0; i < drops.length; i++) {
     const text = chars.charAt(Math.floor(Math.random() * chars.length));
-    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+    ctx.fillText(text, i * font_size, drops[i] * font_size);
 
-    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+    // Rastgele sıfırlama (sonsuz akış efekti)
+    if (drops[i] * font_size > canvas.height && Math.random() > 0.975) {
       drops[i] = 0;
+    }
+
+    // Düşen karakterin hızını kontrol et
     drops[i]++;
   }
 }
 
-setInterval(draw, 40);
-window.addEventListener('resize', () => {
+// Daha akıcı ve soft bir animasyon için yavaşlatılmış hız
+setInterval(draw, 45);
+
+// Ekran boyutu değiştiğinde yeniden ayarla
+window.addEventListener("resize", () => {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 });
