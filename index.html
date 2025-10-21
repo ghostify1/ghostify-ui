@@ -1,59 +1,37 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ghostify - Davet Kodu</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Matrix arka plan -->
-  <canvas id="matrixCanvas"></canvas>
+  <!-- Matrix Arka Plan -->
+  <canvas id="matrix"></canvas>
 
-  <!-- Logo ve Başlık -->
-  <div class="logo-container">
-    <img src="assets/logo.png" alt="Ghostify Logo" class="ghost-logo">
-    <h1 class="ghostify-title">GHOSTIFY</h1>
-    <p class="core-status">GHOSTIFY CORE LOADING</p>
-    <div class="icons-line">
-      <span class="icon">🔒</span>
-      <span class="icon">💾</span>
-      <span class="icon">🔍</span>
-      <span class="icon">🧠</span>
-      <span class="icon">👻</span>
+  <!-- Ana Container -->
+  <div class="container">
+    <div class="logo-container">
+      <img src="assets/icon.png" alt="Ghostify Logo" class="logo" />
+      <h1 class="neon-text">GHOSTIFY</h1>
+      <p class="subtitle">GHOSTIFY CORE LOADING</p>
+      <div class="icons">🔒 🧠 ⚙️ 🕵️‍♂️</div>
     </div>
-  </div>
 
-  <!-- Davet Formu -->
-  <div class="invite-container">
-    <h2 class="invite-title">DAVET KODUNUZU GİRİN</h2>
-    <input type="text" class="invite-input" placeholder="DAVET KODUNUZU YAZIN">
-    <button class="invite-button" onclick="window.location='login.html'">DEVAM ET</button>
-    <p class="invite-sub">
+    <h2 class="title">DAVET KODUNUZU GİRİN</h2>
+
+    <form>
+      <input type="text" placeholder="DAVET KODUNUZU YAZIN" />
+      <button type="submit">DEVAM ET</button>
+    </form>
+
+    <p class="footer">
       DAVET KODUNUZ YOK MU? <a href="#">KOD TALEP ET</a>
     </p>
   </div>
 
-  <!-- Matrix Script -->
   <script src="matrix.js"></script>
-
-  <!-- Geçiş Sistemi -->
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.add("loaded");
-
-    document.querySelectorAll("a,button[onclick]").forEach(link => {
-      link.addEventListener("click", e => {
-        const href = link.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] || link.getAttribute('href');
-        if (href && !href.startsWith('#')) {
-          e.preventDefault();
-          document.body.classList.add("fade-out");
-          setTimeout(()=> window.location.href = href, 400);
-        }
-      });
-    });
-  });
-  </script>
 </body>
 </html>
+
