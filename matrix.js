@@ -1,49 +1,37 @@
-// GHOSTIFY MATRIX BACKGROUND - VIP EDITION
-const canvas = document.getElementById('matrix');
+// matrix.js — yumuşak, dikkat dağıtmayan sürüm
+const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
 
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
+function size() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+size(); window.addEventListener('resize', size);
 
-// Karakter seti - Matrix efekti için
-const chars = "01";
-const font_size = 10; // Daha ince yazı
-const columns = canvas.width / font_size;
+const symbols = '01';
+const fontSize = 16;
+let columns = Math.floor(window.innerWidth / fontSize);
+let drops = Array(columns).fill(1);
 
-// Düşen kod dizileri
-const drops = [];
-for (let x = 0; x < columns; x++) drops[x] = 1;
-
-// Ana çizim fonksiyonu
 function draw() {
-  // Arka planı hafif silerek akıcı efekt
-  ctx.fillStyle = "rgba(0, 0, 0, 0.08)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  // Yazı stili - neon mavi ton
-  ctx.fillStyle = "rgba(0, 255, 255, 0.08)";
-  ctx.font = font_size + "px monospace";
+  ctx.fillStyle = '#00ffff';
+  ctx.font = `${fontSize}px monospace`;
 
-  // Karakterleri çiz
-  for (let i = 0; i < drops.length; i++) {
-    const text = chars.charAt(Math.floor(Math.random() * chars.length));
-    ctx.fillText(text, i * font_size, drops[i] * font_size);
+  for(let i=0;i<drops.length;i++){
+    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
+    const x = i*fontSize;
+    const y = drops[i]*fontSize;
 
-    // Rastgele sıfırlama (sonsuz akış efekti)
-    if (drops[i] * font_size > canvas.height && Math.random() > 0.975) {
-      drops[i] = 0;
-    }
+    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
+    ctx.fillText(text,x,y);
 
-    // Düşen karakterin hızını kontrol et
+    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
     drops[i]++;
   }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
 }
-
-// Daha akıcı ve soft bir animasyon için yavaşlatılmış hız
-setInterval(draw, 45);
-
-// Ekran boyutu değiştiğinde yeniden ayarla
-window.addEventListener("resize", () => {
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
-});
+requestAnimationFrame(draw);
