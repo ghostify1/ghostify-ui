@@ -1,99 +1,140 @@
-body {
+/* ==========================================================
+   GHOSTIFY V2 FINAL PREMIUM STYLE.CSS
+   ----------------------------------------------------------
+   Tüm ekranlar: index, login, register, dashboard, scan,
+   report, delete, settings, notifications, support, feedback
+   ========================================================== */
+
+/* ---- FONT & GENEL AYARLAR ---- */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+
+* {
   margin: 0;
   padding: 0;
-  font-family: 'Orbitron', sans-serif;
-  background-color: #000;
-  color: #CFFBFF;
-  text-align: center;
-  overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* Matrix Canvas */
-canvas {
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  color: #CFFBFF;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ---- MATRIX BACKGROUND ---- */
+#matrixCanvas {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;
-  opacity: 0.25;
-  filter: blur(1px);
+  z-index: 0;
+  opacity: 0.18;
+  filter: blur(0.8px);
+  pointer-events: none;
 }
 
-/* Merkezleme */
+/* ---- ANA KAPSAYICI ---- */
 .container {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-}
-
-/* Logo */
-.logo {
-  width: 120px;
-  margin-bottom: 10px;
-  filter: drop-shadow(0 0 15px #00ffff);
-}
-
-.neon-text {
-  font-size: 32px;
-  color: #00ffff;
-  text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-}
-
-.subtitle {
-  font-size: 12px;
-  color: rgba(0, 255, 255, 0.6);
-  letter-spacing: 2px;
-  margin-top: 5px;
-}
-
-/* Başlık */
-.title {
-  margin-top: 40px;
-  color: #00ffff;
-  text-shadow: 0 0 8px #00ffff;
-  font-size: 20px;
-}
-
-/* Form */
-input, button {
-  width: 70%;
-  max-width: 400px;
-  margin: 10px auto;
-  display: block;
-  background: transparent;
-  border: 1px solid #00c9ff;
-  color: #CFFBFF;
-  padding: 12px;
-  font-size: 14px;
-  border-radius: 8px;
+  justify-content: center;
   text-align: center;
 }
 
-button {
-  background-color: rgba(0, 255, 255, 0.1);
+/* ---- LOGO ---- */
+.logo {
+  width: 110px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 15px #00FFFF);
+}
+
+.logo-small {
+  width: 40px;
+  margin-right: 10px;
+  filter: drop-shadow(0 0 6px #00FFFF);
+}
+
+/* ---- BAŞLIK & YAZI STİLLERİ ---- */
+h1, h2, h3 {
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 10px #00FFFF;
+}
+
+h1 { font-size: 28px; color: #00FFFF; }
+h2 { font-size: 20px; color: #00FFFF; }
+h3 { font-size: 16px; color: #CFFBFF; }
+
+p { opacity: 0.9; }
+
+/* ---- GHOSTIFY TITLE ---- */
+.ghostify-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 28px;
+  color: #00FFFF;
+  text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
+  margin-bottom: 12px;
+}
+
+/* ---- BUTTONS ---- */
+button, .btn {
+  background: transparent;
+  border: 1px solid #00FFFF;
+  color: #00FFFF;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  padding: 12px 18px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: 0.3s;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
 }
 
-button:hover {
-  background-color: rgba(0, 255, 255, 0.25);
-  box-shadow: 0 0 12px #00ffff;
+button:hover, .btn:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+  color: #fff;
 }
 
-/* Footer */
+/* ---- INPUTS ---- */
+input, select, textarea {
+  width: 300px;
+  background: transparent;
+  border: 1px solid #00FFFF;
+  color: #CFFBFF;
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 12px 16px;
+  text-align: center;
+  margin: 8px 0;
+  outline: none;
+  transition: 0.3s;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+}
+
+input:focus, textarea:focus {
+  border-color: #00FFFF;
+  box-shadow: 0 0 12px #00FFFF;
+}
+
+/* ---- FOOTER ---- */
 .footer {
+  margin-top: 25px;
   font-size: 12px;
-  margin-top: 20px;
   color: rgba(0, 255, 255, 0.7);
 }
 
 .footer a {
-  color: #00ffff;
+  color: #00C9FF;
   text-decoration: none;
-  border-bottom: 1px solid #00ffff;
+  border-bottom: 1px solid #00C9FF;
   transition: 0.3s;
 }
 
@@ -101,1293 +142,258 @@ button:hover {
   color: #fff;
   border-color: #fff;
 }
-html, body {
-  height: 100%;
-  background-color: #000;
-  margin: 0;
-  padding: 0;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
-}
 
-body {
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-body.loaded {
-  opacity: 1;
-}
-/* Genel sıfırlama */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-html, body {
-  width: 100%;
-  height: 100%;
-  background: #000;
-  font-family: 'Inter', sans-serif;
-  color: #CFFBFF;
-  overflow: hidden;
-}
-
-/* Matrix arka plan */
-#matrixCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* Ana kapsayıcı */
+/* ==========================================================
+   INDEX (DAVET KODU)
+   ========================================================== */
 .invite-wrapper {
-  position: relative;
-  z-index: 2;
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 14px;
-  padding: 20px;
-  text-align: center;
+  height: 100vh;
 }
 
-/* Logo */
-.logo {
-  width: 100px;
-  margin-bottom: 5px;
-  filter: drop-shadow(0 0 12px #00FFFF);
-}
-
-/* Başlık */
-.ghostify-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 28px;
-  color: #00FFFF;
-  text-shadow: 0 0 8px #00FFFF;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-}
-
-/* Core Loading bölümü */
-.core-loading p {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 12px;
-  color: #00ffffaa;
-  margin-bottom: 4px;
-  letter-spacing: 1px;
-}
-.core-line {
-  width: 140px;
-  height: 2px;
-  background-color: #00FFFF;
-  margin: 0 auto 6px auto;
-  animation: pulse 2s infinite ease-in-out;
-}
-.core-icons span {
-  margin: 0 3px;
-  font-size: 13px;
-  filter: drop-shadow(0 0 2px #00FFFF);
-  opacity: 0.7;
-}
-
-/* Davet başlığı */
 .invite-title {
   font-family: 'Orbitron', sans-serif;
   font-size: 20px;
-  line-height: 1.4;
   color: #00FFFF;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin: 16px 0;
   text-shadow: 0 0 6px #00FFFF;
 }
 
-/* Input */
-.invite-input {
+.invite-input, .invite-button {
   width: 300px;
-  padding: 14px 18px;
-  background: transparent;
-  border: 1px solid #00FFFF;
-  color: #CFFBFF;
-  font-size: 14px;
-  border-radius: 6px;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
-  outline: none;
-  text-align: center;
-  transition: 0.3s ease-in-out;
-}
-.invite-input:focus {
-  box-shadow: 0 0 12px #00FFFF;
-  border-color: #00FFFF;
 }
 
-/* Buton */
-.invite-button {
-  width: 300px;
-  padding: 14px 18px;
-  background: transparent;
-  border: 1px solid #00FFFF;
-  color: #00FFFF;
-  font-weight: bold;
-  font-size: 14px;
-  border-radius: 6px;
-  margin-top: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
-}
 .invite-button:hover {
-  background: rgba(0, 255, 255, 0.08);
-  color: #FFFFFF;
-  box-shadow: 0 0 16px rgba(0, 255, 255, 0.6);
+  background: rgba(0, 255, 255, 0.12);
 }
 
-/* Alt metin */
-.footer {
-  font-size: 12px;
-  margin-top: 18px;
-  opacity: 0.85;
-}
-.footer a {
-  color: #00C9FF;
-  text-decoration: none;
-  border-bottom: 1px solid #00C9FF;
-  padding-bottom: 1px;
-  transition: 0.3s;
-}
-.footer a:hover {
-  color: #FFFFFF;
-  border-color: white;
-}
-
-/* Animasyon */
-@keyframes pulse {
-  0%, 100% { transform: scaleX(1); opacity: 0.4; }
-  50% { transform: scaleX(1.3); opacity: 1; }
-}
-
-/* Responsive */
-@media (max-width: 420px) {
-  .invite-input, .invite-button {
-    width: 90%;
-  }
-}
-/* =====================
-   LOGIN & REGISTER STYLE
-   ===================== */
-
-/* Üst Logo Küçük Versiyon */
-.logo-container.small {
-  margin-top: 60px;
-}
-.ghost-logo.small {
-  width: 70px;
-  filter: drop-shadow(0 0 10px #00FFFF);
-}
-.ghostify-title.small {
-  font-size: 1.5rem;
-  text-shadow: 0 0 6px #00FFFF;
-}
-
-/* Giriş/Kayıt Form Alanı */
+/* ==========================================================
+   LOGIN & REGISTER
+   ========================================================== */
 .auth-container {
-  text-align: center;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 .auth-tabs {
-  display: inline-flex;
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 25px;
-  box-shadow: 0 0 12px rgba(0,255,255,0.1);
-}
-
-.auth-tabs .tab {
-  background: transparent;
-  color: #CFFBFF;
-  border: none;
-  padding: 10px 28px;
-  font-family: 'Orbitron', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.auth-tabs .tab.active {
-  background: rgba(0,255,255,0.2);
-  color: #00FFFF;
-  box-shadow: inset 0 0 10px rgba(0,255,255,0.4);
-}
-
-.auth-tabs .tab:hover {
-  background: rgba(0,255,255,0.15);
-}
-
-.auth-box {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+  padding-bottom: 6px;
+  margin-bottom: 25px;
 }
 
-.auth-input {
-  width: 300px;
-  padding: 12px;
-  margin-bottom: 15px;
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(0,255,255,0.5);
-  border-radius: 8px;
-  color: #CFFBFF;
-  outline: none;
-  text-align: center;
-  font-size: 0.95rem;
-  transition: box-shadow 0.3s ease;
-}
-
-.auth-input:focus {
-  box-shadow: 0 0 15px rgba(0,255,255,0.6);
-}
-
-.auth-link {
-  display: block;
-  font-size: 0.8rem;
-  color: #00C9FF;
-  margin-bottom: 20px;
-  text-decoration: none;
+.auth-tab {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 16px;
+  color: rgba(207, 251, 255, 0.6);
+  cursor: pointer;
   transition: 0.3s;
 }
 
-.auth-link:hover {
-  color: #FFFFFF;
+.auth-tab.active {
+  color: #00FFFF;
+  border-bottom: 2px solid #00FFFF;
+}
+
+.auth-input, .auth-button {
+  width: 300px;
 }
 
 .auth-button {
-  width: 300px;
-  padding: 12px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.95rem;
-  background: rgba(0,255,255,0.2);
-  border: 1px solid #00FFFF;
-  color: #00FFFF;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-bottom: 12px;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0,255,255,0.3);
+  margin-top: 12px;
 }
 
-.auth-button:hover {
-  background: rgba(0,255,255,0.35);
-  box-shadow: 0 0 20px #00FFFF;
-}
-
-.auth-button.social {
-  background: transparent;
-  border: 1px solid rgba(0,255,255,0.3);
-  color: #CFFBFF;
-}
-
-.divider {
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.4);
-  margin: 10px 0;
-}
-
-.auth-footer-text {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  width: 300px;
-  margin-top: 20px;
-  line-height: 1.4;
-}
-/* =====================
-   REGISTER PAGE STYLE
-   ===================== */
-
-.checkbox-line {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin: 10px 0 20px;
-  font-size: 0.8rem;
-  color: #CFFBFF;
-  opacity: 0.8;
-}
-
-.checkbox-line input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #00FFFF;
-  cursor: pointer;
-}
-/* =====================
-   DASHBOARD PAGE STYLE
-   ===================== */
-
-.dash-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 30px;
-  background: rgba(0, 0, 0, 0.6);
-  border-bottom: 1px solid rgba(0,255,255,0.2);
-  box-shadow: 0 0 15px rgba(0,255,255,0.2);
-}
-
-.logo-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.dash-logo {
-  width: 35px;
-  filter: drop-shadow(0 0 10px #00FFFF);
-}
-
-.dash-title {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  font-size: 1.1rem;
-  letter-spacing: 1px;
-}
-
-.user-info {
-  color: #CFFBFF;
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
+/* ==========================================================
+   DASHBOARD
+   ========================================================== */
 .dashboard {
-  text-align: center;
-  margin-top: 60px;
-}
-
-.welcome {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.4rem;
-  color: #00FFFF;
-}
-
-.welcome span {
-  color: #CFFBFF;
-}
-
-.desc {
-  font-size: 0.9rem;
-  opacity: 0.8;
-  margin-bottom: 30px;
-}
-
-.stats-grid {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  min-height: 100vh;
   gap: 20px;
-  margin-bottom: 40px;
-}
-
-.stat-card {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  padding: 15px 25px;
-  width: 120px;
-  box-shadow: 0 0 10px rgba(0,255,255,0.1);
-  transition: all 0.3s ease;
-}
-
-.stat-card:hover {
-  box-shadow: 0 0 20px rgba(0,255,255,0.3);
-  border-color: #00FFFF;
-}
-
-.stat-card h3 {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.6rem;
-  color: #00FFFF;
-}
-
-.stat-card p {
-  font-size: 0.8rem;
-  opacity: 0.7;
-  margin-top: 4px;
-}
-
-.primary-button {
-  padding: 14px 32px;
-  border: 1px solid #00FFFF;
-  background: rgba(0,255,255,0.15);
-  border-radius: 8px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1rem;
-  color: #00FFFF;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.primary-button:hover {
-  background: rgba(0,255,255,0.3);
-  box-shadow: 0 0 20px #00FFFF;
-}
-/* =====================
-   SCAN PAGE STYLE
-   ===================== */
-
-.scan-section {
   text-align: center;
-  margin-top: 70px;
-  color: #CFFBFF;
 }
 
-.scan-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF;
-  margin-bottom: 40px;
-}
-
-/* Progress Circle */
-.progress-ring {
+.score-circle {
+  border: 2px solid #00FFFF;
+  border-radius: 50%;
+  width: 160px;
+  height: 160px;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 40px;
+  font-size: 26px;
+  color: #00FFFF;
+  text-shadow: 0 0 8px #00FFFF;
+}
+
+.dashboard-btn {
+  width: 300px;
+  margin-top: 8px;
+}
+
+/* ==========================================================
+   SCAN
+   ========================================================== */
+.scan-wrapper {
+  text-align: center;
+  padding: 60px 0;
 }
 
 .progress-circle {
-  width: 160px;
-  height: 160px;
+  width: 180px;
+  height: 180px;
+  border: 3px solid #00FFFF;
   border-radius: 50%;
-  border: 3px solid rgba(0,255,255,0.3);
   display: flex;
-  justify-content: center;
   align-items: center;
-  box-shadow: 0 0 20px rgba(0,255,255,0.2);
-  animation: pulse 2s infinite ease-in-out;
-}
-
-.progress-text {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 2rem;
+  justify-content: center;
+  font-size: 32px;
   color: #00FFFF;
+  margin: 20px auto;
   text-shadow: 0 0 10px #00FFFF;
 }
 
-@keyframes pulse {
-  0% { box-shadow: 0 0 10px rgba(0,255,255,0.3); }
-  50% { box-shadow: 0 0 25px rgba(0,255,255,0.8); }
-  100% { box-shadow: 0 0 10px rgba(0,255,255,0.3); }
-}
-
-/* Stats */
-.scan-stats {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.scan-card {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  padding: 15px 25px;
-  width: 120px;
-  transition: all 0.3s ease;
-}
-
-.scan-card:hover {
-  border-color: #00FFFF;
-  box-shadow: 0 0 20px rgba(0,255,255,0.4);
-}
-
-.scan-card h3 {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  font-size: 1.4rem;
-}
-
-.scan-card p {
-  font-size: 0.8rem;
-  opacity: 0.7;
-  margin-top: 4px;
-}
-
-/* Buttons */
-.scan-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.button {
-  padding: 12px 30px;
-  border-radius: 8px;
-  border: 1px solid #00FFFF;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.button.stop {
-  background: rgba(255,0,0,0.1);
-  border-color: rgba(255,0,0,0.5);
-  color: #FF4D4D;
-}
-
-.button.stop:hover {
-  background: rgba(255,0,0,0.3);
-  box-shadow: 0 0 15px rgba(255,0,0,0.6);
-}
-
-.button.view {
-  background: rgba(0,255,255,0.2);
-  color: #00FFFF;
-}
-
-.button.view:hover {
-  background: rgba(0,255,255,0.35);
-  box-shadow: 0 0 20px #00FFFF;
-}
-/* =====================
-   DELETE PAGE STYLE
-   ===================== */
-
-.delete-section {
+/* ==========================================================
+   REPORT
+   ========================================================== */
+.report-container {
   text-align: center;
-  margin-top: 70px;
+  padding: 40px 0;
+}
+
+.report-table {
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
   color: #CFFBFF;
+  border: 1px solid rgba(0, 255, 255, 0.3);
 }
 
-.delete-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF;
-  margin-bottom: 25px;
-}
-
-/* Hesap Seçim Butonları */
-.account-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 40px;
-}
-
-.account-btn {
-  padding: 10px 22px;
-  border: 1px solid rgba(0,255,255,0.4);
-  background: rgba(0,255,255,0.1);
-  color: #00FFFF;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(0,255,255,0.2);
-}
-
-.account-btn:hover {
-  background: rgba(0,255,255,0.3);
-  box-shadow: 0 0 20px #00FFFF;
-}
-
-/* Form Alanı */
-.delete-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.delete-action {
-  width: 280px;
+.report-table th, .report-table td {
+  border: 1px solid rgba(0, 255, 255, 0.3);
   padding: 12px;
-  background: rgba(255, 0, 0, 0.15);
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  color: #FF4D4D;
-  border-radius: 8px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 15px;
 }
 
-.delete-action:hover {
-  background: rgba(255, 0, 0, 0.3);
-  box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
-}
-/* =====================
-   SETTINGS PAGE STYLE
-   ===================== */
-
-.settings-section {
-  text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
-}
-
-.profile-card {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 12px;
-  padding: 25px;
-  width: 320px;
-  margin: 0 auto 40px;
-  box-shadow: 0 0 15px rgba(0,255,255,0.1);
-}
-
-.profile-avatar {
-  font-size: 3rem;
-  margin-bottom: 10px;
-}
-
-.profile-card h2 {
-  font-family: 'Orbitron', sans-serif;
+.report-table th {
   color: #00FFFF;
-  font-size: 1.2rem;
+  text-shadow: 0 0 6px #00FFFF;
 }
 
-.profile-card p {
-  font-size: 0.85rem;
-  opacity: 0.8;
+.report-footer {
+  margin-top: 20px;
 }
 
-.badge {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 0.75rem;
-  color: #FFD93D;
+/* ==========================================================
+   DELETE (SİLME MERKEZİ)
+   ========================================================== */
+.delete-container {
+  text-align: center;
+  padding: 40px 0;
 }
 
-/* Ayarlar */
-.settings-options {
+.delete-checkbox {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.option {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  width: 320px;
+.delete-checkbox label {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 12px 18px;
-  box-shadow: 0 0 10px rgba(0,255,255,0.1);
-  font-size: 0.9rem;
-}
-
-.option-btn {
+  gap: 8px;
   border: 1px solid #00FFFF;
-  background: transparent;
-  color: #00FFFF;
-  font-family: 'Orbitron', sans-serif;
+  padding: 10px 16px;
   border-radius: 6px;
-  padding: 4px 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.option-btn:hover {
-  background: rgba(0,255,255,0.2);
-  box-shadow: 0 0 15px #00FFFF;
-}
-
-/* Switch */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 22px;
-}
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0,255,255,0.2);
-  transition: .4s;
-  border-radius: 22px;
-}
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 16px;
-  width: 16px;
-  left: 3px;
-  bottom: 3px;
-  background-color: #CFFBFF;
-  transition: .4s;
-  border-radius: 50%;
-}
-input:checked + .slider {
-  background-color: #00FFFF;
-  box-shadow: 0 0 10px #00FFFF;
-}
-input:checked + .slider:before {
-  transform: translateX(18px);
-}
-
-/* Tema Seçici */
-.theme-select {
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(0,255,255,0.3);
   color: #CFFBFF;
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 0.85rem;
-  outline: none;
 }
 
-/* Çıkış Butonu */
-.logout-btn {
-  margin-top: 40px;
-  background: rgba(255,0,0,0.15);
-  border: 1px solid rgba(255,0,0,0.4);
-  color: #FF4D4D;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
-  border-radius: 8px;
-  padding: 12px 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.delete-checkbox input[type="checkbox"] {
+  accent-color: #00FFFF;
 }
 
-.logout-btn:hover {
-  background: rgba(255,0,0,0.3);
-  box-shadow: 0 0 20px rgba(255,0,0,0.6);
-}
-/* =====================
-   FEEDBACK PAGE STYLE
-   ===================== */
-
-.feedback-section {
+/* ==========================================================
+   SETTINGS
+   ========================================================== */
+.settings-container {
+  padding: 40px;
   text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
 }
 
-.feedback-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF;
-  margin-bottom: 25px;
+.setting-block {
+  margin-bottom: 30px;
 }
 
-.feedback-form {
-  display: flex;
-  flex-direction: column;
+.toggle-switch {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+}
+
+/* ==========================================================
+   NOTIFICATIONS & FEEDBACK
+   ========================================================== */
+.notifications, .feedback {
+  padding: 40px;
+  text-align: center;
 }
 
 .message-box {
-  height: 120px;
-  resize: none;
-}
-
-.feedback-success {
-  display: none;
-  text-align: center;
-  margin-top: 40px;
-}
-
-.feedback-success p {
-  color: #00FFAA;
-  font-family: 'Inter', sans-serif;
-  font-size: 1rem;
-  margin-bottom: 20px;
-}
-
-.feedback-nav {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.send {
-  background: rgba(0,255,255,0.2);
-  color: #00FFFF;
-  border: 1px solid rgba(0,255,255,0.5);
-  padding: 10px 25px;
+  border: 1px solid #00FFFF;
   border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
+  padding: 10px;
+  margin: 10px auto;
+  width: 300px;
 }
 
-.send:hover {
-  background: rgba(0,255,255,0.3);
-  box-shadow: 0 0 20px #00FFFF;
-}
-/* =====================
-   HELP PAGE STYLE
-   ===================== */
-
-.help-section {
+/* ==========================================================
+   HELP (DESTEK MERKEZİ)
+   ========================================================== */
+.help-container {
   text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
+  padding: 40px;
 }
 
-.help-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF;
-  margin-bottom: 25px;
-}
-
-/* FAQ */
-.faq-list {
+.faq {
   width: 80%;
-  max-width: 600px;
-  margin: 0 auto 40px;
-  text-align: left;
-}
-
-.faq-list details {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.2);
-  border-radius: 8px;
-  margin-bottom: 10px;
-  padding: 12px 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.faq-list details:hover {
-  border-color: #00FFFF;
-  box-shadow: 0 0 15px rgba(0,255,255,0.3);
-}
-
-.faq-list summary {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  font-size: 0.9rem;
-}
-
-.faq-list p {
-  font-size: 0.85rem;
-  margin-top: 8px;
-  line-height: 1.4;
-  opacity: 0.8;
-}
-
-/* Form */
-.help-form {
-  margin-top: 30px;
-}
-
-.help-form h3 {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  margin-bottom: 15px;
-}
-
-.help-form .send {
-  margin-top: 10px;
-  width: 260px;
-}
-/* =====================
-   SUPPORT PAGE STYLE
-   ===================== */
-
-.support-section {
-  text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
-}
-
-.chat-box {
-  width: 90%;
-  max-width: 600px;
-  margin: 0 auto 20px;
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  padding: 15px;
-  height: 320px;
-  overflow-y: auto;
-  box-shadow: 0 0 15px rgba(0,255,255,0.1);
-}
-
-.chat-message {
-  background: rgba(0,255,255,0.1);
-  border-radius: 8px;
-  padding: 10px 15px;
-  margin: 8px 0;
-  width: fit-content;
-  max-width: 70%;
-}
-
-.chat-message.user {
-  margin-left: auto;
-  background: rgba(0,255,255,0.2);
-  color: #00FFFF;
-}
-
-.chat-message.ai {
-  background: rgba(255,255,255,0.05);
-  color: #CFFBFF;
-}
-
-.chat-input-area {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.chat-input {
-  width: 70%;
-  padding: 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(0,255,255,0.3);
-  background: rgba(0,0,0,0.4);
-  color: #CFFBFF;
-  outline: none;
-}
-
-.back {
-  background: rgba(0,255,255,0.15);
-  border: 1px solid rgba(0,255,255,0.3);
-  color: #00FFFF;
-}
-/* =====================
-   NOTIFICATIONS PAGE STYLE
-   ===================== */
-
-.notifications-section {
-  text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
-}
-
-.notify-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF;
-  margin-bottom: 25px;
-}
-
-/* Bildirim Kartları */
-.notification-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 40px;
-}
-
-.notification-card {
-  display: flex;
-  align-items: flex-start;
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  padding: 15px 20px;
-  width: 90%;
-  max-width: 600px;
-  text-align: left;
-  box-shadow: 0 0 12px rgba(0,255,255,0.1);
-  animation: slideIn 0.6s ease;
-  transition: all 0.3s ease;
-}
-
-.notification-card:hover {
-  border-color: #00FFFF;
-  box-shadow: 0 0 20px rgba(0,255,255,0.3);
-}
-
-.notification-card .icon {
-  font-size: 1.5rem;
-  margin-right: 12px;
-}
-
-.notification-card h3 {
-  color: #00FFFF;
-  font-size: 1rem;
-  margin-bottom: 5px;
-}
-
-.notification-card p {
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-.notification-card .time {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  display: block;
-  margin-top: 4px;
-}
-
-.notification-card.success { border-left: 3px solid #00FF99; }
-.notification-card.warning { border-left: 3px solid #FFD93D; }
-.notification-card.info { border-left: 3px solid #00FFFF; }
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Butonlar */
-.notify-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.clear {
-  background: rgba(255, 0, 0, 0.15);
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  color: #FF4D4D;
-}
-
-.clear:hover {
-  background: rgba(255, 0, 0, 0.3);
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
-}
-
-.back {
-  background: rgba(0,255,255,0.15);
-  border: 1px solid rgba(0,255,255,0.3);
-  color: #00FFFF;
-}
-/* =====================
-   PROFILE PAGE STYLE
-   ===================== */
-
-.profile-section {
-  text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
-}
-
-.profile-header {
-  margin-bottom: 30px;
-}
-
-.profile-avatar {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 2px solid rgba(0,255,255,0.4);
-  box-shadow: 0 0 20px rgba(0,255,255,0.4);
-  margin-bottom: 10px;
-}
-
-.profile-header h2 {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  font-size: 1.3rem;
-}
-
-.profile-mail {
-  font-size: 0.85rem;
-  opacity: 0.8;
-}
-
-.badge {
-  display: inline-block;
-  margin-top: 5px;
-  font-size: 0.8rem;
-  color: #FFD93D;
-}
-
-/* İstatistikler */
-.profile-stats {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.stat-box {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  padding: 15px 25px;
-  width: 120px;
-  box-shadow: 0 0 10px rgba(0,255,255,0.1);
-  transition: all 0.3s ease;
-}
-
-.stat-box:hover {
-  box-shadow: 0 0 20px rgba(0,255,255,0.4);
-  border-color: #00FFFF;
-}
-
-.stat-box h3 {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  font-size: 1.6rem;
-}
-
-/* Hesap Bilgileri */
-.profile-details {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 12px;
-  width: 320px;
-  margin: 0 auto 30px;
-  padding: 20px;
-  text-align: left;
-}
-
-.profile-details h3 {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  margin-bottom: 10px;
-}
-
-.profile-details ul {
-  list-style: none;
-  padding: 0;
-}
-
-.profile-details li {
-  margin: 6px 0;
-  font-size: 0.85rem;
-  opacity: 0.9;
-}
-
-.profile-details strong {
-  color: #00FFFF;
-}
-
-/* Butonlar */
-.profile-actions {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-/* =====================
-   ACHIEVEMENTS PAGE STYLE
-   ===================== */
-
-.achievements-section {
-  text-align: center;
-  margin-top: 60px;
-  color: #CFFBFF;
-}
-
-.achievements-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 1.3rem;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF;
-  margin-bottom: 30px;
-}
-
-/* Rozetler */
-.badge-grid {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-}
-
-.badge-card {
-  width: 140px;
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 10px;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0,255,255,0.1);
-  transition: all 0.3s ease;
-}
-
-.badge-card.unlocked:hover {
-  box-shadow: 0 0 20px #00FFFF;
-  border-color: #00FFFF;
-}
-
-.badge-card.locked {
-  opacity: 0.4;
-  filter: grayscale(1);
-}
-
-.badge-icon {
-  width: 60px;
-  margin-bottom: 8px;
-}
-
-.badge-card p {
-  font-size: 0.85rem;
-  color: #CFFBFF;
-  opacity: 0.9;
-}
-
-/* Premium Özellikler */
-.premium-section {
-  background: rgba(0,255,255,0.05);
-  border: 1px solid rgba(0,255,255,0.3);
-  border-radius: 12px;
-  padding: 25px;
-  width: 320px;
   margin: 0 auto;
-  box-shadow: 0 0 12px rgba(0,255,255,0.1);
 }
 
-.premium-section h3 {
-  font-family: 'Orbitron', sans-serif;
-  color: #00FFFF;
-  margin-bottom: 15px;
-}
-
-.premium-section ul {
-  list-style: none;
-  padding: 0;
+.faq-item {
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 12px;
+  margin: 10px 0;
   text-align: left;
-  margin-bottom: 20px;
 }
 
-.premium-section ul li {
-  font-size: 0.85rem;
-  margin: 6px 0;
-  opacity: 0.9;
+/* ==========================================================
+   ANİMASYONLAR
+   ========================================================== */
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
 }
 
-.ghost-mode {
-  width: 100%;
-  background: rgba(0,255,255,0.2);
-  border: 1px solid rgba(0,255,255,0.5);
-  color: #00FFFF;
-  font-family: 'Orbitron', sans-serif;
-  border-radius: 8px;
-  padding: 10px;
-  transition: all 0.3s ease;
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
 }
-
-.ghost-mode:hover {
-  background: rgba(0,255,255,0.35);
-  box-shadow: 0 0 25px #00FFFF;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
