@@ -1,60 +1,68 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ghostify - Giriş</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-</head>
-<body>
-  <canvas id="matrixCanvas"></canvas>
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ghostify – Giriş</title><link rel="stylesheet" href="style.css"></head><body>
+<canvas id="matrixCanvas"></canvas>
+<div class="wrapper">
+  <div class="brand"><img src="assets/logo.png"><div class="wordmark">GHOSTIFY</div></div>
+  <div class="tabs"><div class="tab active">GİRİŞ YAP</div><a class="tab link" href="register.html">KAYIT OL</a></div>
+  <input class="input" placeholder="E-POSTA ADRESİNİZ">
+  <input class="input" placeholder="ŞİFRENİZ" type="password">
+  <a class="link" style="margin-top:6px">ŞİFREMİ UNUTTUM?</a>
+  <button class="btn" onclick="location.href='dashboard.html'">GİRİŞ YAP</button>
+  <div class="sub" style="margin-top:18px">VEYA</div>
+  <button class="btn btn--ghost">G  GOOGLE İLE GİRİŞ</button>
+  <button class="btn btn--ghost">  APPLE İLE GİRİŞ</button>
+</div>
+<script src="matrix.js"></script><script src="app.js"></script>
+</body></html>
+// matrix.js — yumuşak, dikkat dağıtmayan sürüm
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
 
-  <!-- Üst Logo -->
-  <div class="logo-container small">
-    <img src="assets/logo.png" alt="Ghostify Logo" class="ghost-logo small">
-    <h1 class="ghostify-title small">GHOSTIFY</h1>
-  </div>
+function size() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+size(); window.addEventListener('resize', size);
 
-  <!-- Giriş Alanı -->
-  <div class="auth-container">
-    <div class="auth-tabs">
-      <button class="tab active">GİRİŞ YAP</button>
-      <button class="tab" onclick="window.location='register.html'">KAYIT OL</button>
-    </div>
+const symbols = '01';
+const fontSize = 16;
+let columns = Math.floor(window.innerWidth / fontSize);
+let drops = Array(columns).fill(1);
 
-    <div class="auth-box">
-      <input type="email" class="auth-input" placeholder="E-POSTA ADRESİNİZİ YAZIN">
-      <input type="password" class="auth-input" placeholder="ŞİFRENİZİ YAZIN">
-      <a href="#" class="auth-link">Şifremi unuttum?</a>
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-      <button class="auth-button" onclick="window.location='dashboard.html'">GİRİŞ YAP</button>
+  ctx.fillStyle = '#00ffff';
+  ctx.font = `${fontSize}px monospace`;
 
-      <div class="divider">VEYA</div>
-      <button class="auth-button social">G GOOGLE İLE GİRİŞ</button>
-      <button class="auth-button social"> APPLE İLE GİRİŞ</button>
+  for(let i=0;i<drops.length;i++){
+    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
+    const x = i*fontSize;
+    const y = drops[i]*fontSize;
 
-      <p class="auth-footer-text">
-        Devam ederek Hizmet Şartlarımızı ve Gizlilik Politikamızı kabul etmiş olursunuz.
-      </p>
-    </div>
-  </div>
+    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
+    ctx.fillText(text,x,y);
 
-  <script src="matrix.js"></script>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.add("loaded");
-    document.querySelectorAll("a,button[onclick]").forEach(link => {
-      link.addEventListener("click", e => {
-        const href = link.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] || link.getAttribute('href');
-        if (href && !href.startsWith('#')) {
-          e.preventDefault();
-          document.body.classList.add("fade-out");
-          setTimeout(()=> window.location.href = href, 400);
-        }
-      });
+    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
+    drops[i]++;
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+// app.js — sayfa fade ve harici link koruması
+window.addEventListener('load', () => {
+  document.body.classList.add('loaded');
+  // Sayfa geçişleri
+  document.querySelectorAll('a[href]').forEach(a=>{
+    const href=a.getAttribute('href');
+    if(!href || href.startsWith('#') || href.startsWith('http')) return;
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      document.body.classList.remove('loaded');
+      setTimeout(()=>{ window.location.href = href; }, 250);
     });
   });
-  </script>
-</body>
-</html>
+});
