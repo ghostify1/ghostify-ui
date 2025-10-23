@@ -1,77 +1,78 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ghostify - Kullanıcı Ayarları</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-</head>
-<body>
-  <canvas id="matrixCanvas"></canvas>
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ghostify – Kullanıcı Ayarları</title><link rel="stylesheet" href="style.css"></head><body>
+<canvas id="matrixCanvas"></canvas>
+<div class="wrapper">
+  <div class="brand"><img src="assets/icon.png"><div class="wordmark">KULLANICI AYARLARI</div></div>
+  <div class="section">
+    <h3>GÜVENLİK AYARLARI</h3>
+    <div class="row"><span>2FA</span><input class="toggle" type="checkbox" checked></div>
+    <div class="row"><span>Giriş Bildirimleri</span><input class="toggle" type="checkbox" checked></div>
+  </div>
+  <div class="section">
+    <h3>TEMA & GÖRÜNÜM</h3>
+    <div class="row"><span>Dark Mod</span><input class="toggle" type="checkbox" checked></div>
+  </div>
+  <div class="section">
+    <h3>BİLDİRİM TERCİHLERİ</h3>
+    <div class="row"><span>Rapor e-posta ile gelsin</span><input class="toggle" type="checkbox" checked></div>
+  </div>
+  <div style="margin-top:10px">
+    <button class="btn btn--ghost" onclick="history.back()">GERİ DÖN</button>
+    <button class="btn">KAYDET VE UYGULA</button>
+  </div>
+</div>
+<script src="matrix.js"></script><script src="app.js"></script>
+  // matrix.js — yumuşak, dikkat dağıtmayan sürüm
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
 
-  <!-- Üst Menü -->
-  <header class="dash-header">
-    <div class="logo-left">
-      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
-      <h1 class="dash-title">KULLANICI AYARLARI</h1>
-    </div>
-    <div class="user-info">
-      <span>👤 Emre</span>
-    </div>
-  </header>
+function size() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+size(); window.addEventListener('resize', size);
 
-  <!-- Ayar İçeriği -->
-  <main class="settings-section">
-    <div class="profile-card">
-      <div class="profile-avatar">👤</div>
-      <h2>Emre Yıldıztaç</h2>
-      <p>emre@ghostifyhq.com</p>
-      <span class="badge">PREMIUM ✦</span>
-    </div>
+const symbols = '01';
+const fontSize = 16;
+let columns = Math.floor(window.innerWidth / fontSize);
+let drops = Array(columns).fill(1);
 
-    <div class="settings-options">
-      <div class="option">
-        <span>🔒 İki Aşamalı Doğrulama</span>
-        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-      </div>
-      <div class="option">
-        <span>🔔 Bildirimler</span>
-        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
-      </div>
-      <div class="option">
-        <span>🔑 Şifreyi Güncelle</span>
-        <button class="option-btn">Düzenle</button>
-      </div>
-      <div class="option">
-        <span>🎨 Tema Rengi</span>
-        <select class="theme-select">
-          <option value="cyan">Mavi Neon</option>
-          <option value="purple">Mor Neon</option>
-          <option value="green">Yeşil Neon</option>
-          <option value="red">Kırmızı Neon</option>
-        </select>
-      </div>
-    </div>
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    <button class="logout-btn" onclick="window.location='feedback.html'">ÇIKIŞ YAP</button>
-  </main>
+  ctx.fillStyle = '#00ffff';
+  ctx.font = `${fontSize}px monospace`;
 
-  <script src="matrix.js"></script>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    document.body.classList.add("loaded");
-    document.querySelectorAll("a,button[onclick]").forEach(link => {
-      link.addEventListener("click", e => {
-        const href = link.getAttribute('onclick')?.match(/'(.*?)'/)?.[1] || link.getAttribute('href');
-        if (href && !href.startsWith('#')) {
-          e.preventDefault();
-          document.body.classList.add("fade-out");
-          setTimeout(()=> window.location.href = href, 400);
-        }
-      });
+  for(let i=0;i<drops.length;i++){
+    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
+    const x = i*fontSize;
+    const y = drops[i]*fontSize;
+
+    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
+    ctx.fillText(text,x,y);
+
+    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
+    drops[i]++;
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+// app.js — sayfa fade ve harici link koruması
+window.addEventListener('load', () => {
+  document.body.classList.add('loaded');
+  // Sayfa geçişleri
+  document.querySelectorAll('a[href]').forEach(a=>{
+    const href=a.getAttribute('href');
+    if(!href || href.startsWith('#') || href.startsWith('http')) return;
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      document.body.classList.remove('loaded');
+      setTimeout(()=>{ window.location.href = href; }, 250);
     });
   });
-  </script>
-</body>
-</html>
+});
+
+</body></html>
