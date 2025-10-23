@@ -1,36 +1,75 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ghostify - Canlı Destek</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-</head>
-<body>
-  <canvas id="matrixCanvas"></canvas>
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ghostify – Destek</title><link rel="stylesheet" href="style.css"></head><body>
+<canvas id="matrixCanvas"></canvas>
+<div class="wrapper">
+  <div class="brand"><img src="assets/icon.png"><div class="wordmark">GHOSTIFY DESTEK MERKEZİ</div></div>
+  <input class="input" placeholder="Bir soru yazın…">
+  <h2>SIKÇA SORULAN SORULAR</h2>
+  <div class="faq">
+    <div class="faq-item"><h4>Ghostify ne yapar?</h4><div>İzlerinizi analiz eder, risk hesaplar, silme taleplerini otomatikleştirir.</div></div>
+    <div class="faq-item"><h4>Verilerim güvende mi?</h4><div>Uçtan uca şifreleme, sadece size özel işlem.</div></div>
+    <div class="faq-item"><h4>Silme işlemi ne kadar sürer?</h4><div>Genelde 24–48 saat.</div></div>
+  </div>
+  <h2>DESTEK EKİBİNE YAZ</h2>
+  <input class="input" placeholder="Ad">
+  <input class="input" placeholder="E-posta">
+  <textarea class="input" placeholder="Mesaj" rows="4" style="text-align:left"></textarea>
+  <div style="margin-top:10px">
+    <a class="link" href="index.html">ANA SAYFAYA DÖN</a>
+  </div>
+</div>
+<script src="matrix.js"></script><script src="app.js"></script>
+  // matrix.js — yumuşak, dikkat dağıtmayan sürüm
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
 
-  <header class="dash-header">
-    <div class="logo-left">
-      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
-      <h1 class="dash-title">CANLI DESTEK</h1>
-    </div>
-  </header>
+function size() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+size(); window.addEventListener('resize', size);
 
-  <main class="support-section">
-    <div class="chat-box">
-      <div class="chat-message user">Merhaba, sistemimde bir hata var.</div>
-      <div class="chat-message ai">Merhaba 👋 Yardımcı olmamı ister misiniz? Hatanızla ilgili biraz detay verebilir misiniz?</div>
-    </div>
+const symbols = '01';
+const fontSize = 16;
+let columns = Math.floor(window.innerWidth / fontSize);
+let drops = Array(columns).fill(1);
 
-    <div class="chat-input-area">
-      <input type="text" class="chat-input" placeholder="Mesajınızı yazın...">
-      <button class="button send">Gönder</button>
-    </div>
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    <button class="button back" onclick="window.location='dashboard.html'">Dashboard’a Dön</button>
-  </main>
+  ctx.fillStyle = '#00ffff';
+  ctx.font = `${fontSize}px monospace`;
 
-  <script src="matrix.js"></script>
-</body>
-</html>
+  for(let i=0;i<drops.length;i++){
+    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
+    const x = i*fontSize;
+    const y = drops[i]*fontSize;
+
+    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
+    ctx.fillText(text,x,y);
+
+    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
+    drops[i]++;
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+// app.js — sayfa fade ve harici link koruması
+window.addEventListener('load', () => {
+  document.body.classList.add('loaded');
+  // Sayfa geçişleri
+  document.querySelectorAll('a[href]').forEach(a=>{
+    const href=a.getAttribute('href');
+    if(!href || href.startsWith('#') || href.startsWith('http')) return;
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      document.body.classList.remove('loaded');
+      setTimeout(()=>{ window.location.href = href; }, 250);
+    });
+  });
+});
+
+</body></html>
