@@ -1,62 +1,69 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ghostify - Bildirimler</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-</head>
-<body>
-  <canvas id="matrixCanvas"></canvas>
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ghostify – Bildirimler</title><link rel="stylesheet" href="style.css"></head><body>
+<canvas id="matrixCanvas"></canvas>
+<div class="wrapper">
+  <div class="brand"><img src="assets/icon.png"><div class="wordmark">BİLDİRİM MERKEZİ</div></div>
+  <div class="note"><strong>Yeni veri sızıntısı</strong> tespit edildi — Twitter.</div>
+  <div class="note">Hesap güvenliğiniz kontrol edildi. Orta düzey risk.</div>
+  <div class="note">PDF raporunuz indirilmeye hazır.</div>
+  <h2 style="margin-top:18px">GERİ BİLDİRİM GÖNDER</h2>
+  <input class="input" placeholder="Ad Soyad">
+  <input class="input" placeholder="E-posta adresi">
+  <textarea class="input" placeholder="Mesaj" rows="4" style="text-align:left"></textarea>
+  <button class="btn">MESAJI GÖNDER</button>
+</div>
+<script src="matrix.js"></script><script src="app.js"></script>
+  // matrix.js — yumuşak, dikkat dağıtmayan sürüm
+const canvas = document.getElementById('matrixCanvas');
+const ctx = canvas.getContext('2d');
 
-  <!-- Üst Menü -->
-  <header class="dash-header">
-    <div class="logo-left">
-      <img src="assets/icon.png" alt="Ghostify" class="dash-logo">
-      <h1 class="dash-title">BİLDİRİM MERKEZİ</h1>
-    </div>
-  </header>
+function size() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+size(); window.addEventListener('resize', size);
 
-  <!-- Bildirim İçerik -->
-  <main class="notifications-section">
-    <h2 class="notify-title">SİSTEM MESAJLARINIZ</h2>
+const symbols = '01';
+const fontSize = 16;
+let columns = Math.floor(window.innerWidth / fontSize);
+let drops = Array(columns).fill(1);
 
-    <div class="notification-list">
-      <div class="notification-card success">
-        <span class="icon">✅</span>
-        <div class="content">
-          <h3>Silme Talebiniz Onaylandı</h3>
-          <p>Instagram hesabınız başarıyla silme sürecine alındı.</p>
-          <span class="time">5 dk önce</span>
-        </div>
-      </div>
+function draw() {
+  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
+  ctx.fillRect(0,0,canvas.width,canvas.height);
 
-      <div class="notification-card warning">
-        <span class="icon">⚠️</span>
-        <div class="content">
-          <h3>Yeni Riskli Hesap Tespit Edildi</h3>
-          <p>Twitter hesabınız sızıntı veritabanlarında bulundu.</p>
-          <span class="time">2 saat önce</span>
-        </div>
-      </div>
+  ctx.fillStyle = '#00ffff';
+  ctx.font = `${fontSize}px monospace`;
 
-      <div class="notification-card info">
-        <span class="icon">🔔</span>
-        <div class="content">
-          <h3>Tarama Tamamlandı</h3>
-          <p>31 hesap analiz edildi. Raporunuz hazır!</p>
-          <span class="time">1 gün önce</span>
-        </div>
-      </div>
-    </div>
+  for(let i=0;i<drops.length;i++){
+    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
+    const x = i*fontSize;
+    const y = drops[i]*fontSize;
 
-    <div class="notify-buttons">
-      <button class="button clear">TÜMÜNÜ TEMİZLE</button>
-      <button class="button back" onclick="window.location='dashboard.html'">DASHBOARD’A DÖN</button>
-    </div>
-  </main>
+    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
+    ctx.fillText(text,x,y);
 
-  <script src="matrix.js"></script>
-</body>
-</html>
+    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
+    drops[i]++;
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+// app.js — sayfa fade ve harici link koruması
+window.addEventListener('load', () => {
+  document.body.classList.add('loaded');
+  // Sayfa geçişleri
+  document.querySelectorAll('a[href]').forEach(a=>{
+    const href=a.getAttribute('href');
+    if(!href || href.startsWith('#') || href.startsWith('http')) return;
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      document.body.classList.remove('loaded');
+      setTimeout(()=>{ window.location.href = href; }, 250);
+    });
+  });
+});
+
+</body></html>
