@@ -1,399 +1,135 @@
 /* ==========================================================
-   GHOSTIFY V2 FINAL PREMIUM STYLE.CSS
-   ----------------------------------------------------------
-   Tüm ekranlar: index, login, register, dashboard, scan,
-   report, delete, settings, notifications, support, feedback
+   GHOSTIFY – Core Neon UI (Stable)
    ========================================================== */
 
-/* ---- FONT & GENEL AYARLAR ---- */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
+/* Reset */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%;overflow-x:hidden;scroll-behavior:smooth}
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Base */
+body{
+  background:#000;
+  font-family:'Orbitron',system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;
+  color:#CFFBFF;
+  opacity:0; transition:opacity .6s ease;
+}
+body.loaded{opacity:1}
+
+/* Matrix canvas (arkaplan) */
+#matrixCanvas{
+  position:fixed;inset:0;z-index:0;width:100%;height:100%;
+  opacity:.16; filter:blur(1px) brightness(.95);
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
-  background: #000;
-  color: #CFFBFF;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
+/* Genel kaplar (tüm sayfalar) */
+.wrapper{
+  position:relative; z-index:2; min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 20px; text-align:center;
 }
 
-/* ---- MATRIX BACKGROUND ---- */
-#matrixCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  opacity: 0.18;
-  filter: blur(0.8px);
-  pointer-events: none;
+/* Logo + başlık */
+.brand{
+  display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:22px;
+}
+.brand img{width:110px; filter:drop-shadow(0 0 12px #00FFFF)}
+.brand .wordmark{
+  font-size:28px; letter-spacing:1px; color:#00FFFF;
+  text-shadow:0 0 10px #00FFFF, 0 0 20px #00FFFF;
 }
 
-/* ---- ANA KAPSAYICI ---- */
-.container {
-  position: relative;
-  z-index: 2;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+/* Başlıklar */
+h1,h2,h3{color:#00FFFF; letter-spacing:1px; text-shadow:0 0 8px #00FFFF}
+h1{font-size:36px;margin:10px 0 14px}
+h2{font-size:22px;margin:8px 0 12px}
+.sub{font-size:12px; opacity:.75; letter-spacing:2px}
+
+/* Form elemanları */
+.input,.select,textarea{
+  width:320px; max-width:90vw; background:transparent; color:#CFFBFF;
+  border:1px solid #00FFFF; border-radius:8px; padding:12px 16px; margin:8px 0;
+  text-align:center; font-size:14px; box-shadow:0 0 10px rgba(0,255,255,.2);
+  transition:.3s;
+}
+.input:focus,textarea:focus,.select:focus{outline:0; box-shadow:0 0 16px #00FFFF}
+
+/* Butonlar */
+.btn{
+  width:320px; max-width:90vw; padding:14px 18px; margin:10px 0;
+  border:1px solid #00FFFF; border-radius:8px; background:transparent;
+  color:#00FFFF; font-weight:700; letter-spacing:.5px; cursor:pointer;
+  box-shadow:0 0 10px rgba(0,255,255,.2); transition:all .25s;
+}
+.btn:hover{background:rgba(0,255,255,.12); color:#FFF; box-shadow:0 0 20px rgba(0,255,255,.6)}
+.btn--ghost{border-color:rgba(0,255,255,.4); color:rgba(207,251,255,.9)}
+.btn--ghost:hover{background:rgba(0,255,255,.12)}
+
+/* İnce alt çizgili link */
+.link{
+  color:#00C9FF; text-decoration:none; border-bottom:1px solid #00C9FF; padding-bottom:1px; transition:.25s
+}
+.link:hover{color:#fff; border-color:#fff}
+
+/* Sekmeler (login/register) */
+.tabs{display:flex; gap:48px; border-bottom:1px solid rgba(0,255,255,.25); padding-bottom:8px; margin:8px 0 20px}
+.tab{font-size:16px; color:rgba(207,251,255,.6); cursor:pointer; transition:.3s}
+.tab.active{color:#00FFFF; border-bottom:2px solid #00FFFF; padding-bottom:4px}
+
+/* Dashboard kartları */
+.cards{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-top:24px}
+.card{
+  min-width:180px; padding:14px 18px; border:1px solid rgba(0,255,255,.35);
+  background:rgba(0,255,255,.045); border-radius:10px; box-shadow:0 0 8px rgba(0,255,255,.12)
 }
 
-/* ---- LOGO ---- */
-.logo {
-  width: 110px;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 0 15px #00FFFF);
+/* Skor & progress çemberi */
+.circle{
+  width:200px; height:200px; border-radius:50%; margin:20px auto;
+  border:2px solid #00FFFF; display:flex; align-items:center; justify-content:center;
+  color:#00FFFF; font-size:40px; box-shadow:0 0 16px rgba(0,255,255,.35)
 }
 
-.logo-small {
-  width: 40px;
-  margin-right: 10px;
-  filter: drop-shadow(0 0 6px #00FFFF);
+/* Checkbox grupları (delete) */
+.options{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:16px 0}
+.option{
+  padding:10px 16px; border:1px solid #00FFFF; border-radius:8px; color:#00FFFF; cursor:pointer;
+  transition:.25s
+}
+input[type=checkbox]{display:none}
+input[type=checkbox]:checked + .option{background:rgba(0,255,255,.12); box-shadow:0 0 14px rgba(0,255,255,.5)}
+
+/* Tablolar (report) */
+.table{width:92%;max-width:980px;margin:16px auto;border-collapse:collapse}
+.table th,.table td{padding:12px;border-bottom:1px solid rgba(0,255,255,.2);text-align:center}
+.table th{color:#00FFFF}
+
+/* Ayarlar (settings) */
+.section{width:92%;max-width:780px;margin:14px auto;text-align:left}
+.section h3{margin:12px 0 8px}
+.row{display:flex;align-items:center;justify-content:space-between;margin:10px 0}
+.toggle{appearance:none;width:44px;height:22px;background:rgba(0,255,255,.25);border-radius:12px;position:relative;cursor:pointer}
+.toggle:after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#000;transition:.25s}
+.toggle:checked{background:#00FFFF}
+.toggle:checked:after{left:24px}
+
+/* Bildirim kartı */
+.note{
+  width:92%;max-width:780px;margin:10px auto;padding:14px 16px;
+  border:1px solid rgba(0,255,255,.35);background:rgba(0,255,255,.045);
+  border-radius:10px; box-shadow:0 0 8px rgba(0,255,255,.12); text-align:left
 }
 
-/* ---- BAŞLIK & YAZI STİLLERİ ---- */
-h1, h2, h3 {
-  font-family: 'Orbitron', sans-serif;
-  text-shadow: 0 0 10px #00FFFF;
-}
+/* SSS (support) */
+.faq{width:92%;max-width:900px;margin:16px auto;text-align:left}
+.faq-item{border:1px solid rgba(0,255,255,.3);background:rgba(0,255,255,.05);border-radius:10px;padding:14px 16px;margin:10px 0}
+.faq-item h4{color:#00FFFF;margin-bottom:6px}
 
-h1 { font-size: 28px; color: #00FFFF; }
-h2 { font-size: 20px; color: #00FFFF; }
-h3 { font-size: 16px; color: #CFFBFF; }
+/* Alt metin */
+.muted{font-size:12px;opacity:.8;margin-top:18px}
 
-p { opacity: 0.9; }
-
-/* ---- GHOSTIFY TITLE ---- */
-.ghostify-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 28px;
-  color: #00FFFF;
-  text-shadow: 0 0 10px #00FFFF, 0 0 20px #00FFFF;
-  margin-bottom: 12px;
-}
-
-/* ---- BUTTONS ---- */
-button, .btn {
-  background: transparent;
-  border: 1px solid #00FFFF;
-  color: #00FFFF;
-  font-family: 'Orbitron', sans-serif;
-  font-weight: bold;
-  padding: 12px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s;
-  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-}
-
-button:hover, .btn:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
-  color: #fff;
-}
-
-/* ---- INPUTS ---- */
-input, select, textarea {
-  width: 300px;
-  background: transparent;
-  border: 1px solid #00FFFF;
-  color: #CFFBFF;
-  font-size: 14px;
-  border-radius: 6px;
-  padding: 12px 16px;
-  text-align: center;
-  margin: 8px 0;
-  outline: none;
-  transition: 0.3s;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
-}
-
-input:focus, textarea:focus {
-  border-color: #00FFFF;
-  box-shadow: 0 0 12px #00FFFF;
-}
-
-/* ---- FOOTER ---- */
-.footer {
-  margin-top: 25px;
-  font-size: 12px;
-  color: rgba(0, 255, 255, 0.7);
-}
-
-.footer a {
-  color: #00C9FF;
-  text-decoration: none;
-  border-bottom: 1px solid #00C9FF;
-  transition: 0.3s;
-}
-
-.footer a:hover {
-  color: #fff;
-  border-color: #fff;
-}
-
-/* ==========================================================
-   INDEX (DAVET KODU)
-   ========================================================== */
-.invite-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  height: 100vh;
-}
-
-.invite-title {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 20px;
-  color: #00FFFF;
-  margin: 16px 0;
-  text-shadow: 0 0 6px #00FFFF;
-}
-
-.invite-input, .invite-button {
-  width: 300px;
-}
-
-.invite-button:hover {
-  background: rgba(0, 255, 255, 0.12);
-}
-
-/* ==========================================================
-   LOGIN & REGISTER
-   ========================================================== */
-.auth-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-}
-
-.auth-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.3);
-  padding-bottom: 6px;
-  margin-bottom: 25px;
-}
-
-.auth-tab {
-  font-family: 'Orbitron', sans-serif;
-  font-size: 16px;
-  color: rgba(207, 251, 255, 0.6);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.auth-tab.active {
-  color: #00FFFF;
-  border-bottom: 2px solid #00FFFF;
-}
-
-.auth-input, .auth-button {
-  width: 300px;
-}
-
-.auth-button {
-  margin-top: 12px;
-}
-
-/* ==========================================================
-   DASHBOARD
-   ========================================================== */
-.dashboard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  gap: 20px;
-  text-align: center;
-}
-
-.score-circle {
-  border: 2px solid #00FFFF;
-  border-radius: 50%;
-  width: 160px;
-  height: 160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 26px;
-  color: #00FFFF;
-  text-shadow: 0 0 8px #00FFFF;
-}
-
-.dashboard-btn {
-  width: 300px;
-  margin-top: 8px;
-}
-
-/* ==========================================================
-   SCAN
-   ========================================================== */
-.scan-wrapper {
-  text-align: center;
-  padding: 60px 0;
-}
-
-.progress-circle {
-  width: 180px;
-  height: 180px;
-  border: 3px solid #00FFFF;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  color: #00FFFF;
-  margin: 20px auto;
-  text-shadow: 0 0 10px #00FFFF;
-}
-
-/* ==========================================================
-   REPORT
-   ========================================================== */
-.report-container {
-  text-align: center;
-  padding: 40px 0;
-}
-
-.report-table {
-  width: 80%;
-  margin: 20px auto;
-  border-collapse: collapse;
-  color: #CFFBFF;
-  border: 1px solid rgba(0, 255, 255, 0.3);
-}
-
-.report-table th, .report-table td {
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  padding: 12px;
-}
-
-.report-table th {
-  color: #00FFFF;
-  text-shadow: 0 0 6px #00FFFF;
-}
-
-.report-footer {
-  margin-top: 20px;
-}
-
-/* ==========================================================
-   DELETE (SİLME MERKEZİ)
-   ========================================================== */
-.delete-container {
-  text-align: center;
-  padding: 40px 0;
-}
-
-.delete-checkbox {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.delete-checkbox label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #00FFFF;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #CFFBFF;
-}
-
-.delete-checkbox input[type="checkbox"] {
-  accent-color: #00FFFF;
-}
-
-/* ==========================================================
-   SETTINGS
-   ========================================================== */
-.settings-container {
-  padding: 40px;
-  text-align: center;
-}
-
-.setting-block {
-  margin-bottom: 30px;
-}
-
-.toggle-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* ==========================================================
-   NOTIFICATIONS & FEEDBACK
-   ========================================================== */
-.notifications, .feedback {
-  padding: 40px;
-  text-align: center;
-}
-
-.message-box {
-  border: 1px solid #00FFFF;
-  border-radius: 8px;
-  padding: 10px;
-  margin: 10px auto;
-  width: 300px;
-}
-
-/* ==========================================================
-   HELP (DESTEK MERKEZİ)
-   ========================================================== */
-.help-container {
-  text-align: center;
-  padding: 40px;
-}
-
-.faq {
-  width: 80%;
-  margin: 0 auto;
-}
-
-.faq-item {
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 6px;
-  padding: 12px;
-  margin: 10px 0;
-  text-align: left;
-}
-
-/* ==========================================================
-   ANİMASYONLAR
-   ========================================================== */
-@keyframes pulse {
-  0%, 100% { opacity: 0.5; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-.fade-in {
-  animation: fadeIn 0.6s ease forwards;
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* Responsive */
+@media (max-width:480px){
+  .brand img{width:96px}
+  .wordmark{font-size:24px}
+  .circle{width:160px;height:160px;font-size:32px}
 }
