@@ -1,46 +1,39 @@
-document.addEventListener("DOMContentLoaded", function() {
-  }); // DOMContentLoaded sonu
-window.addEventListener("DOMContentLoaded", () => {
-  // mevcut matrix kodların buradan başlasın
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("matrixCanvas");
+  const ctx = canvas.getContext("2d");
 
-// matrix.js — yumuşak, dikkat dağıtmayan sürüm
-const canvas = document.getElementById('matrixCanvas') || document.createElement('canvas');
-if (!document.getElementById('matrixCanvas')) {
-  canvas.id = 'matrixCanvas';
-  document.body.appendChild(canvas);
-}
-const ctx = canvas.getContext('2d');
-
-function size() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-size(); window.addEventListener('resize', size);
-
-const symbols = '01';
-const fontSize = 16;
-let columns = Math.floor(window.innerWidth / fontSize);
-let drops = Array(columns).fill(1);
-
-function draw() {
-  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.fillStyle = '#00ffff';
-  ctx.font = `${fontSize}px monospace`;
-
-  for(let i=0;i<drops.length;i++){
-    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
-    const x = i*fontSize;
-    const y = drops[i]*fontSize;
-
-    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
-    ctx.fillText(text,x,y);
-
-    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
-    drops[i]++;
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
-  ctx.globalAlpha = 1;
-  requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
+  window.addEventListener("resize", resize);
+  resize();
+
+  const chars = "01";
+  const fontSize = 14;
+  const columns = Math.floor(canvas.width / fontSize);
+  const drops = Array(columns).fill(1);
+
+  function draw() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ffff";
+    ctx.font = `${fontSize}px monospace`;
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = chars.charAt(Math.floor(Math.random() * chars.length));
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+  console.log("✅ Matrix efekt aktif");
+});
