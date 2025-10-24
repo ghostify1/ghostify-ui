@@ -4,7 +4,11 @@ window.addEventListener("DOMContentLoaded", () => {
   // mevcut matrix kodların buradan başlasın
 
 // matrix.js — yumuşak, dikkat dağıtmayan sürüm
-const canvas = document.getElementById('matrixCanvas');
+const canvas = document.getElementById('matrixCanvas') || document.createElement('canvas');
+if (!document.getElementById('matrixCanvas')) {
+  canvas.id = 'matrixCanvas';
+  document.body.appendChild(canvas);
+}
 const ctx = canvas.getContext('2d');
 
 function size() {
