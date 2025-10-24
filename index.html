@@ -1,86 +1,38 @@
-<!doctype html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ghostify – Davet</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ghostify - Davet Kodu</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="matrixCanvas"></canvas>
-<div class="wrapper">
-  <div class="brand">
-    <img src="assets/logo.png" alt="Ghostify">
-    <div class="wordmark">GHOSTIFY</div>
-    <div class="sub">GHOSTIFY CORE LOADING</div>
+  <!-- Matrix arka plan -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Sayfa içeriği -->
+  <div class="invite-wrapper">
+    <img src="assets/logo.png" alt="Ghostify" class="logo" />
+    <div class="ghostify-title">GHOSTIFY</div>
+    <div class="core-loading">
+      <p>GHOSTIFY CORE LOADING</p>
+    </div>
+
+    <h2 class="invite-title">DAVET KODUNUZU GİRİN</h2>
+    <input class="invite-input" placeholder="DAVET KODUNUZU YAZIN" />
+    <button class="invite-button">DEVAM ET</button>
+    <p class="footer">DAVET KODUNUZ YOK MU? <a href="#">KOD TALEP ET</a></p>
   </div>
 
-  <h2 class="invite-title">DAVET KODUNUZU GİRİN</h2>
-  <input class="input" placeholder="DAVET KODUNUZU YAZIN">
-  <button class="btn">DEVAM ET</button>
+  <!-- Matrix ve Backend sıralı yükleme -->
+  <script src="matrix.js" defer></script>
 
-  <p class="muted">DAVET KODUNUZ YOK MU? <a class="link" href="support.html">KOD TALEP ET</a></p>
-</div>
-<script src="matrix.js"></script><script src="app.js"></script>
-  // matrix.js — yumuşak, dikkat dağıtmayan sürüm
-const canvas = document.getElementById('matrixCanvas');
-const ctx = canvas.getContext('2d');
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-function size() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-size(); window.addEventListener('resize', size);
-
-const symbols = '01';
-const fontSize = 16;
-let columns = Math.floor(window.innerWidth / fontSize);
-let drops = Array(columns).fill(1);
-
-function draw() {
-  ctx.fillStyle = 'rgba(0,0,0,0.05)';              // hafif iz bırak
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.fillStyle = '#00ffff';
-  ctx.font = `${fontSize}px monospace`;
-
-  for(let i=0;i<drops.length;i++){
-    const text = symbols.charAt(Math.floor(Math.random()*symbols.length));
-    const x = i*fontSize;
-    const y = drops[i]*fontSize;
-
-    ctx.globalAlpha = 0.25 + Math.random()*0.25;   // yumuşak parıltı
-    ctx.fillText(text,x,y);
-
-    if(y > canvas.height && Math.random() > 0.975){ drops[i] = 0; }
-    drops[i]++;
-  }
-  ctx.globalAlpha = 1;
-  requestAnimationFrame(draw);
-}
-requestAnimationFrame(draw);
-// app.js — sayfa fade ve harici link koruması
-window.addEventListener('load', () => {
-  document.body.classList.add('loaded');
-  // Sayfa geçişleri
-  document.querySelectorAll('a[href]').forEach(a=>{
-    const href=a.getAttribute('href');
-    if(!href || href.startsWith('#') || href.startsWith('http')) return;
-    a.addEventListener('click', e=>{
-      e.preventDefault();
-      document.body.classList.remove('loaded');
-      setTimeout(()=>{ window.location.href = href; }, 250);
-    });
-  });
-});<canvas id="matrixCanvas"></canvas>
-
-<!-- Ghostify Matrix -->
-<script src="matrix.js"></script>
-
-<!-- Firebase SDK (backend son yüklenmeli) -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" defer></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" defer></script>
-
-<!-- Ghostify Backend -->
-<script src="app.js" defer></script>
-
-</body></html>
+  <!-- Ghostify Backend -->
+  <script src="app.js"></script>
+</body>
+</html>
