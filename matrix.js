@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", function() {
+  }); // DOMContentLoaded sonu
 window.addEventListener("DOMContentLoaded", () => {
   // mevcut matrix kodların buradan başlasın
 
@@ -38,4 +40,3 @@ function draw() {
   requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
-});
