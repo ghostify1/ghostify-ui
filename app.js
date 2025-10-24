@@ -12,6 +12,7 @@ const firebaseConfig = {
 
 // Firebase'i başlat
 firebase.initializeApp(firebaseConfig);
+console.log("🔥 Ghostify Firebase backend aktif!");
 const auth = firebase.auth();
 const db = firebase.firestore();
 
