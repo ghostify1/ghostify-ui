@@ -71,12 +71,15 @@ window.addEventListener('load', () => {
     });
   });
 });
+<!-- Ghostify Matrix -->
+<script src="matrix.js"></script>
 
-</body></html>
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- Firebase SDK (backend son yüklenmeli) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js" defer></script>
 
 <!-- Ghostify Backend -->
-<script src="app.js"></script>
+<script src="app.js" defer></script>
+
+</body></html>
