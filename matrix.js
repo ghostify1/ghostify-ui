@@ -1,3 +1,6 @@
+window.addEventListener("DOMContentLoaded", () => {
+  // mevcut matrix kodların buradan başlasın
+
 // matrix.js — yumuşak, dikkat dağıtmayan sürüm
 const canvas = document.getElementById('matrixCanvas');
 const ctx = canvas.getContext('2d');
@@ -35,3 +38,4 @@ function draw() {
   requestAnimationFrame(draw);
 }
 requestAnimationFrame(draw);
+});
