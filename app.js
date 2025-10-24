@@ -1,53 +1,30 @@
-// ==================== GHOSTIFY BACKEND ====================
+// ================== GHOSTIFY BACKEND ==================
 
-// Firebase global script yöntemi (Netlify uyumlu)
+// Firebase yapılandırması
 const firebaseConfig = {
-  apiKey: "*******", // senin gizli key'in
+  apiKey: "SENİN_API_KEYİN",
   authDomain: "ghostify-core.firebaseapp.com",
   projectId: "ghostify-core",
-  storageBucket: "ghostify-core.firebasestorage.app",
+  storageBucket: "ghostify-core.appspot.com",
   messagingSenderId: "311435609935",
   appId: "1:311435609935:web:2493c7a97ecd97bac9673a"
 };
 
-// Firebase'i başlat
+// Firebase başlat
 firebase.initializeApp(firebaseConfig);
-console.log("🔥 Ghostify Firebase backend aktif!");
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Kayıt ol
-async function registerUser(email, password) {
-  try {
-    await auth.createUserWithEmailAndPassword(email, password);
-    alert("Kayıt başarılı!");
-  } catch (error) {
-    console.error(error.message);
-    alert("Hata: " + error.message);
-  }
-}
+console.log("🔥 Ghostify Backend Yüklendi");
 
-// Giriş yap
-async function loginUser(email, password) {
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    window.location.href = "dashboard.html";
-  } catch (error) {
-    alert("Giriş başarısız: " + error.message);
-  }
-}
-
-// Çıkış yap
-function logoutUser() {
-  auth.signOut().then(() => {
-    window.location.href = "login.html";
-  });
-}
-
-// Kullanıcı durumu izle
-auth.onAuthStateChanged((user) => {
-  console.log("Aktif kullanıcı:", user ? user.email : "Yok");
+// Basit test (kaynak kontrolü)
+window.addEventListener("load", () => {
+  const test = document.createElement("div");
+  test.innerText = "Backend aktif!";
+  test.style.color = "#00ffff";
+  test.style.position = "fixed";
+  test.style.bottom = "10px";
+  test.style.right = "10px";
+  test.style.fontSize = "10px";
+  document.body.appendChild(test);
 });
-
-  });
-}
