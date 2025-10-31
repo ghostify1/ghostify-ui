@@ -1,27 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ghostify - Davet Kodu</title>
+  <title>Ghostify - Core Loading</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="ghost.svg" type="image/svg+xml" />
+  <link rel="icon" type="image/png" href="assets/ghost_logo.png" />
 </head>
+
 <body>
-  <div class="container">
-    <img src="ghost.svg" alt="Ghostify Logo" class="logo" />
-    <h1 class="ghostify-title">GHOSTIFY</h1>
-    <p class="core-loading">GHOSTIFY CORE LOADING</p>
-    <div class="icons">
-      <span>🔒</span><span>🔐</span><span>📶</span>
+  <!-- Matrix ve overlay katmanları -->
+  <div class="matrix-layer"></div>
+  <div class="overlay"></div>
+
+  <!-- Ana içerik -->
+  <main class="container">
+    <div class="logo-block">
+      <img src="assets/ghost_logo.png" alt="Ghostify Logo" class="ghost-logo" />
+      <h1 class="ghost-title">GHOSTIFY</h1>
+      <p class="core-loading">GHOSTIFY CORE LOADING</p>
+      <div class="icons">
+        <img src="assets/icons/lock.svg" class="icon icon1" alt="lock" />
+        <img src="assets/icons/analytics.svg" class="icon icon2" alt="analytics" />
+        <img src="assets/icons/fingerprint.svg" class="icon icon3" alt="fingerprint" />
+      </div>
     </div>
-    <h2 class="invite-title">DAVET KODUNUZU GİRİN</h2>
-    <input type="text" placeholder="DAVET KODUNUZU YAZIN" class="input-code" />
-    <button class="btn-continue">DEVAM ET</button>
-    <p class="no-code">DAVET KODUNUZ YOK MU? <a href="#">KOD TALEP ET</a></p>
-  </div>
-  <canvas id="matrix"></canvas>
-  <script src="matrix.js"></script>
+
+    <form class="invite-form">
+      <label for="code">DAVET KODUNUZU GİRİN</label>
+      <input type="text" id="code" placeholder="DAVET KODUNUZU YAZIN" />
+      <button type="submit">DEVAM ET</button>
+      <p class="request-text">
+        DAVET KODUNUZ YOK MU? <a href="#" class="request-link">KOD TALEP ET</a>
+      </p>
+    </form>
+  </main>
 </body>
 </html>
