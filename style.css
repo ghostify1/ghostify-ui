@@ -1,14 +1,22 @@
+/* === FONT SİSTEMİ (HİBRİT) === */
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Regular.woff2') format('woff2');
+  src: url('assets/fonts/Orbitron-Regular.woff2') format('woff2'),
+       local('Orbitron Regular'),
+       url('https://fonts.gstatic.com/s/orbitron/v30/yMJRMIlzdpvBhQQL_Qq7dy1SAo8.woff2') format('woff2');
   font-weight: 400;
+  font-display: swap;
 }
 @font-face {
   font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Bold.woff2') format('woff2');
+  src: url('assets/fonts/Orbitron-Bold.woff2') format('woff2'),
+       local('Orbitron Bold'),
+       url('https://fonts.gstatic.com/s/orbitron/v30/yMJRMIlzdpvBhQQL_Qq7d1lWBY8.woff2') format('woff2');
   font-weight: 700;
+  font-display: swap;
 }
 
+/* === GENEL YAPI === */
 * {
   margin: 0;
   padding: 0;
@@ -50,7 +58,7 @@ body {
   z-index: 1;
 }
 
-/* === MERKEZ BLOK === */
+/* === ANA BLOK === */
 .container {
   position: relative;
   z-index: 2;
@@ -62,7 +70,7 @@ body {
   text-align: center;
 }
 
-/* === LOGO ve BAŞLIK === */
+/* === LOGO + BAŞLIK === */
 .ghost-logo {
   width: 120px;
   animation: ghostPulse 2.4s infinite ease-in-out;
