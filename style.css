@@ -1,208 +1,125 @@
-/* === FONT SİSTEMİ (HİBRİT) === */
-@font-face {
-  font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Regular.woff2') format('woff2'),
-       local('Orbitron Regular'),
-       url('https://fonts.gstatic.com/s/orbitron/v30/yMJRMIlzdpvBhQQL_Qq7dy1SAo8.woff2') format('woff2');
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Orbitron';
-  src: url('assets/fonts/Orbitron-Bold.woff2') format('woff2'),
-       local('Orbitron Bold'),
-       url('https://fonts.gstatic.com/s/orbitron/v30/yMJRMIlzdpvBhQQL_Qq7d1lWBY8.woff2') format('woff2');
-  font-weight: 700;
-  font-display: swap;
-}
+/* Genel */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; }
+body { background: #000; height: 100vh; overflow: hidden; color: #00f0ff; }
 
-/* === GENEL YAPI === */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Orbitron', sans-serif;
-}
-
-body {
-  background: #000;
-  overflow: hidden;
-  height: 100vh;
-  color: #00f0ff;
-}
-
-/* === MATRIX ARKA PLAN (Premium Depth) === */
+/* MATRIX - CSS + GIF Hibrit */
 .matrix-layer {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0,255,255,0.05) 0px,
-    rgba(0,255,255,0.05) 2px,
-    transparent 2px,
-    transparent 4px
-  );
-  animation: matrixRain 28s linear infinite;
-  opacity: 0.18;
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(0,240,255,.08) 0%, transparent 60%) center/120% 120% no-repeat,
+    repeating-linear-gradient(0deg, rgba(0,255,255,.05) 0 2px, transparent 2px 4px);
   filter: blur(2px) contrast(110%);
-  z-index: 0;
+  opacity: .18;
+  animation: matrixPulse 6s ease-in-out infinite;
 }
 
-/* === OVERLAY (Matrix Glow Katmanı) === */
+.matrix-rain {
+  position: fixed; inset: -50px 0 0 0; z-index: 1;
+  opacity: .35; mix-blend-mode: screen; pointer-events: none;
+  background-image:
+    linear-gradient(180deg, transparent 0 60%, rgba(0,240,255,.18) 70%, transparent 90%),
+    radial-gradient(circle at 10% -10%, rgba(0,240,255,.12), transparent 60%),
+    radial-gradient(circle at 90% 0%, rgba(0,240,255,.08), transparent 60%);
+}
+
+.matrix-rain::before, .matrix-rain::after {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(0,240,255,0) 0 18px, rgba(0,240,255,.15) 18px 19px, rgba(0,240,255,0) 19px 120px);
+  animation: fall 22s linear infinite;
+}
+
+.matrix-rain::after {
+  opacity: .5; filter: blur(1px); animation-duration: 28s;
+}
+
+/* GIF Hibrit Overlay */
 .overlay {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
   background: url('assets/matrix-overlay.gif') center/cover no-repeat;
   mix-blend-mode: screen;
-  opacity: 0.35;
+  opacity: .33;
   filter: blur(1px) brightness(120%);
-  z-index: 1;
 }
 
-/* === ANA BLOK === */
+/* Container */
 .container {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  text-align: center;
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  height: 100vh; text-align: center;
 }
 
-/* === LOGO + BAŞLIK === */
+/* Logo */
 .ghost-logo {
   width: 120px;
+  filter: drop-shadow(0 0 24px #00f0ff);
   animation: ghostPulse 2.4s infinite ease-in-out;
-  filter: drop-shadow(0 0 25px #00f0ff);
 }
 
 .ghost-title {
   font-size: 3.2rem;
-  color: #00f0ff;
-  text-shadow:
-    0 0 8px #00f0ff,
-    0 0 20px #00f0ff,
-    0 0 40px #00f0ff;
   letter-spacing: 3px;
-  margin-top: 8px;
+  color: #00f0ff;
+  text-shadow: 0 0 12px #00f0ff, 0 0 36px #00f0ff;
   animation: textGlow 3s ease-in-out infinite;
+  margin-top: 8px;
 }
 
 .core-loading {
   margin-top: 10px;
   font-size: 1rem;
-  color: rgba(0,255,255,0.7);
+  color: rgba(0,255,255,.75);
   letter-spacing: 3px;
   animation: flicker 3s linear infinite;
 }
 
-/* === İKONLAR === */
-.icons {
-  margin-top: 12px;
-}
+/* İkonlar */
+.icons { margin-top: 12px; }
 .icon {
   width: 28px;
   margin: 0 8px;
-  opacity: 0.3;
   filter: drop-shadow(0 0 8px #00f0ff);
-  transition: 0.3s;
+  opacity: .35;
+  transition: .3s;
 }
 .icon1 { animation: blink 1.8s infinite; }
-.icon2 { animation: blink 1.8s infinite 0.6s; }
+.icon2 { animation: blink 1.8s infinite .6s; }
 .icon3 { animation: blink 1.8s infinite 1.2s; }
 
-/* === FORM === */
-.invite-form {
-  margin-top: 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.invite-form label {
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-  color: rgba(0,255,255,0.85);
-}
-
+/* Form */
+.invite-form { margin-top: 48px; display: flex; flex-direction: column; align-items: center; }
+.invite-form label { font-size: .9rem; margin-bottom: 10px; color: rgba(0,255,255,.85); }
 .invite-form input {
-  width: 280px;
-  padding: 10px 14px;
-  border: 1px solid #00f0ff;
-  background: rgba(0,0,0,0.5);
-  color: #00f0ff;
-  text-align: center;
-  border-radius: 6px;
-  box-shadow: 0 0 20px #00f0ff55;
-  outline: none;
-  transition: all 0.3s;
+  width: 280px; padding: 10px 14px; border: 1px solid #00f0ff;
+  background: rgba(0,0,0,.5); color: #00f0ff; text-align: center; border-radius: 6px;
+  box-shadow: 0 0 20px #00f0ff55; outline: none; transition: .3s;
 }
-.invite-form input:focus {
-  box-shadow: 0 0 30px #00f0ffcc;
-}
+.invite-form input:focus { box-shadow: 0 0 30px #00f0ffcc; }
 
 .invite-form button {
-  margin-top: 24px;
-  width: 200px;
-  padding: 12px;
-  border: 1px solid #00f0ff;
-  background: rgba(0,255,255,0.1);
-  color: #00f0ff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 700;
-  box-shadow: 0 0 20px #00f0ff66;
-  transition: 0.3s;
+  margin-top: 24px; width: 200px; padding: 12px; border: 1px solid #00f0ff;
+  background: rgba(0,255,255,.1); color: #00f0ff; border-radius: 8px; cursor: pointer;
+  font-weight: 700; box-shadow: 0 0 20px #00f0ff66; transition: .3s;
 }
-.invite-form button:hover {
-  background: rgba(0,255,255,0.3);
-  box-shadow: 0 0 40px #00f0ff;
-}
+.invite-form button:hover { background: rgba(0,255,255,.3); box-shadow: 0 0 40px #00f0ff; }
 
-.request-text {
-  margin-top: 15px;
-  font-size: 0.8rem;
-  color: rgba(0,255,255,0.6);
-}
-.request-link {
-  color: rgba(0,255,255,0.9);
-  text-decoration: none;
-  font-weight: 700;
-  transition: 0.3s;
-}
-.request-link:hover {
-  text-shadow: 0 0 10px #00f0ff, 0 0 25px #00f0ff;
-}
+.request-text { margin-top: 15px; font-size: .8rem; color: rgba(0,255,255,.6); }
+.request-link { color: rgba(0,255,255,.9); text-decoration: none; font-weight: 700; transition: .3s; }
+.request-link:hover { text-shadow: 0 0 10px #00f0ff, 0 0 25px #00f0ff; }
 
-/* === ANİMASYONLAR === */
-@keyframes ghostPulse {
-  0%,100% { transform: scale(1); filter: drop-shadow(0 0 15px #00f0ff); }
-  50% { transform: scale(1.03); filter: drop-shadow(0 0 35px #00f0ff); }
-}
-@keyframes textGlow {
-  0%,100% { text-shadow: 0 0 10px #00f0ff, 0 0 30px #00f0ff; }
-  50% { text-shadow: 0 0 25px #00f0ff, 0 0 50px #00f0ff; }
-}
-@keyframes flicker {
-  0%,19%,21%,23%,25%,54%,56%,100% { opacity: 1; }
-  20%,24%,55% { opacity: 0.3; }
-}
-@keyframes blink {
-  0%,100% { opacity: 0.3; }
-  50% { opacity: 1; transform: scale(1.15); }
-}
-@keyframes matrixRain {
-  0% { background-position-y: 0; }
-  100% { background-position-y: 1000px; }
-}
+/* Animasyonlar */
+@keyframes ghostPulse { 0%,100%{transform:scale(1);filter:drop-shadow(0 0 15px #00f0ff)} 50%{transform:scale(1.03);filter:drop-shadow(0 0 35px #00f0ff)} }
+@keyframes textGlow { 0%,100%{text-shadow:0 0 10px #00f0ff,0 0 30px #00f0ff} 50%{text-shadow:0 0 25px #00f0ff,0 0 50px #00f0ff} }
+@keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1} 20%,24%,55%{opacity:.3} }
+@keyframes blink { 0%,100%{opacity:.35} 50%{opacity:1;transform:scale(1.15)} }
+@keyframes matrixPulse { 0%,100%{opacity:.18} 50%{opacity:.24} }
+@keyframes fall { 0%{background-position-y:-1000px} 100%{background-position-y:1000px} }
 
-/* === RESPONSIVE === */
-@media (max-width: 600px) {
-  .ghost-title { font-size: 2.2rem; }
-  .invite-form input { width: 220px; }
-  .invite-form button { width: 160px; }
+/* Responsive */
+@media (max-width:600px){
+  .ghost-title{font-size:2.2rem}
+  .invite-form input{width:220px}
+  .invite-form button{width:160px}
 }
