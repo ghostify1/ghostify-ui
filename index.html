@@ -5,37 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ghostify - Core Loading</title>
 
-  <!-- 🌐 Hibrit Font Sistemi -->
+  <!-- Orbitron Hibrit Font -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="assets/ghost_logo.png" />
 </head>
 
 <body>
-  <!-- Matrix ve overlay katmanları -->
+  <!-- Matrix Arka Plan -->
   <div class="matrix-layer"></div>
-  <div class="overlay"></div>
+  <div class="matrix-rain"></div>
+  <div class="overlay"></div> <!-- GIF hibrit kancası -->
 
-  <!-- Ana içerik -->
+  <!-- Ana İçerik -->
   <main class="container">
     <div class="logo-block">
-      <img src="assets/ghost_logo.png" alt="Ghostify Logo" class="ghost-logo" />
+      <img src="assets/ghost_logo.svg" alt="Ghostify Logo" class="ghost-logo" />
       <h1 class="ghost-title">GHOSTIFY</h1>
       <p class="core-loading">GHOSTIFY CORE LOADING</p>
+
       <div class="icons">
-        <img src="assets/icons/lock.svg" class="icon icon1" alt="lock" />
-        <img src="assets/icons/analytics.svg" class="icon icon2" alt="analytics" />
-        <img src="assets/icons/fingerprint.svg" class="icon icon3" alt="fingerprint" />
+        <img src="assets/icons/lock.svg" class="icon icon1" alt="lock">
+        <img src="assets/icons/analytics.svg" class="icon icon2" alt="analytics">
+        <img src="assets/icons/fingerprint.svg" class="icon icon3" alt="fingerprint">
       </div>
     </div>
 
-    <form class="invite-form">
+    <form class="invite-form" onsubmit="return false;">
       <label for="code">DAVET KODUNUZU GİRİN</label>
-      <input type="text" id="code" placeholder="DAVET KODUNUZU YAZIN" />
+      <input id="code" type="text" placeholder="DAVET KODUNUZU YAZIN" />
       <button type="submit">DEVAM ET</button>
       <p class="request-text">
-        DAVET KODUNUZ YOK MU? <a href="#" class="request-link">KOD TALEP ET</a>
+        DAVET KODUNUZ YOK MU? 
+        <a href="#" class="request-link">KOD TALEP ET</a>
       </p>
     </form>
   </main>
