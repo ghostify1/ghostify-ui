@@ -7,8 +7,10 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Matrix animasyon arka plan -->
   <div class="matrix-overlay"></div>
 
+  <!-- İçerik kapsayıcı -->
   <div class="container">
     <img src="assets/ghost_logo.png" alt="Ghostify Logo" class="logo" />
     <h1 class="title">GHOSTIFY</h1>
@@ -32,7 +34,7 @@
   </div>
 
   <script>
-    // DEVAM ET butonuna tıklanınca login ekranına geçiş
+    // Devam Et -> login.html'ye yönlendirme
     const form = document.getElementById('inviteForm');
     form.addEventListener('submit', (e) => {
       e.preventDefault();
@@ -43,7 +45,6 @@
         return;
       }
 
-      // Basit yönlendirme (ileride backend kontrolü eklenecek)
       window.location.href = 'login.html';
     });
   </script>
