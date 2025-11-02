@@ -3,49 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ghostify Core Loading</title>
+  <title>Ghostify - Core Loading</title>
+
+  <!-- 🌐 Hibrit Font Sistemi -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- 🎨 Stil Dosyası -->
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="assets/ghost_logo.png" />
 </head>
+
 <body>
-  <!-- Matrix animasyon arka plan -->
-  <div class="matrix-overlay"></div>
+  <!-- 🌌 Matrix Katmanları -->
+  <div class="matrix-layer"></div>
+  <div class="matrix-rain"></div>
+  <div class="overlay"></div>
 
-  <!-- İçerik kapsayıcı -->
-  <div class="container">
-    <img src="assets/ghost_logo.png" alt="Ghostify Logo" class="logo" />
-    <h1 class="title">GHOSTIFY</h1>
-    <p class="subtitle">GHOSTIFY CORE LOADING</p>
+  <!-- 💀 Ana İçerik -->
+  <main class="container">
+    <div class="logo-block">
+      <img src="assets/ghost_logo.png" alt="Ghostify Logo" class="ghost-logo" />
+      <h1 class="ghost-title">GHOSTIFY</h1>
+      <p class="core-loading">GHOSTIFY CORE LOADING</p>
 
-    <div class="icons">
-      <i class="icon">🔒</i>
-      <i class="icon">📊</i>
-      <i class="icon">🧬</i>
+      <!-- 🔷 Üçlü İkon Seti -->
+      <div class="icons">
+
+        <!-- 🔒 Güvenlik -->
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path fill="#00ffff" d="M12 2a4 4 0 0 0-4 4v3H6v13h12V9h-2V6a4 4 0 0 0-4-4zm0 2a2 2 0 0 1 2 2v3h-4V6a2 2 0 0 1 2-2z"/>
+        </svg>
+
+        <!-- 📊 Analitik -->
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path fill="#00ffff" d="M3 20h18v-2H3v2zm2-4h2v-6H5v6zm4 0h2V8H9v8zm4 0h2v-4h-2v4zm4 0h2v-10h-2v10z"/>
+        </svg>
+
+        <!-- 🌀 Parmak İzi -->
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path fill="#00ffff" d="M12 1a9 9 0 0 1 9 9v2h-2V9a7 7 0 1 0-14 0v2H3V9a9 9 0 0 1 9-8zm0 6a3 3 0 0 1 3 3v2h-2V9a1 1 0 0 0-2 0v2H9V9a3 3 0 0 1 3-2zm0 6a5 5 0 0 1 5 5v3h-2v-3a3 3 0 1 0-6 0v3H7v-3a5 5 0 0 1 5-5z"/>
+        </svg>
+
+      </div>
     </div>
 
-    <form id="inviteForm">
-      <label for="inviteCode">DAVET KODUNUZU GİRİN</label>
-      <input type="text" id="inviteCode" placeholder="DAVET KODUNUZU YAZIN" required />
-      <button type="submit" class="btn">DEVAM ET</button>
-    </form>
-
-    <p class="alt-text">
-      DAVET KODUNUZ YOK MU? <a href="#">KOD TALEP ET</a>
+    <!-- 🔐 Davet Kodu Formu -->
+    <h2 class="invite-title">DAVET KODUNUZU GİRİN</h2>
+    <input type="text" placeholder="DAVET KODUNUZU YAZIN" class="invite-input" id="inviteCode" />
+    <button class="invite-btn" id="continueBtn">DEVAM ET</button>
+    <p class="request-code">
+      DAVET KODUNUZ YOK MU? <span>KOD TALEP ET</span>
     </p>
-  </div>
+  </main>
 
+  <!-- 🚀 Yönlendirme Scripti -->
   <script>
-    // Devam Et -> login.html'ye yönlendirme
-    const form = document.getElementById('inviteForm');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const code = document.getElementById('inviteCode').value.trim();
-
+    document.getElementById("continueBtn").addEventListener("click", () => {
+      const code = document.getElementById("inviteCode").value.trim();
       if (!code) {
-        alert('Lütfen davet kodunuzu girin.');
+        alert("Lütfen davet kodunuzu girin.");
         return;
       }
-
-      window.location.href = 'login.html';
+      // Basit yönlendirme (login.html sayfasına geçiş)
+      window.location.href = "login.html";
     });
   </script>
 </body>
