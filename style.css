@@ -31,30 +31,33 @@ body {
   color: #00f0ff;
 }
 
-/* === MATRIX ARKA PLAN === */
+/* === MATRIX ARKA PLAN (Premium Depth) === */
 .matrix-layer {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0,255,255,0.08) 0px,
-    rgba(0,255,255,0.08) 2px,
+    rgba(0,255,255,0.05) 0px,
+    rgba(0,255,255,0.05) 2px,
     transparent 2px,
     transparent 4px
   );
-  animation: matrixRain 25s linear infinite;
-  opacity: 0.25;
+  animation: matrixRain 28s linear infinite;
+  opacity: 0.18;
+  filter: blur(2px) contrast(110%);
   z-index: 0;
 }
 
+/* === OVERLAY (Matrix Glow Katmanı) === */
 .overlay {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: url('assets/matrix-overlay.gif') center/cover no-repeat;
   mix-blend-mode: screen;
-  opacity: 0.6;
+  opacity: 0.35;
+  filter: blur(1px) brightness(120%);
   z-index: 1;
 }
 
