@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Rajdhani', sans-serif;
+  background-color: #05080b;
+  color: #d6f7ff;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #25e6ff;
+  color: #00151a;
+}
