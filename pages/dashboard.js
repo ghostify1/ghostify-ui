@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import MatrixBackground from "../components/MatrixBackground";
-import { initializeApp } from "firebase/app";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 import firebaseConfig from "../firebaseConfig";
+import MatrixBackground from "../components/MatrixBackground";
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -12,120 +13,168 @@ const db = getFirestore(app);
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
-  const [score, setScore] = useState(87);
-  const [risk, setRisk] = useState(5);
-  const [lastScan, setLastScan] = useState("12 EKİM 2025");
-  const [reportStatus, setReportStatus] = useState("HAZIR");
+  const [score, setScore] = useState(0);
+  const [riskCount, setRiskCount] = useState(0);
+  const [lastScan, setLastScan] = useState("-");
+  const [toast, setToast] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (u) => {
-      if (u) {
-        setUser(u);
-        const userDoc = await getDoc(doc(db, "users", u.uid));
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          if (data.risk) setRisk(data.risk);
-          if (data.score) setScore(data.score);
-        }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (!currentUser) {
+        router.push("/login");
       } else {
-        window.location.href = "/login";
+        setUser(currentUser);
+        loadUserData(currentUser.uid);
       }
     });
     return () => unsubscribe();
   }, []);
 
+  const loadUserData = async (uid) => {
+    try {
+      const docRef = doc(db, "reports", uid);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        setScore(data.score || 0);
+        setRiskCount(data.risk || 0);
+        setLastScan(new Date(data.date).toLocaleDateString("tr-TR"));
+      } else {
+        setScore(0);
+        setRiskCount(0);
+        setLastScan("-");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const startScan = async () => {
+    setToast("Tarama başlatılıyor...");
+    setTimeout(() => {
+      // Buraya Cloud Function bağlantısı eklenecek (scanEmail)
+      setScore(87);
+      setRiskCount(5);
+      setLastScan(new Date().toLocaleDateString("tr-TR"));
+      setToast("Tarama tamamlandı ✅");
+    }, 3000);
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+    router.push("/login");
+  };
+
   return (
-    <div className="relative min-h-screen bg-[#05080b] text-cyan-50 overflow-hidden flex flex-col items-center justify-start pt-10">
+    <div className="relative min-h-screen bg-[#05080b] text-cyan-300 overflow-hidden">
       <MatrixBackground />
 
-      {/* Üst Bar */}
-      <div className="flex justify-between items-center w-[90%] max-w-5xl mb-10">
-        <div className="flex items-center gap-3">
-          <svg width="42" height="42" viewBox="0 0 112 112" fill="none" xmlns="http://www.w3.org/2000/svg"
-            className="text-cyan-400 drop-shadow-[0_0_10px_rgba(37,230,255,0.6)] animate-pulse">
-            <path d="M56 12c19.882 0 36 16.118 36 36v42c0 3.314-2.686 6-6 6-4.418 0-6-6-12-6s-7.582 6-12 6-7.582-6-12-6-7.582 6-12 6-7.582-6-12-6c-3.314 0-6-2.686-6-6V48c0-19.882 16.118-36 36-36z"
-              stroke="currentColor" strokeWidth="3" />
-            <circle cx="44" cy="46" r="6" fill="currentColor" />
-            <circle cx="68" cy="46" r="6" fill="currentColor" />
-          </svg>
-          <h1 className="text-3xl font-bold tracking-[0.25em] text-cyan-400">GHOSTIFY</h1>
-        </div>
-        <div className="flex gap-6 text-cyan-400 text-2xl">
-          <i className="ri-user-line hover:text-cyan-300 transition"></i>
-          <i className="ri-ghost-line hover:text-cyan-300 transition"></i>
-        </div>
-      </div>
-
-      {/* Hoş Geldin */}
-      <motion.h2
-        className="text-4xl font-extrabold tracking-wider text-cyan-400 mb-2"
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        HOŞ GELDİN, {user ? user.displayName || "KULLANICI" : "EMRE"}
-      </motion.h2>
-      <p className="text-cyan-300/70 mb-8 tracking-widest">
-        DİJİTAL İZLERİNİ KORUMA ZAMANI.
-      </p>
-
-      {/* Dijital Skor */}
       <motion.div
-        className="relative flex flex-col items-center justify-center text-center mb-12"
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.5 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+        className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6"
       >
-        <div className="w-48 h-48 rounded-full border-4 border-cyan-400 flex items-center justify-center shadow-[0_0_25px_rgba(37,230,255,0.4)] relative overflow-hidden">
+        {/* Üst Logo ve Kullanıcı */}
+        <div className="absolute top-6 left-6 flex items-center gap-3">
+          <img src="/ghostify_logo.svg" alt="Ghostify" className="h-6 w-auto" />
+          <span className="text-cyan-400 font-semibold tracking-widest text-sm">GHOSTIFY</span>
+        </div>
+        <div className="absolute top-6 right-6 flex items-center gap-5 text-xl">
+          <button onClick={logout} title="Çıkış Yap" className="hover:text-cyan-200">
+            <i className="ri-logout-box-r-line"></i>
+          </button>
+          <i className="ri-user-line hover:text-cyan-200"></i>
+        </div>
+
+        {/* Hoş geldin metni */}
+        <motion.h1
+          className="text-3xl md:text-4xl font-bold text-center mt-10 mb-1 text-cyan-400 drop-shadow-[0_0_15px_#25E6FF]"
+          initial={{ y: -10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          HOŞ GELDİN, {user?.email?.split("@")[0]?.toUpperCase() || "KULLANICI"}
+        </motion.h1>
+        <p className="text-sm text-cyan-300/70 tracking-widest mb-10">
+          DİJİTAL İZLERİNİ KORUMA ZAMANI.
+        </p>
+
+        {/* Skor Halkası */}
+        <motion.div
+          className="relative flex items-center justify-center w-56 h-56 mb-10 rounded-full border-2 border-cyan-400/40 shadow-[0_0_40px_#25E6FF30]"
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+        >
           <motion.div
-            className="absolute w-full h-full rounded-full border-2 border-cyan-400/20 animate-spin-slow"
-            style={{ borderTopColor: "transparent" }}
-          />
-          <div className="text-5xl font-extrabold text-cyan-400">{score}</div>
-          <span className="absolute bottom-8 text-sm text-cyan-300/70 tracking-widest">
-            DİJİTAL İZ SKORU
-          </span>
-        </div>
-        <p className="text-cyan-300 mt-4">SİSTEM ANALİZİ AKTİF</p>
-      </motion.div>
-
-      {/* Butonlar */}
-      <div className="flex flex-col gap-5 w-[90%] max-w-md mb-10">
-        {[
-          { text: "YENİ TARAMA BAŞLAT", icon: "ri-search-line" },
-          { text: "RAPORLARI GÖRÜNTÜLE", icon: "ri-file-list-line" },
-          { text: "SİLME TALEBİ OLUŞTUR", icon: "ri-delete-bin-line" },
-        ].map((btn, i) => (
-          <motion.button
-            key={i}
-            whileHover={{ scale: 1.03, boxShadow: "0 0 20px rgba(37,230,255,0.3)" }}
-            className="flex items-center justify-center gap-3 py-3 border border-cyan-400/40 rounded-xl text-cyan-300 tracking-widest uppercase font-medium bg-black/20 hover:bg-cyan-400/10 transition"
+            key={score}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="absolute text-center"
           >
-            <i className={`${btn.icon} text-cyan-400 text-xl`}></i> {btn.text}
+            <p className="text-sm tracking-widest text-cyan-400/70">DİJİTAL İZ SKORU</p>
+            <p className="text-5xl font-bold text-cyan-300 mt-2">{score}</p>
+            <p className="text-xl text-cyan-400/80">/ 100</p>
+          </motion.div>
+        </motion.div>
+
+        {/* Butonlar */}
+        <div className="flex flex-col gap-4 w-full max-w-md">
+          <motion.button
+            onClick={startScan}
+            whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(37,230,255,0.4)" }}
+            whileTap={{ scale: 0.97 }}
+            className="py-3 border border-cyan-400/30 rounded-lg font-semibold text-cyan-200 tracking-widest hover:bg-cyan-400/10 transition-all"
+          >
+            🔍 YENİ TARAMA BAŞLAT
           </motion.button>
-        ))}
-      </div>
 
-      {/* Alt İstatistikler */}
-      <div className="grid grid-cols-3 gap-4 text-center mb-16 text-cyan-200/90">
-        <div className="p-4 border border-cyan-400/30 rounded-xl backdrop-blur-sm">
-          <p className="text-xs text-cyan-300/60">SON TARAMA</p>
-          <p className="text-lg font-semibold">{lastScan}</p>
-        </div>
-        <div className="p-4 border border-cyan-400/30 rounded-xl backdrop-blur-sm">
-          <p className="text-xs text-cyan-300/60">RİSKLİ HESAPLAR</p>
-          <p className="text-lg font-semibold">{risk}</p>
-        </div>
-        <div className="p-4 border border-cyan-400/30 rounded-xl backdrop-blur-sm">
-          <p className="text-xs text-cyan-300/60">PDF RAPOR</p>
-          <p className="text-lg font-semibold">{reportStatus}</p>
-        </div>
-      </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={() => router.push("/reports")}
+            className="py-3 border border-cyan-400/30 rounded-lg font-semibold text-cyan-200 tracking-widest hover:bg-cyan-400/10 transition-all"
+          >
+            📄 RAPORLARI GÖRÜNTÜLE
+          </motion.button>
 
-      {/* Footer */}
-      <div className="text-xs text-cyan-400/40 tracking-widest pb-5">
-        Ghostify AI Core Online — v3.5 Build 1125
-      </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={() => router.push("/delete-request")}
+            className="py-3 border border-cyan-400/30 rounded-lg font-semibold text-cyan-200 tracking-widest hover:bg-cyan-400/10 transition-all"
+          >
+            🧹 SİLME TALEBİ OLUŞTUR
+          </motion.button>
+        </div>
+
+        {/* Alt Bilgi */}
+        <div className="grid grid-cols-3 gap-4 mt-12 text-center text-sm text-cyan-300/70">
+          <div>
+            <p className="text-cyan-400/60">SON TARAMA</p>
+            <p className="font-medium text-cyan-300">{lastScan}</p>
+          </div>
+          <div>
+            <p className="text-cyan-400/60">RİSKLİ HESAPLAR</p>
+            <p className="font-medium text-cyan-300">{riskCount}</p>
+          </div>
+          <div>
+            <p className="text-cyan-400/60">PDF RAPOR</p>
+            <p className="font-medium text-cyan-300">HAZIR</p>
+          </div>
+        </div>
+
+        {/* Toast bildirimi */}
+        {toast && (
+          <motion.div
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-cyan-950/90 text-cyan-300 px-6 py-2 rounded-xl border border-cyan-400/30 shadow-lg z-50"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            {toast}
+          </motion.div>
+        )}
+      </motion.div>
     </div>
   );
 }
