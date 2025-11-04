@@ -8,15 +8,15 @@ export default function MatrixBackground() {
     const ctx = canvas.getContext("2d");
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
-    const chars = "01QWERTYUIOPASDFGHJKLZXCVBNM@#$%&*+-/|";
-    const fontSize = 18;
+    const chars = "01QWERTYUIOPASDFGHJKLZXCVBNM";
+    const fontSize = 14;
     const columns = Math.floor(width / fontSize);
     const drops = Array(columns).fill(1);
 
     const draw = () => {
-      ctx.fillStyle = "rgba(5, 8, 11, 0.1)";
+      ctx.fillStyle = "rgba(5, 8, 11, 0.08)";
       ctx.fillRect(0, 0, width, height);
-      ctx.fillStyle = "#25e6ff";
+      ctx.fillStyle = "rgba(37, 230, 255, 0.25)";
       ctx.font = `${fontSize}px monospace`;
       drops.forEach((y, i) => {
         const text = chars.charAt(Math.floor(Math.random() * chars.length));
@@ -40,7 +40,7 @@ export default function MatrixBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full z-[-1] opacity-30"
+      className="fixed inset-0 w-full h-full z-[-1] opacity-25"
     />
   );
 }
