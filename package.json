@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "vercel-build": "next build"
+  "build": "next build",
+  "start": "next start"
+}
+
   },
   "engines": {
     "node": ">=18 <=20"
