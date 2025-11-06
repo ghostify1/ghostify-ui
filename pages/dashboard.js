@@ -1,33 +1,31 @@
-import { useSession, signOut } from "next-auth/react";
+'use client';
+import { useSession } from "next-auth/react";
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
 
-  if (status === "loading") return null;
-  if (!session && typeof window !== "undefined") {
-    window.location.href = "/login";
-    return null;
+  if (!session) {
+    return (
+      <div style={{ color: "#0ff", textAlign: "center", marginTop: "20vh" }}>
+        <h2>👻 Giriş gerekli</h2>
+        <p>Lütfen önce giriş yapın.</p>
+        <a href="/login" style={{ color: "#0ff" }}>Giriş sayfasına dön</a>
+      </div>
+    );
   }
 
   return (
     <div style={{
-      display: "flex", flexDirection: "column",
-      alignItems: "center", justifyContent: "center",
-      height: "100vh", background: "#0a0a0a", color: "#fff"
+      background: "#000",
+      color: "#0ff",
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexDirection: "column"
     }}>
-      <h2>Hoş geldin {session?.user?.name || "Kullanıcı"}</h2>
-      <p style={{opacity:.8, marginTop:6}}>{session?.user?.email}</p>
-
-      <button
-        onClick={() => signOut({ callbackUrl: "/login" })}
-        style={{
-          marginTop: 20, background: "transparent", color: "#f55",
-          border: "1px solid #f55", borderRadius: 8, padding: "8px 16px",
-          cursor: "pointer"
-        }}
-      >
-        Çıkış Yap
-      </button>
+      <h1>Ghostify Dashboard</h1>
+      <p>Hoş geldin, {session.user?.email}</p>
     </div>
   );
 }
