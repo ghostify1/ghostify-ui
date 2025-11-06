@@ -3,6 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  output: "standalone"  // 🔥 ekledik
+  images: { unoptimized: true },
+  output: 'export',
 };
+
 module.exports = nextConfig;
