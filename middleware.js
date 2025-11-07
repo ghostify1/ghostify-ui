@@ -1,14 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export function middleware(req) {
-  const url = req.nextUrl;
-  const path = url.pathname;
-  const publicPaths = ['/invite', '/login', '/api'];
+  const inviteCookie = req.cookies.get("ghostify_invite_ok");
+  const url = req.nextUrl.clone();
 
-  const hasInvite = req.cookies.get('ghostify_invite_ok')?.value === '1';
-
-  if (!hasInvite && !publicPaths.some(p => path.startsWith(p))) {
-    url.pathname = '/invite';
+  if (!inviteCookie && !url.pathname.startsWith("/invite")) {
+    url.pathname = "/invite";
     return NextResponse.redirect(url);
   }
 
@@ -16,5 +13,5 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ['/((?!api).*)'],
+  matcher: ["/((?!_next|api|static|favicon.ico).*)"],
 };
