@@ -3,14 +3,13 @@ import { useState } from "react";
 
 export default function InvitePage() {
   const [code, setCode] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setMessage("");
 
     try {
       const res = await fetch("/api/invite/verify", {
@@ -19,64 +18,78 @@ export default function InvitePage() {
         body: JSON.stringify({ code }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.error || "Geçersiz davet kodu");
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        // JSON hatası olsa bile hata mesajı göster
+        throw new Error("Sunucudan beklenmeyen yanıt alındı.");
       }
 
-      // Davet geçerli
-      setSuccess(true);
-      localStorage.setItem("ghostify_invite_ok", "true");
+      if (!res.ok) throw new Error(data.error || "Davet kodu geçersiz.");
+      setMessage("✅ Davet onaylandı, yönlendiriliyor...");
 
-      // 1.5 saniye sonra login sayfasına yönlendir
       setTimeout(() => {
         window.location.href = "/login";
       }, 1500);
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setMessage(`❌ ${err.message}`);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{display:"grid",placeItems:"center",height:"100vh",background:"#000",color:"#80E6FF"}}>
-      <h2>Ghostify Daveti</h2>
-      <form onSubmit={handleSubmit} style={{display:"flex",flexDirection:"column",gap:"12px",width:"280px"}}>
+    <div
+      style={{
+        background: "black",
+        color: "white",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Poppins, sans-serif",
+      }}
+    >
+      <h1 style={{ color: "#9efeff", marginBottom: "20px" }}>Ghostify Daveti</h1>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
         <input
-          type="text"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          placeholder="Davet Kodunuzu Girin"
+          placeholder="Davet Kodunu Gir"
           style={{
-            padding:"10px",
-            borderRadius:"6px",
-            border:"1px solid #80E6FF",
-            background:"transparent",
-            color:"#80E6FF",
-            textAlign:"center"
+            padding: "10px 20px",
+            fontSize: "16px",
+            textAlign: "center",
+            border: "1px solid #9efeff",
+            borderRadius: "5px",
+            marginBottom: "10px",
+            background: "black",
+            color: "white",
           }}
         />
         <button
           type="submit"
           disabled={loading}
           style={{
-            padding:"10px",
-            borderRadius:"6px",
-            border:"none",
-            background:"#80E6FF",
-            color:"#000",
-            fontWeight:"bold",
-            cursor:"pointer"
+            background: "#9efeff",
+            color: "black",
+            padding: "10px 20px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold",
           }}
         >
-          {loading ? "Doğrulanıyor..." : "Devam Et"}
+          {loading ? "Kontrol Ediliyor..." : "Devam Et"}
         </button>
       </form>
-
-      {error && <p style={{color:"red",marginTop:"10px"}}>{error}</p>}
-      {success && <p style={{color:"#00ff9f",marginTop:"10px"}}>Davet onaylandı, yönlendiriliyor...</p>}
+      {message && (
+        <p style={{ marginTop: "20px", color: message.startsWith("✅") ? "#00ffb7" : "red" }}>
+          {message}
+        </p>
+      )}
     </div>
   );
 }
