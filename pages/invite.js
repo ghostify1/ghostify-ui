@@ -18,20 +18,15 @@ export default function InvitePage() {
         body: JSON.stringify({ code }),
       });
 
-      let data = {};
-      try {
-        data = await res.json();
-      } catch {
-        // JSON hatası olsa bile hata mesajı göster
-        throw new Error("Sunucudan beklenmeyen yanıt alındı.");
-      }
+      const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Davet kodu geçersiz.");
+      if (!res.ok) throw new Error(data.error || "Geçersiz davet kodu.");
+
+      document.cookie = "ghostify_invite_ok=1; path=/; max-age=604800;";
+      localStorage.setItem("ghostify_invite_ok", "1");
+
       setMessage("✅ Davet onaylandı, yönlendiriliyor...");
-
-      setTimeout(() => {
-        window.location.href = "/login";
-      }, 1500);
+      setTimeout(() => (window.location.href = "/login"), 1200);
     } catch (err) {
       console.error(err);
       setMessage(`❌ ${err.message}`);
@@ -46,50 +41,34 @@ export default function InvitePage() {
         background: "black",
         color: "white",
         height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        fontFamily: "Poppins, sans-serif",
+        display: "grid",
+        placeItems: "center",
       }}
     >
-      <h1 style={{ color: "#9efeff", marginBottom: "20px" }}>Ghostify Daveti</h1>
-      <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
+        <h2 style={{ color: "#80E6FF" }}>Ghostify Daveti</h2>
         <input
           value={code}
           onChange={(e) => setCode(e.target.value)}
           placeholder="Davet Kodunu Gir"
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            textAlign: "center",
-            border: "1px solid #9efeff",
-            borderRadius: "5px",
-            marginBottom: "10px",
-            background: "black",
-            color: "white",
-          }}
+          style={{ padding: 10, textAlign: "center", borderRadius: 8, border: "1px solid #80E6FF" }}
         />
         <button
           type="submit"
           disabled={loading}
           style={{
-            background: "#9efeff",
+            padding: 10,
+            background: "#80E6FF",
             color: "black",
-            padding: "10px 20px",
-            borderRadius: "5px",
+            border: "none",
+            borderRadius: 8,
             cursor: "pointer",
-            fontWeight: "bold",
           }}
         >
-          {loading ? "Kontrol Ediliyor..." : "Devam Et"}
+          {loading ? "Doğrulanıyor..." : "Devam Et"}
         </button>
+        {message && <p style={{ color: message.startsWith("✅") ? "#00ffb7" : "red" }}>{message}</p>}
       </form>
-      {message && (
-        <p style={{ marginTop: "20px", color: message.startsWith("✅") ? "#00ffb7" : "red" }}>
-          {message}
-        </p>
-      )}
     </div>
   );
 }
