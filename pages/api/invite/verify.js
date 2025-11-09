@@ -17,10 +17,7 @@ export default async function handler(req, res) {
         .split(",")
         .map((c) => c.trim().toUpperCase())
         .filter((c) => c.length > 0);
-
-      console.log("Kullanılabilir Kodlar:", codes);
-      console.log("Girilen Kod:", code?.toUpperCase());
-
+      console.log("GHOSTIFY DAVET:", codes);
       valid = !!code && codes.includes(code.trim().toUpperCase());
     }
 
@@ -28,14 +25,15 @@ export default async function handler(req, res) {
       return res.status(401).json({ ok: false, error: "Geçersiz davet kodu." });
     }
 
+    // 🔧 Cookie ayarı (geliştirilmiş)
     res.setHeader(
       "Set-Cookie",
       serialize("ghostify_invite_ok", "1", {
         path: "/",
-        httpOnly: true,
+        httpOnly: false, // client-side erişim
         maxAge: 60 * 60 * 24 * 7,
         sameSite: "lax",
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
       })
     );
 
