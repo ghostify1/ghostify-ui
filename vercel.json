@@ -1,6 +1,14 @@
 {
   "framework": "nextjs",
   "buildCommand": "next build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "nodeVersion": "20.x",
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "github": {
+    "enabled": true,
+    "autoJobCancelation": true
+  }
 }
-
