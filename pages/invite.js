@@ -1,52 +1,69 @@
 // pages/invite.js
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function InvitePage() {
-  const router = useRouter();
-  const [codes, setCodes] = useState([]);
-  const [input, setInput] = useState("");
+  const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Debug: tarayıcı konsolunda env'in görünürlüğünü kontrol et
-    console.log("NEXT_PUBLIC_INVITE_CODES:", process.env.NEXT_PUBLIC_INVITE_CODES);
-    const raw = process.env.NEXT_PUBLIC_INVITE_CODES || "";
-    const arr = raw.split(",").map(s => s.trim()).filter(Boolean);
-    setCodes(arr.map(c => c.toLowerCase())); // case-insensitive karşılaştırma
-  }, []);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const candidate = (input || "").trim().toLowerCase();
-    if (!candidate) {
-      setError("Lütfen davet kodunu gir.");
-      return;
-    }
-    if (codes.includes(candidate)) {
-      // Geçerli - oturum veya redirect işlemini yap
-      // Örnek: localStorage veya cookie ile işaretle, sonra /login veya /register'e yönlendir
-      localStorage.setItem("ghostify_invite", candidate);
-      router.push("/login"); // veya register
-    } else {
-      setError("Geçersiz davet kodu.");
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/invite/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.ok) {
+        // Cookie zaten API'de ayarlanıyor
+        window.location.href = "/login";
+      } else {
+        setError(data.error || "Geçersiz davet kodu.");
+      }
+    } catch (err) {
+      setError("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{display:'grid', placeItems:'center', height:'100vh', background:'#000'}}>
-      <form onSubmit={handleSubmit} style={{textAlign:'center'}}>
-        <h2 style={{color:'#80E6FF'}}>Davet Kodu</h2>
+    <div style={{display:"grid",placeItems:"center",height:"100vh",background:"#000"}}>
+      <form onSubmit={handleSubmit} style={{textAlign:"center"}}>
+        <h2 style={{color:"#80E6FF"}}>Davet Kodu</h2>
         <input
-          value={input}
-          onChange={(e)=>{ setInput(e.target.value); setError(""); }}
+          value={code}
+          onChange={(e)=>setCode(e.target.value)}
           placeholder="Davet kodunu giriniz"
-          style={{padding:10, fontSize:16}}
+          style={{
+            padding:"10px 14px",
+            background:"#111",
+            color:"#fff",
+            border:"1px solid #80E6FF",
+            borderRadius:6,
+            outline:"none"
+          }}
         />
         <div style={{marginTop:12}}>
-          <button type="submit" style={{padding:'10px 20px'}}>Onayla</button>
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              padding:"10px 20px",
+              borderRadius:6,
+              border:"none",
+              background:"#80E6FF",
+              color:"#000",
+              cursor:"pointer"
+            }}
+          >
+            {loading ? "Doğrulanıyor..." : "Onayla"}
+          </button>
         </div>
-        {error && <p style={{color:'tomato', marginTop:8}}>{error}</p>}
+        {error && <p style={{color:"tomato",marginTop:8}}>{error}</p>}
       </form>
     </div>
   );
