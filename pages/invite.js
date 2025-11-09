@@ -1,73 +1,52 @@
 // pages/invite.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function InvitePage() {
-  const [code, setCode] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [codes, setCodes] = useState([]);
+  const [input, setInput] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    // Debug: tarayıcı konsolunda env'in görünürlüğünü kontrol et
+    console.log("NEXT_PUBLIC_INVITE_CODES:", process.env.NEXT_PUBLIC_INVITE_CODES);
+    const raw = process.env.NEXT_PUBLIC_INVITE_CODES || "";
+    const arr = raw.split(",").map(s => s.trim()).filter(Boolean);
+    setCodes(arr.map(c => c.toLowerCase())); // case-insensitive karşılaştırma
+  }, []);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/invite/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Geçersiz davet kodu.");
-
-      document.cookie = "ghostify_invite_ok=1; path=/; max-age=604800;";
-      localStorage.setItem("ghostify_invite_ok", "1");
-
-      setMessage("✅ Davet onaylandı, yönlendiriliyor...");
-      setTimeout(() => (window.location.href = "/login"), 1200);
-    } catch (err) {
-      console.error(err);
-      setMessage(`❌ ${err.message}`);
-    } finally {
-      setLoading(false);
+    const candidate = (input || "").trim().toLowerCase();
+    if (!candidate) {
+      setError("Lütfen davet kodunu gir.");
+      return;
+    }
+    if (codes.includes(candidate)) {
+      // Geçerli - oturum veya redirect işlemini yap
+      // Örnek: localStorage veya cookie ile işaretle, sonra /login veya /register'e yönlendir
+      localStorage.setItem("ghostify_invite", candidate);
+      router.push("/login"); // veya register
+    } else {
+      setError("Geçersiz davet kodu.");
     }
   };
 
   return (
-    <div
-      style={{
-        background: "black",
-        color: "white",
-        height: "100vh",
-        display: "grid",
-        placeItems: "center",
-      }}
-    >
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: 12 }}>
-        <h2 style={{ color: "#80E6FF" }}>Ghostify Daveti</h2>
+    <div style={{display:'grid', placeItems:'center', height:'100vh', background:'#000'}}>
+      <form onSubmit={handleSubmit} style={{textAlign:'center'}}>
+        <h2 style={{color:'#80E6FF'}}>Davet Kodu</h2>
         <input
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="Davet Kodunu Gir"
-          style={{ padding: 10, textAlign: "center", borderRadius: 8, border: "1px solid #80E6FF" }}
+          value={input}
+          onChange={(e)=>{ setInput(e.target.value); setError(""); }}
+          placeholder="Davet kodunu giriniz"
+          style={{padding:10, fontSize:16}}
         />
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: 10,
-            background: "#80E6FF",
-            color: "black",
-            border: "none",
-            borderRadius: 8,
-            cursor: "pointer",
-          }}
-        >
-          {loading ? "Doğrulanıyor..." : "Devam Et"}
-        </button>
-        {message && <p style={{ color: message.startsWith("✅") ? "#00ffb7" : "red" }}>{message}</p>}
+        <div style={{marginTop:12}}>
+          <button type="submit" style={{padding:'10px 20px'}}>Onayla</button>
+        </div>
+        {error && <p style={{color:'tomato', marginTop:8}}>{error}</p>}
       </form>
     </div>
   );
