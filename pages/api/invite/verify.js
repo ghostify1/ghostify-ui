@@ -8,30 +8,29 @@ export default async function handler(req, res) {
     }
 
     const { code } = req.body || {};
-    const mode = process.env.INVITE_MODE || "env";
-    let valid = false;
 
-    if (mode === "env") {
-      const rawCodes = process.env.INVITE_CODES || "";
-      const codes = rawCodes
-        .split(",")
-        .map((c) => c.trim().toUpperCase())
-        .filter((c) => c.length > 0);
-      console.log("GHOSTIFY DAVET:", codes);
-      valid = !!code && codes.includes(code.trim().toUpperCase());
-    }
+    // 🔑 Env değişkenlerini oku (senin vercel ayarına uygun)
+    const required = String(process.env.NEXT_PUBLIC_INVITE_REQUIRED || "false") === "true";
+    const rawCodes = process.env.NEXT_PUBLIC_INVITE_CODES || "";
+    const codes = rawCodes
+      .split(",")
+      .map((c) => c.trim().toUpperCase())
+      .filter(Boolean);
 
-    if (!valid) {
+    console.log("🔹 Geçerli Kodlar:", codes);
+    console.log("🔹 Girilen Kod:", code);
+
+    if (required && (!code || !codes.includes(code.trim().toUpperCase()))) {
       return res.status(401).json({ ok: false, error: "Geçersiz davet kodu." });
     }
 
-    // 🔧 Cookie ayarı (geliştirilmiş)
+    // 🎯 Cookie ayarı (geliştirilmiş)
     res.setHeader(
       "Set-Cookie",
       serialize("ghostify_invite_ok", "1", {
         path: "/",
-        httpOnly: false, // client-side erişim
-        maxAge: 60 * 60 * 24 * 7,
+        httpOnly: false,
+        maxAge: 60 * 60 * 24, // 1 gün
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
       })
