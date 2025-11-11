@@ -1,12 +1,11 @@
-// pages/index.js
 import { useEffect, useState } from "react";
 import MatrixBackground from "../components/MatrixBackground";
 
 export default function Invite(){
+  if (typeof window === "undefined") return null; // ✅ build fix
   const [code, setCode] = useState("");
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
     const invited = sessionStorage.getItem("invited");
     if (invited === "true") window.location.replace("/login");
   }, []);
@@ -28,8 +27,7 @@ export default function Invite(){
       <div className="content card">
         <div className="brand">GHOSTIFY</div>
         <h2 style={{textAlign:"center", marginBottom:12}}>VIP Davet</h2>
-        <p className="small">Erişim için davet kodunu gir.</p>
-        <form onSubmit={submit} style={{marginTop:16}}>
+        <form onSubmit={submit}>
           <input placeholder="Davet kodu" value={code} onChange={e=>setCode(e.target.value)} />
           <button type="submit">Devam Et</button>
         </form>
