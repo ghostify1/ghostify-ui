@@ -9,6 +9,8 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showDeleteForm, setShowDeleteForm] = useState(false);
+  const [deleteResponse, setDeleteResponse] = useState(null);
   const auth = getAuth(app);
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export default function Dashboard() {
       return;
     }
     setLoading(true);
+    setScanResult(null);
     try {
       const res = await fetch("/api/scan", {
         method: "POST",
@@ -37,6 +40,44 @@ export default function Dashboard() {
       setScanResult({ error: "Tarama başarısız." });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const generatePDF = async () => {
+    if (!scanResult) return;
+    const res = await fetch("/api/pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: scanResult.email,
+        breaches: scanResult.hibp || [],
+      }),
+    });
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ghostify_report.pdf";
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
+
+  const sendDeleteRequest = async () => {
+    if (!scanResult || !scanResult.email) return;
+    setDeleteResponse("Silme talebi gönderiliyor...");
+    try {
+      const res = await fetch("/api/delete-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: scanResult.email,
+          breaches: scanResult.hibp || [],
+        }),
+      });
+      const data = await res.json();
+      setDeleteResponse(data.message || "Silme talebi başarıyla gönderildi.");
+    } catch (err) {
+      setDeleteResponse("Bir hata oluştu: " + err.message);
     }
   };
 
@@ -60,7 +101,9 @@ export default function Dashboard() {
           Hoş geldin, {user.displayName || user.email}
         </h2>
 
-        <p className="small">Core aktif. Şimdi verilerini tarayabilirsin.</p>
+        <p className="small">
+          Core aktif. Verilerini tara, rapor indir veya silme talebi oluştur.
+        </p>
 
         <button onClick={runScan} disabled={loading}>
           {loading ? "Taranıyor..." : "Veri Taraması Başlat"}
@@ -74,39 +117,37 @@ export default function Dashboard() {
               <>
                 <p>🔍 E-posta: <b>{scanResult.email}</b></p>
                 <p>💀 Toplam İhlal: <b>{scanResult.breaches}</b></p>
-                {scanResult.breaches > 0 && (
-                  <button
-                    style={{ marginTop: 10 }}
-                    onClick={async () => {
-                      const res = await fetch("/api/pdf", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          email: scanResult.email,
-                          breaches: scanResult.hibp || [],
-                        }),
-                      });
-                      const blob = await res.blob();
-                      const url = window.URL.createObjectURL(blob);
-                      const a = document.createElement("a");
-                      a.href = url;
-                      a.download = "ghostify_report.pdf";
-                      a.click();
-                      window.URL.revokeObjectURL(url);
-                    }}
-                  >
-                    Raporu İndir (PDF)
-                  </button>
+
+                <button style={{ marginTop: 10 }} onClick={generatePDF}>
+                  Raporu İndir (PDF)
+                </button>
+
+                <button
+                  style={{ marginTop: 10 }}
+                  onClick={() => setShowDeleteForm(!showDeleteForm)}
+                >
+                  {showDeleteForm
+                    ? "Silme Talebini Gizle"
+                    : "Silme Talebi Oluştur"}
+                </button>
+
+                {showDeleteForm && (
+                  <div style={{ marginTop: 12 }}>
+                    <p className="small">
+                      Bu e-posta ile ilişkili platformlara kişisel veri silme talebi gönderilecektir.
+                    </p>
+                    <button onClick={sendDeleteRequest}>Talebi Gönder</button>
+                    {deleteResponse && (
+                      <p style={{ marginTop: 10 }}>{deleteResponse}</p>
+                    )}
+                  </div>
                 )}
               </>
             )}
           </div>
         )}
 
-        <button
-          onClick={() => signOut(auth)}
-          style={{ marginTop: 20 }}
-        >
+        <button onClick={() => signOut(auth)} style={{ marginTop: 20 }}>
           Çıkış
         </button>
       </div>
