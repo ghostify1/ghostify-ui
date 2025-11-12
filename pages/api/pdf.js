@@ -1,4 +1,3 @@
-// pages/api/pdf.js
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 
 export default async function handler(req, res) {
@@ -8,25 +7,23 @@ export default async function handler(req, res) {
 
   try {
     const { email, breaches } = req.body;
-
     const pdfDoc = await PDFDocument.create();
     const page = pdfDoc.addPage();
     const { width, height } = page.getSize();
     const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
 
-    const title = "GHOSTIFY - Veri İhlal Raporu";
-    page.drawText(title, {
+    page.drawText("GHOSTIFY - Veri İhlal Raporu", {
       x: 50,
-      y: height - 70,
+      y: height - 60,
       size: 18,
       font,
       color: rgb(0, 0.82, 1),
     });
 
-    page.drawText(`Kullanıcı: ${email}`, { x: 50, y: height - 100, size: 12, font });
-    page.drawText(`Toplam ihlal: ${breaches?.length || 0}`, { x: 50, y: height - 120, size: 12, font });
+    page.drawText(`Kullanıcı: ${email}`, { x: 50, y: height - 90, size: 12, font });
+    page.drawText(`Toplam ihlal: ${breaches?.length || 0}`, { x: 50, y: height - 110, size: 12, font });
 
-    let y = height - 150;
+    let y = height - 140;
     if (breaches && breaches.length > 0) {
       for (const b of breaches) {
         page.drawText(`- ${b.Name || "Bilinmeyen"} (${b.Domain || "-"})`, {
@@ -36,7 +33,7 @@ export default async function handler(req, res) {
           font,
           color: rgb(0.5, 0.9, 1),
         });
-        y -= 15;
+        y -= 14;
       }
     } else {
       page.drawText("Bilinen bir ihlal bulunamadı.", { x: 60, y, size: 10, font });
