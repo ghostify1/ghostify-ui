@@ -41,3 +41,10 @@ a:hover{ opacity:1 }
 }
 .matrix-layer{ position:absolute; inset:0; z-index:0; pointer-events:none }
 .content{ position:relative; z-index:1 }
+.card {
+  overflow-y: auto;
+  max-height: 90vh;
+}
+button {
+  margin-top: 10px;
+}
