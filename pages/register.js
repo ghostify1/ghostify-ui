@@ -2,46 +2,48 @@ import { Resend } from "resend";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Sadece POST isteği kabul edilir." });
+    return res.status(405).json({ error: "Sadece POST istekleri kabul edilir." });
   }
 
   try {
-    const { email, breaches } = req.body;
+    const { email, breaches } = req.body || {};
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const companyList = breaches?.length
-      ? breaches.map(b => b.Domain || b.Name || "Bilinmeyen Servis").join(", ")
+    const formattedList = breaches?.length
+      ? breaches.map(b => `• ${b?.Name || "Bilinmeyen"} (${b?.Domain || "-"})`).join("\n")
       : "İhlal kaydı bulunamadı.";
 
     const message = `
-📨 GHOSTIFY - Silme Talebi
+📨 GHOSTIFY - Kişisel Veri Silme Talebi
+--------------------------------------
+Kullanıcı Email: ${email}
 
-Kullanıcı: ${email}
+İhlal Kayıtları:
+${formattedList}
 
-İhlal bulunan platformlar:
-${companyList}
-
-Bu talep Ghostify tarafından otomatik oluşturulmuştur.
+Bu talep Ghostify otomasyon sistemi tarafından oluşturulmuş ve gönderilmiştir.
 `;
 
-    const data = await resend.emails.send({
+    // E-posta gönder
+    const response = await resend.emails.send({
       from: "Ghostify <noreply@ghostifyhq.com>",
-      to: ["privacy@ghostifyhq.com"],
-      subject: "Yeni Silme Talebi",
+      to: ["privacy@ghostifyhq.com"], // Sonra kullanıcı seçimine göre dinamik olabilir
+      subject: "Yeni Silme Talebi - Ghostify",
       text: message
     });
 
     return res.status(200).json({
       success: true,
-      message: "Silme talebi başarıyla e-posta olarak gönderildi.",
-      id: data?.id || null
+      message: "Silme talebi başarılı şekilde e-posta olarak gönderildi.",
+      id: response?.id || null
     });
 
-  } catch (err) {
+  } catch (error) {
+    console.error("Resend error:", error);
     return res.status(500).json({
-      error: "E-posta gönderilemedi.",
-      details: err.message
+      error: "E-posta gönderimi başarısız.",
+      details: error.message
     });
   }
 }
