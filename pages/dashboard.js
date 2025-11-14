@@ -1,162 +1,140 @@
 import { useEffect, useState } from "react";
-import MatrixBackground from "../components/MatrixBackground";
+import { getAuth, signOut } from "firebase/auth";
 import { app } from "../lib/firebaseClient";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Dashboard() {
-  if (typeof window === "undefined") return null;
-
+  const auth = getAuth(app);
   const [user, setUser] = useState(null);
   const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showDeleteForm, setShowDeleteForm] = useState(false);
-  const [deleteResponse, setDeleteResponse] = useState(null);
-  const auth = getAuth(app);
+  const [message, setMessage] = useState("");
 
+  // Kullanıcı verisini getir
   useEffect(() => {
-    const invited = sessionStorage.getItem("invited");
-    if (invited !== "true") window.location.replace("/");
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
+    const unsub = auth.onAuthStateChanged((u) => setUser(u));
     return () => unsub();
   }, []);
 
-  const runScan = async () => {
-    if (!user || !user.email) {
-      alert("Kullanıcı oturumu doğrulanamadı.");
-      return;
-    }
+  if (!user)
+    return (
+      <div
+        style={{
+          display: "grid",
+          placeItems: "center",
+          height: "100vh",
+          background: "#000",
+          color: "#80E6FF",
+        }}
+      >
+        <p>Yükleniyor...</p>
+      </div>
+    );
+
+  // TARAYICI → /api/scan
+  const startScan = async () => {
     setLoading(true);
-    setScanResult(null);
+    setMessage("");
+
     try {
       const res = await fetch("/api/scan", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    email: user.email,
-    phone: phoneValue,
-    username: usernameValue,
-    password: passwordValue,
-    domain: domainValue
-  }),
-});
-      const data = await res.json();
-      setScanResult(data);
-    } catch (e) {
-      console.error(e);
-      setScanResult({ error: "Tarama başarısız." });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const generatePDF = async () => {
-    if (!scanResult) return;
-    const res = await fetch("/api/pdf", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: scanResult.email,
-        breaches: scanResult.hibp || [],
-      }),
-    });
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "ghostify_report.pdf";
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
-  const sendDeleteRequest = async () => {
-    if (!scanResult || !scanResult.email) return;
-    setDeleteResponse("Silme talebi gönderiliyor...");
-    try {
-      const res = await fetch("/api/delete-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: scanResult.email,
-          breaches: scanResult.hibp || [],
+          email: user.email,
         }),
       });
+
       const data = await res.json();
-      setDeleteResponse(data.message || "Silme talebi başarıyla gönderildi.");
+
+      if (data.success) {
+        setScanResult(data);
+        setMessage(
+          `Toplam ihlal: ${data.total || 0}`
+        );
+      } else {
+        setMessage("Tarama başarısız.");
+      }
     } catch (err) {
-      setDeleteResponse("Bir hata oluştu: " + err.message);
+      setMessage("Tarama başarısız.");
     }
+
+    setLoading(false);
   };
 
-  if (!user) {
-    return (
-      <div className="g-center">
-        <MatrixBackground />
-        <div className="content">
-          <p>Yükleniyor...</p>
-        </div>
-      </div>
-    );
-  }
+  // Çıkış
+  const logout = async () => {
+    await signOut(auth);
+    window.location.href = "/login";
+  };
 
   return (
-    <div className="g-center">
-      <MatrixBackground />
-      <div className="content card">
-        <div className="brand">GHOSTIFY</div>
-        <h2 style={{ textAlign: "center" }}>
-          Hoş geldin, {user.displayName || user.email}
-        </h2>
+    <div
+      style={{
+        height: "100vh",
+        background: "black",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        color: "white",
+      }}
+    >
+      <div
+        style={{
+          width: "420px",
+          padding: "35px",
+          background: "rgba(0,0,0,0.6)",
+          borderRadius: "18px",
+          boxShadow: "0 0 25px rgba(128,230,255,0.45)",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ marginBottom: "10px" }}>GHOSTIFY</h2>
+        <h3 style={{ marginBottom: "20px" }}>
+          Hoş geldin, <br /> {user.email}
+        </h3>
 
-        <p className="small">
+        <p style={{ marginBottom: "20px" }}>
           Core aktif. Verilerini tara, rapor indir veya silme talebi oluştur.
         </p>
 
-        <button onClick={runScan} disabled={loading}>
+        {/* TARAMA BUTONU */}
+        <button
+          onClick={startScan}
+          disabled={loading}
+          style={{
+            width: "100%",
+            padding: "14px",
+            fontSize: "18px",
+            background: "#1EA7D7",
+            borderRadius: "10px",
+            border: "none",
+            marginBottom: "20px",
+          }}
+        >
           {loading ? "Taranıyor..." : "Veri Taraması Başlat"}
         </button>
 
-        {scanResult && (
-          <div style={{ marginTop: 20, textAlign: "left" }}>
-            {scanResult.error ? (
-              <p style={{ color: "#ffb4b4" }}>{scanResult.error}</p>
-            ) : (
-              <>
-                <p>🔍 E-posta: <b>{scanResult.email}</b></p>
-                <p>💀 Toplam İhlal: <b>{scanResult.breaches}</b></p>
-
-                <button style={{ marginTop: 10 }} onClick={generatePDF}>
-                  Raporu İndir (PDF)
-                </button>
-
-                <button
-                  style={{ marginTop: 10 }}
-                  onClick={() => setShowDeleteForm(!showDeleteForm)}
-                >
-                  {showDeleteForm
-                    ? "Silme Talebini Gizle"
-                    : "Silme Talebi Oluştur"}
-                </button>
-
-                {showDeleteForm && (
-                  <div style={{ marginTop: 12 }}>
-                    <p className="small">
-                      Bu e-posta ile ilişkili platformlara kişisel veri silme talebi gönderilecektir.
-                    </p>
-                    <button onClick={sendDeleteRequest}>Talebi Gönder</button>
-                    {deleteResponse && (
-                      <p style={{ marginTop: 10 }}>{deleteResponse}</p>
-                    )}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+        {message && (
+          <p style={{ marginBottom: "20px", fontSize: "16px" }}>{message}</p>
         )}
 
-        <button onClick={() => signOut(auth)} style={{ marginTop: 20 }}>
+        {/* ÇIKIŞ */}
+        <button
+          onClick={logout}
+          style={{
+            width: "100%",
+            padding: "12px",
+            background: "#444",
+            color: "white",
+            borderRadius: "10px",
+            border: "none",
+            fontSize: "16px",
+          }}
+        >
           Çıkış
         </button>
       </div>
     </div>
   );
 }
+
