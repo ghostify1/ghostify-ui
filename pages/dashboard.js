@@ -1,160 +1,117 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { app } from "../lib/firebaseClient";
 
 export default function Dashboard() {
-  const auth = getAuth(app);
   const [user, setUser] = useState(null);
+
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [username, setUsername] = useState("");
+  const [address, setAddress] = useState("");
+
   const [scanResult, setScanResult] = useState(null);
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const unsub = auth.onAuthStateChanged((u) => setUser(u));
+    const auth = getAuth(app);
+    const unsub = auth.onAuthStateChanged((u) => {
+      if (!u) window.location.href = "/login";
+      setUser(u);
+    });
     return () => unsub();
   }, []);
 
-  if (!user)
-    return (
-      <div style={{
-        display: "grid",
-        placeItems: "center",
-        height: "100vh",
-        background: "#000",
-        color: "#80E6FF",
-      }}>
-        <p>Yükleniyor...</p>
-      </div>
-    );
-
   const startScan = async () => {
     setLoading(true);
-    setMessage("");
-    try {
-      const res = await fetch("/api/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email }),
-      });
+    setScanResult(null);
 
-      const data = await res.json();
-      if (data.success) {
-        setScanResult(data);
-        setMessage(`Toplam ihlal: ${data.total || 0}`);
-      } else {
-        setMessage("Tarama başarısız.");
-      }
-    } catch {
-      setMessage("Tarama başarısız.");
-    }
+    const r = await fetch("/api/scan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        phone,
+        username,
+        address,
+      }),
+    });
+
+    const data = await r.json();
+    setScanResult(data.results || {});
     setLoading(false);
   };
 
-  const sendDeleteRequest = async () => {
-    setMessage("Silme talebi hazırlanıyor...");
-    try {
-      const res = await fetch("/api/delete-request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: user.email,
-          breaches: scanResult?.breaches || [],
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success) setMessage("Silme talebi başarıyla gönderildi.");
-    } catch {
-      setMessage("Silme talebi gönderilemedi.");
-    }
-  };
-
   const logout = async () => {
+    const auth = getAuth(app);
     await signOut(auth);
     window.location.href = "/login";
   };
 
+  if (!user)
+    return (
+      <div style={loadingScreen}>
+        <p>Yükleniyor...</p>
+      </div>
+    );
+
   return (
-    <div
-      style={{
-        height: "100vh",
-        background: "#000",
-        backgroundImage:
-          "url('https://i.ibb.co/SrCwKH1/matrix-ghostify.gif')",
-        backgroundSize: "cover",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          width: "520px",
-          padding: "45px",
-          background: "rgba(0,0,30,0.55)",
-          borderRadius: "20px",
-          boxShadow: "0 0 40px rgba(0,150,255,0.45)",
-          textAlign: "center",
-          backdropFilter: "blur(8px)",
-        }}
-      >
-        <h2 style={{ marginBottom: "12px", letterSpacing: "4px", fontSize: "28px" }}>
-          GHOSTIFY
+    <div style={background}>
+      <div style={panel}>
+        <h1 style={logo}>GHOSTIFY</h1>
+
+        <h2 style={welcome}>
+          Hoş geldin,<br /> {user.email}
         </h2>
 
-        <h3 style={{ marginBottom: "25px", fontWeight: "normal", fontSize: "20px" }}>
-          Hoş geldin, <br />
-          {user.email}
-        </h3>
-
-        <p style={{ marginBottom: "28px", opacity: 0.8, fontSize: "15px" }}>
-          Core aktif. Verilerini tara, rapor indir veya silme talebi oluştur.
+        <p style={subtitle}>
+          Core aktif. Verilerini tara, rapor oluştur veya silme talebi üret.
         </p>
 
-        {/* Tarama */}
-        <button
-          onClick={startScan}
-          disabled={loading}
-          style={button("#1EA7D7")}
-        >
+        <div style={inputContainer}>
+          <input
+            placeholder="E-posta"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={input}
+          />
+
+          <input
+            placeholder="Telefon"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            style={input}
+          />
+
+          <input
+            placeholder="Kullanıcı Adı"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={input}
+          />
+
+          <input
+            placeholder="Adres"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            style={input}
+          />
+        </div>
+
+        <button onClick={startScan} style={mainButton}>
           {loading ? "Taranıyor..." : "Veri Taraması Başlat"}
         </button>
 
-        <button onClick={() => window.location.href = "/api/pdf"} style={button("#29B8E6")}>
-          Raporu İndir (PDF)
-        </button>
+        {scanResult && (
+          <div style={resultBox}>
+            <h3 style={{ marginBottom: "10px" }}>Tarama Sonuçları</h3>
+            <pre style={resultText}>
+              {JSON.stringify(scanResult, null, 2)}
+            </pre>
+          </div>
+        )}
 
-        <button onClick={() => setMessage("Silme talebi hazırlanıyor...")} style={button("#1EA7D7")}>
-          Silme Talebini Gizle
-        </button>
-
-        <button onClick={sendDeleteRequest} style={button("#37C3FF")}>
-          Talebi Gönder
-        </button>
-
-        {/* Sonuçlar */}
-        <p style={{ marginTop: "18px", fontSize: "16px" }}>
-          ✉ E-posta: {user.email}
-        </p>
-
-        <p style={{ marginTop: "6px", fontSize: "16px" }}>
-          💀 Toplam ihlal: {scanResult?.total || 0}
-        </p>
-
-        <p style={{ marginTop: "12px", fontSize: "15px", opacity: 0.85 }}>
-          {message}
-        </p>
-
-        {/* Çıkış */}
-        <button
-          onClick={logout}
-          style={{
-            ...button("#333"),
-            marginTop: "28px",
-            background: "#2A2A2A",
-          }}
-        >
+        <button onClick={logout} style={logoutButton}>
           Çıkış
         </button>
       </div>
@@ -162,16 +119,119 @@ export default function Dashboard() {
   );
 }
 
-function button(color) {
-  return {
-    width: "100%",
-    padding: "16px",
-    fontSize: "18px",
-    background: color,
-    borderRadius: "12px",
-    border: "none",
-    marginBottom: "18px",
-    cursor: "pointer",
-    boxShadow: "0 0 18px rgba(100,200,255,0.35)",
-  };
-}
+//
+// ---------- STYLES ----------
+//
+
+const background = {
+  height: "100vh",
+  width: "100vw",
+  background: "url('/matrix.gif') center/cover no-repeat",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  padding: "20px",
+};
+
+const panel = {
+  width: "420px",
+  background: "rgba(0, 0, 20, 0.75)",
+  padding: "35px",
+  borderRadius: "20px",
+  backdropFilter: "blur(18px)",
+  boxShadow: "0 0 40px #00c8ff44",
+  border: "1px solid rgba(0, 200, 255, 0.25)",
+};
+
+const logo = {
+  textAlign: "center",
+  color: "#80E6FF",
+  fontSize: "28px",
+  fontWeight: "700",
+  letterSpacing: "3px",
+  marginBottom: "10px",
+};
+
+const welcome = {
+  textAlign: "center",
+  color: "#fff",
+  fontSize: "18px",
+  marginBottom: "10px",
+};
+
+const subtitle = {
+  textAlign: "center",
+  color: "#ccc",
+  marginBottom: "20px",
+  fontSize: "13px",
+};
+
+const inputContainer = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "10px",
+  marginBottom: "15px",
+};
+
+const input = {
+  width: "100%",
+  padding: "12px",
+  borderRadius: "8px",
+  border: "1px solid #0a3450",
+  background: "#071520",
+  color: "#fff",
+  fontSize: "14px",
+  transition: "0.25s",
+};
+
+const mainButton = {
+  width: "100%",
+  padding: "14px",
+  borderRadius: "8px",
+  background: "linear-gradient(90deg, #00c8ff, #0077ff)",
+  color: "#000",
+  border: "none",
+  cursor: "pointer",
+  marginTop: "10px",
+  fontWeight: "700",
+  fontSize: "15px",
+  boxShadow: "0 0 15px #00c8ff66",
+  transition: "0.25s",
+};
+
+const resultBox = {
+  background: "rgba(0,0,30,0.7)",
+  padding: "15px",
+  marginTop: "20px",
+  borderRadius: "12px",
+  border: "1px solid rgba(0,200,255,0.2)",
+  color: "#fff",
+  maxHeight: "200px",
+  overflowY: "auto",
+};
+
+const resultText = {
+  whiteSpace: "pre-wrap",
+  fontSize: "12px",
+  color: "#cceeff",
+};
+
+const logoutButton = {
+  width: "100%",
+  padding: "12px",
+  borderRadius: "8px",
+  background: "#333",
+  color: "#eee",
+  border: "1px solid #444",
+  cursor: "pointer",
+  marginTop: "15px",
+  fontSize: "14px",
+};
+
+const loadingScreen = {
+  display: "grid",
+  placeItems: "center",
+  height: "100vh",
+  background: "#000",
+  color: "#80E6FF",
+};
