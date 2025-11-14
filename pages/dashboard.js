@@ -38,7 +38,6 @@ export default function Dashboard() {
       });
 
       const data = await res.json();
-
       if (data.success) {
         setScanResult(data);
         setMessage(`Toplam ihlal: ${data.total || 0}`);
@@ -52,7 +51,7 @@ export default function Dashboard() {
   };
 
   const sendDeleteRequest = async () => {
-    setMessage("Silme talebi gönderiliyor...");
+    setMessage("Silme talebi hazırlanıyor...");
     try {
       const res = await fetch("/api/delete-request", {
         method: "POST",
@@ -62,15 +61,12 @@ export default function Dashboard() {
           breaches: scanResult?.breaches || [],
         }),
       });
+
       const data = await res.json();
-      if (data.success) setMessage("Silme talebi başarıyla oluşturuldu.");
+      if (data.success) setMessage("Silme talebi başarıyla gönderildi.");
     } catch {
       setMessage("Silme talebi gönderilemedi.");
     }
-  };
-
-  const downloadReport = async () => {
-    window.location.href = "/api/pdf"; // PDF endpoint'in varsa
   };
 
   const logout = async () => {
@@ -84,7 +80,7 @@ export default function Dashboard() {
         height: "100vh",
         background: "#000",
         backgroundImage:
-          "url('https://ghostifyhq.com/matrix-bg.gif')",
+          "url('https://i.ibb.co/SrCwKH1/matrix-ghostify.gif')",
         backgroundSize: "cover",
         display: "flex",
         justifyContent: "center",
@@ -94,75 +90,69 @@ export default function Dashboard() {
     >
       <div
         style={{
-          width: "420px",
-          padding: "35px",
-          background: "rgba(0,0,30,0.6)",
-          borderRadius: "18px",
-          boxShadow: "0 0 30px rgba(0,150,255,0.4)",
+          width: "520px",
+          padding: "45px",
+          background: "rgba(0,0,30,0.55)",
+          borderRadius: "20px",
+          boxShadow: "0 0 40px rgba(0,150,255,0.45)",
           textAlign: "center",
-          backdropFilter: "blur(6px)",
+          backdropFilter: "blur(8px)",
         }}
       >
-        <h2 style={{ marginBottom: "12px", letterSpacing: "3px" }}>GHOSTIFY</h2>
+        <h2 style={{ marginBottom: "12px", letterSpacing: "4px", fontSize: "28px" }}>
+          GHOSTIFY
+        </h2>
 
-        <h3 style={{ marginBottom: "20px", fontWeight: "normal" }}>
+        <h3 style={{ marginBottom: "25px", fontWeight: "normal", fontSize: "20px" }}>
           Hoş geldin, <br />
           {user.email}
         </h3>
 
-        <p style={{ marginBottom: "25px", opacity: 0.8 }}>
-          Core aktif: Verilerini tara, rapor indir veya silme talebi oluştur.
+        <p style={{ marginBottom: "28px", opacity: 0.8, fontSize: "15px" }}>
+          Core aktif. Verilerini tara, rapor indir veya silme talebi oluştur.
         </p>
 
+        {/* Tarama */}
         <button
           onClick={startScan}
           disabled={loading}
-          style={buttonStyle("#1EA7D7")}
+          style={button("#1EA7D7")}
         >
           {loading ? "Taranıyor..." : "Veri Taraması Başlat"}
         </button>
 
-        <button
-          onClick={downloadReport}
-          style={buttonStyle("#1EA7D7")}
-        >
+        <button onClick={() => window.location.href = "/api/pdf"} style={button("#29B8E6")}>
           Raporu İndir (PDF)
         </button>
 
-        <button
-          onClick={() => setMessage("Silme talebi hazırlanıyor...")}
-          style={buttonStyle("#1EA7D7")}
-        >
+        <button onClick={() => setMessage("Silme talebi hazırlanıyor...")} style={button("#1EA7D7")}>
           Silme Talebini Gizle
         </button>
 
-        <button
-          onClick={sendDeleteRequest}
-          style={{
-            ...buttonStyle("#1EA7D7"),
-            background: "#37C3FF",
-          }}
-        >
+        <button onClick={sendDeleteRequest} style={button("#37C3FF")}>
           Talebi Gönder
         </button>
 
-        <p style={{ marginTop: "15px", fontSize: "16px" }}>
-          🔎 E-posta: {user.email}
+        {/* Sonuçlar */}
+        <p style={{ marginTop: "18px", fontSize: "16px" }}>
+          ✉ E-posta: {user.email}
         </p>
 
-        <p style={{ marginTop: "5px", fontSize: "16px" }}>
+        <p style={{ marginTop: "6px", fontSize: "16px" }}>
           💀 Toplam ihlal: {scanResult?.total || 0}
         </p>
 
-        {message && (
-          <p style={{ marginTop: "15px", fontSize: "16px" }}>{message}</p>
-        )}
+        <p style={{ marginTop: "12px", fontSize: "15px", opacity: 0.85 }}>
+          {message}
+        </p>
 
+        {/* Çıkış */}
         <button
           onClick={logout}
           style={{
-            ...buttonStyle("#333"),
-            marginTop: "25px",
+            ...button("#333"),
+            marginTop: "28px",
+            background: "#2A2A2A",
           }}
         >
           Çıkış
@@ -172,16 +162,16 @@ export default function Dashboard() {
   );
 }
 
-function buttonStyle(color) {
+function button(color) {
   return {
     width: "100%",
-    padding: "14px",
-    fontSize: "17px",
+    padding: "16px",
+    fontSize: "18px",
     background: color,
-    borderRadius: "10px",
+    borderRadius: "12px",
     border: "none",
-    marginBottom: "15px",
+    marginBottom: "18px",
     cursor: "pointer",
-    boxShadow: "0 0 15px rgba(100,200,255,0.3)",
+    boxShadow: "0 0 18px rgba(100,200,255,0.35)",
   };
 }
