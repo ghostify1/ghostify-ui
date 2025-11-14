@@ -1,45 +1,99 @@
-// pages/api/scan.js
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Yalnızca POST isteği kabul edilir" });
-  }
-
-  const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ error: "E-posta gerekli" });
+    return res.status(405).json({ error: "Sadece POST istekleri kabul edilir." });
   }
 
   try {
-    // HIBP API
-    const hibpUrl = `https://haveibeenpwned.com/api/v3/breachedaccount/${encodeURIComponent(email)}?truncateResponse=false`;
-    const hibpRes = await fetch(hibpUrl, {
-      headers: {
-        "hibp-api-key": process.env.HIBP_API_KEY,
-        "User-Agent": "GhostifyCore",
-      },
-    });
+    const { email, phone, username, password, domain } = req.body || {};
 
-    let hibpData = [];
-    if (hibpRes.status === 200) {
-      hibpData = await hibpRes.json();
+    const apiKey = process.env.LEAKCHECK_API_KEY;
+    const headers = { "Accept": "application/json" };
+
+    const runLeakCheck = async (query) => {
+      const url = `https://leakcheck.io/api?key=${apiKey}&check=${encodeURIComponent(query)}`;
+      const r = await fetch(url, { headers });
+      return r.json();
+    };
+
+    // 1) Email Tarama (HIBP + LeakCheck)
+    let emailResult = null;
+    if (email) {
+      emailResult = await runLeakCheck(email.toLowerCase());
     }
 
-    // LeakCheck API (alternatif kaynak)
-    const leakUrl = `https://leakcheck.io/api/public?check=${encodeURIComponent(email)}`;
-    const leakRes = await fetch(leakUrl);
-    const leakData = leakRes.ok ? await leakRes.json() : null;
+    // 2) Telefon Tarama
+    let phoneResult = null;
+    if (phone) {
+      phoneResult = await runLeakCheck(phone);
+    }
 
-    const totalBreaches = (hibpData?.length || 0) + (leakData?.found ? 1 : 0);
+    // 3) Kullanıcı Adı Tarama
+    let usernameResult = null;
+    if (username) {
+      usernameResult = await runLeakCheck(username);
+    }
 
-    res.status(200).json({
+    // 4) Domain Tarama
+    let domainResult = null;
+    if (domain) {
+      domainResult = await runLeakCheck(domain.toLowerCase());
+    }
+
+    // 5) Parola Güvenlik Tarama (SHA1)
+    let passwordResult = null;
+    if (password) {
+      const sha1 = await sha1Hash(password);
+      const prefix = sha1.substring(0, 5);
+      const suffix = sha1.substring(5).toUpperCase();
+      const pwdRes = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+      const text = await pwdRes.text();
+
+      const found = text.includes(suffix);
+      passwordResult = { exposed: found };
+    }
+
+    // 🧠 RISK SCORE HESAPLAMA
+    const calculateRisk = () => {
+      let score = 0;
+
+      if (emailResult?.found) score += 30;
+      if (phoneResult?.found) score += 20;
+      if (usernameResult?.found) score += 10;
+      if (passwordResult?.exposed) score += 30;
+      if (domainResult?.found) score += 10;
+
+      if (score > 100) score = 100;
+      return score;
+    };
+
+    const riskScore = calculateRisk();
+
+    return res.status(200).json({
       success: true,
-      email,
-      breaches: totalBreaches,
-      hibp: hibpData || [],
-      leakcheck: leakData || {},
+      email: emailResult,
+      phone: phoneResult,
+      username: usernameResult,
+      password: passwordResult,
+      domain: domainResult,
+      riskScore
     });
-  } catch (err) {
-    console.error("Scan API hatası:", err);
-    res.status(500).json({ error: "Tarama hatası", details: err.message });
+
+  } catch (error) {
+    return res.status(500).json({
+      error: "Scan hatası",
+      details: error.message
+    });
   }
+}
+
+
+// SHA1 HASH FONKSİYONU
+async function sha1Hash(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-1", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
 }
