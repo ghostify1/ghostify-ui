@@ -1,5 +1,9 @@
 // pages/api/scan.js
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res
@@ -11,36 +15,44 @@ export default async function handler(req, res) {
   const apiKey = process.env.LEAKCHECK_API_KEY;
 
   if (!apiKey) {
-    return res
-      .status(500)
-      .json({ error: "LEAKCHECK_API_KEY tanımlı değil." });
+    return res.status(500).json({
+      error: "LEAKCHECK_API_KEY tanımlı değil.",
+    });
   }
 
   const runLeakCheck = async (type, query) => {
     if (!query) return null;
 
-    const encodedQuery = encodeURIComponent(query);
-    const url = `https://leakcheck.io/api?key=${apiKey}&check=${encodedQuery}&type=${type}`;
+    const url = `https://leakcheck.io/api?key=${apiKey}&check=${encodeURIComponent(
+      query
+    )}&type=${type}`;
 
-    const r = await fetch(url, {
-      headers: { Accept: "application/json" },
-    });
-
-    return r.json();
+    try {
+      const response = await fetch(url, {
+        headers: { Accept: "application/json" },
+      });
+      return response.json();
+    } catch (err) {
+      return { success: false, error: "API bağlantı hatası" };
+    }
   };
 
   try {
-    // LeakCheck dokümanına göre:
-    // type=email, phone, login, mass vs.
+    // 1️⃣ EMAIL TARAMA
+    const emailResult = await runLeakCheck("email", email);
+    await sleep(450); // LeakCheck limit: 3 istek / saniye
 
-    const [emailResult, phoneResult, usernameResult, addressResult] =
-      await Promise.all([
-        runLeakCheck("email", email),
-        runLeakCheck("phone", phone),
-        runLeakCheck("login", username),
-        // Adres için direkt type yok; keyword/mass araması yapıyoruz
-        runLeakCheck("mass", address),
-      ]);
+    // 2️⃣ TELEFON TARAMA
+    const phoneResult = await runLeakCheck("phone", phone);
+    await sleep(450);
+
+    // 3️⃣ USERNAME TARAMA
+    const usernameResult = await runLeakCheck("login", username);
+    await sleep(450);
+
+    // 4️⃣ ADRES TARAMA (mass search)
+    const addressResult = await runLeakCheck("mass", address);
+    await sleep(450);
 
     return res.status(200).json({
       success: true,
@@ -52,9 +64,9 @@ export default async function handler(req, res) {
       },
     });
   } catch (err) {
-    console.error("LeakCheck tarama hatası:", err);
-    return res
-      .status(500)
-      .json({ error: "Sunucu hatası, tarama tamamlanamadı." });
+    console.error("SCAN ERROR:", err);
+    return res.status(500).json({
+      error: "Sunucu hatası, tarama tamamlanamadı.",
+    });
   }
 }
