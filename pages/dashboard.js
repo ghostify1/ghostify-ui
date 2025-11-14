@@ -29,10 +29,16 @@ export default function Dashboard() {
     setScanResult(null);
     try {
       const res = await fetch("/api/scan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: user.email }),
-      });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    email: user.email,
+    phone: phoneValue,
+    username: usernameValue,
+    password: passwordValue,
+    domain: domainValue
+  }),
+});
       const data = await res.json();
       setScanResult(data);
     } catch (e) {
