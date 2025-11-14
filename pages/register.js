@@ -1,47 +1,83 @@
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Sadece POST istekleri kabul edilir." });
-  }
+import { useState } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { app } from "../lib/firebaseClient";
 
-  try {
-    const { email, breaches } = req.body || {};
+export default function Register() {
+  const auth = getAuth(app);
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-    const formattedList = breaches?.length
-      ? breaches.map(b => `• ${b?.Name || "Bilinmeyen"} (${b?.Domain || "-"})`).join("\n")
-      : "İhlal kaydı bulunamadı.";
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    const message = `
-📨 GHOSTIFY - Kişisel Veri Silme Talebi
---------------------------------------
-Kullanıcı Email: ${email}
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      window.location.href = "/dashboard";
+    } catch (err) {
+      setError(err.message);
+    }
 
-İhlal Kayıtları:
-${formattedList}
+    setLoading(false);
+  };
 
-Bu talep Ghostify otomasyon sistemi tarafından oluşturulmuş ve gönderilmiştir.
-`;
+  return (
+    <div style={{
+      display: "grid",
+      height: "100vh",
+      placeItems: "center",
+      background: "#000",
+      color: "#80E6FF"
+    }}>
+      <div style={{
+        width: "350px",
+        padding: "30px",
+        background: "rgba(0,0,0,0.7)",
+        borderRadius: "12px",
+        boxShadow: "0 0 20px rgba(128,230,255,0.3)"
+      }}>
+        <h2 style={{ textAlign: "center", marginBottom: "20px" }}>Kayıt Ol</h2>
 
-    // E-posta gönder
-    const response = await resend.emails.send({
-      from: "Ghostify <noreply@ghostifyhq.com>",
-      to: ["privacy@ghostifyhq.com"], // Sonra kullanıcı seçimine göre dinamik olabilir
-      subject: "Yeni Silme Talebi - Ghostify",
-      text: message
-    });
+        <form onSubmit={handleRegister}>
+          <label>E-posta</label>
+          <input type="email" value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{
+              width: "100%", padding: "10px",
+              marginBottom: "15px", borderRadius: "6px"
+            }} required />
 
-    return res.status(200).json({
-      success: true,
-      message: "Silme talebi başarılı şekilde e-posta olarak gönderildi.",
-      id: response?.id || null
-    });
+          <label>Şifre</label>
+          <input type="password" value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{
+              width: "100%", padding: "10px",
+              marginBottom: "15px", borderRadius: "6px"
+            }} required />
 
-  } catch (error) {
-    console.error("Resend error:", error);
-    return res.status(500).json({
-      error: "E-posta gönderimi başarısız.",
-      details: error.message
-    });
-  }
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <button type="submit"
+            style={{
+              width: "100%", padding: "12px",
+              background: "#1EA7D7",
+              borderRadius: "8px",
+              border: 0, color: "#fff",
+              fontSize: "16px"
+            }}>
+            {loading ? "Kaydediliyor..." : "Kayıt Ol"}
+          </button>
+        </form>
+
+        <p style={{ marginTop: "15px", textAlign: "center" }}>
+          Zaten hesabın var mı?
+          <a href="/login" style={{ color: "#80E6FF" }}> Giriş Yap</a>
+        </p>
+      </div>
+    </div>
+  );
 }
