@@ -1,50 +1,114 @@
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+// pages/api/pdf.js
+
+import stream from "stream";
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "1mb",
+    },
+  },
+};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Yalnızca POST isteği kabul edilir" });
+    return res
+      .status(405)
+      .json({ error: "Sadece POST istekleri kabul edilir." });
   }
 
-  try {
-    const { email, breaches } = req.body;
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage();
-    const { width, height } = page.getSize();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const { email, summary, results } = req.body || {};
 
-    page.drawText("GHOSTIFY - Veri İhlal Raporu", {
-      x: 50,
-      y: height - 60,
-      size: 18,
-      font,
-      color: rgb(0, 0.82, 1),
+  if (!email || !summary || !results) {
+    return res.status(400).json({
+      error: "email, summary ve results alanları gereklidir.",
     });
+  }
 
-    page.drawText(`Kullanıcı: ${email}`, { x: 50, y: height - 90, size: 12, font });
-    page.drawText(`Toplam ihlal: ${breaches?.length || 0}`, { x: 50, y: height - 110, size: 12, font });
+  // pdfkit'i dinamik import ediyoruz ki sadece server tarafında yüklensin
+  const PDFDocument = (await import("pdfkit")).default;
 
-    let y = height - 140;
-    if (breaches && breaches.length > 0) {
-      for (const b of breaches) {
-        page.drawText(`- ${b.Name || "Bilinmeyen"} (${b.Domain || "-"})`, {
-          x: 60,
-          y,
-          size: 10,
-          font,
-          color: rgb(0.5, 0.9, 1),
-        });
-        y -= 14;
-      }
-    } else {
-      page.drawText("Bilinen bir ihlal bulunamadı.", { x: 60, y, size: 10, font });
+  const doc = new PDFDocument({ margin: 50 });
+  const chunks = [];
+  const passThrough = new stream.PassThrough();
+
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="ghostify-rapor.pdf"`
+  );
+
+  doc.pipe(passThrough);
+
+  passThrough.on("data", (chunk) => chunks.push(chunk));
+  passThrough.on("end", () => {
+    const pdfBuffer = Buffer.concat(chunks);
+     res.send(pdfBuffer);
+  });
+
+  // ---------- RAPOR İÇERİĞİ ----------
+
+  doc.fontSize(20).fillColor("#000").text("GHOSTIFY Veri İhlal Raporu", {
+    align: "center",
+  });
+  doc.moveDown();
+
+  doc.fontSize(12).fillColor("#333");
+  doc.text(`Kullanıcı e-posta: ${email}`);
+  doc.text(`Toplam İhlal: ${summary.totalBreaches}`);
+  doc.text(`Risk Skoru (0-100): ${summary.riskScore}`);
+  doc.moveDown();
+
+  doc.text("Özet:", { underline: true });
+  doc.text(`- E-posta ihlali: ${summary.emailBreaches}`);
+  doc.text(`- Telefon ihlali: ${summary.phoneBreaches}`);
+  doc.text(`- Kullanıcı adı ihlali: ${summary.usernameBreaches}`);
+  doc.text(`- Adres/anahtar kelime ihlali: ${summary.addressBreaches}`);
+  doc.moveDown();
+
+  const addSection = (title, data) => {
+    doc.addPage();
+    doc.fontSize(16).fillColor("#000").text(title, { underline: true });
+    doc.moveDown();
+
+    if (!data.success || !data.breaches.length) {
+      doc.fontSize(12).fillColor("#555").text("Herhangi bir kayıt bulunamadı.");
+      return;
     }
 
-    const pdfBytes = await pdfDoc.save();
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", "attachment; filename=ghostify_report.pdf");
-    res.status(200).send(Buffer.from(pdfBytes));
-  } catch (err) {
-    console.error("PDF hata:", err);
-    res.status(500).json({ error: "PDF oluşturulamadı" });
-  }
+    data.breaches.forEach((b, idx) => {
+      doc
+        .fontSize(12)
+        .fillColor("#000")
+        .text(`#${idx + 1}  Satır: ${b.line}`);
+      if (b.sources && b.sources.length) {
+        doc
+          .fontSize(11)
+          .fillColor("#555")
+          .text(`Kaynaklar: ${b.sources.join(", ")}`);
+      }
+      if (b.last_breach) {
+        doc
+          .fontSize(11)
+          .fillColor("#555")
+          .text(`Son ihlal tarihi: ${b.last_breach}`);
+      }
+      doc.moveDown();
+    });
+  };
+
+  addSection("E-Posta İhlalleri", results.email);
+  addSection("Telefon İhlalleri", results.phone);
+  addSection("Kullanıcı Adı İhlalleri", results.username);
+  addSection("Adres / Anahtar Kelime İhlalleri", results.address);
+
+  doc.addPage();
+  doc.fontSize(12).fillColor("#333");
+  doc.text(
+    "Bu rapor Ghostify otomatik sistemleri tarafından oluşturulmuştur. " +
+      "Amaç, kişisel verilerinizin olası ihlallerini tespit etmek ve size özet sunmaktır.",
+    { align: "left" }
+  );
+
+  doc.end();
 }
