@@ -1,8 +1,11 @@
-import { useState, useEffect } from "react";
+// pages/dashboard.js
+
+import { useEffect, useState } from "react";
 import { getAuth, signOut } from "firebase/auth";
 import { app } from "../lib/firebaseClient";
 
 export default function Dashboard() {
+  const auth = getAuth(app);
   const [user, setUser] = useState(null);
 
   const [email, setEmail] = useState("");
@@ -12,106 +15,219 @@ export default function Dashboard() {
 
   const [scanResult, setScanResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
+  // Kullanıcı login kontrolü
   useEffect(() => {
-    const auth = getAuth(app);
     const unsub = auth.onAuthStateChanged((u) => {
-      if (!u) window.location.href = "/login";
       setUser(u);
+      if (u) setEmail(u.email);
     });
     return () => unsub();
   }, []);
 
-  const startScan = async () => {
+  if (!user) {
+    return (
+      <div style={{ color: "#80E6FF", background: "#000", height: "100vh", display: "grid", placeItems: "center" }}>
+        Yükleniyor...
+      </div>
+    );
+  }
+
+  // TARAMA
+  const handleScan = async () => {
     setLoading(true);
     setScanResult(null);
 
-    const r = await fetch("/api/scan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        phone,
-        username,
-        address,
-      }),
-    });
+    try {
+      const r = await fetch("/api/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, phone, username, address }),
+      });
 
-    const data = await r.json();
-    setScanResult(data.results || {});
+      const data = await r.json();
+      setScanResult(data);
+    } catch (err) {
+      setScanResult({ error: "Tarama hatası oluştu." });
+    }
+
     setLoading(false);
   };
 
-  const logout = async () => {
-    const auth = getAuth(app);
-    await signOut(auth);
-    window.location.href = "/login";
+  // PDF İNDİRME
+  const handlePDF = async () => {
+    if (!scanResult || !scanResult.summary) {
+      alert("Önce bir tarama yapmalısın.");
+      return;
+    }
+
+    setPdfLoading(true);
+
+    try {
+      const r = await fetch("/api/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          summary: scanResult.summary,
+          results: scanResult.results
+        }),
+      });
+
+      const blob = await r.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ghostify-rapor.pdf";
+      a.click();
+    } catch (err) {
+      console.error(err);
+      alert("PDF indirilemedi.");
+    }
+
+    setPdfLoading(false);
   };
 
-  if (!user)
-    return (
-      <div style={loadingScreen}>
-        <p>Yükleniyor...</p>
-      </div>
-    );
+  // SİLME TALEBİ
+  const handleDeleteRequest = async () => {
+    if (!scanResult || !scanResult.summary) {
+      alert("Önce bir tarama yapmalısın.");
+      return;
+    }
+
+    setDeleteLoading(true);
+
+    try {
+      const r = await fetch("/api/delete-request.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          summary: scanResult.summary,
+          results: scanResult.results,
+        }),
+      });
+
+      const data = await r.json();
+
+      if (data.success) {
+        alert("Silme talebi başarıyla gönderildi.");
+      } else {
+        alert("Silme talebi gönderilemedi.");
+      }
+    } catch (err) {
+      alert("Silme talebi sırasında hata oluştu.");
+    }
+
+    setDeleteLoading(false);
+  };
 
   return (
-    <div style={background}>
-      <div style={panel}>
-        <h1 style={logo}>GHOSTIFY</h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#000",
+        color: "#fff",
+        display: "flex",
+        justifyContent: "center",
+        paddingTop: "40px",
+      }}
+    >
+      <div
+        style={{
+          width: "480px",
+          padding: "32px",
+          borderRadius: "20px",
+          background: "rgba(10,20,40,0.6)",
+          boxShadow: "0 0 30px rgba(0,200,255,0.2)",
+          backdropFilter: "blur(8px)",
+        }}
+      >
+        {/* BAŞLIK */}
+        <h1 style={{ textAlign: "center", color: "#6EEBFF", marginBottom: "4px" }}>
+          GHOSTIFY
+        </h1>
+        <p style={{ textAlign: "center", color: "#DDF" }}>
+          Hoş geldin, <br /> {user.email}
+        </p>
 
-        <h2 style={welcome}>
-          Hoş geldin,<br /> {user.email}
-        </h2>
-
-        <p style={subtitle}>
+        <p style={{ textAlign: "center", marginBottom: "20px", color: "#89C" }}>
           Core aktif. Verilerini tara, rapor oluştur veya silme talebi üret.
         </p>
 
-        <div style={inputContainer}>
-          <input
-            placeholder="E-posta"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={input}
-          />
+        {/* FORM ALANLARI */}
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="E-posta"
+          style={inputStyle}
+        />
 
-          <input
-            placeholder="Telefon"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            style={input}
-          />
+        <input
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Telefon"
+          style={inputStyle}
+        />
 
-          <input
-            placeholder="Kullanıcı Adı"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            style={input}
-          />
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Kullanıcı Adı"
+          style={inputStyle}
+        />
 
-          <input
-            placeholder="Adres"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            style={input}
-          />
-        </div>
+        <input
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Adres / Anahtar Kelime"
+          style={inputStyle}
+        />
 
-        <button onClick={startScan} style={mainButton}>
+        {/* TARAMA */}
+        <button onClick={handleScan} style={btnPrimary}>
           {loading ? "Taranıyor..." : "Veri Taraması Başlat"}
         </button>
 
+        {/* PDF */}
+        <button onClick={handlePDF} style={btnSecondary}>
+          {pdfLoading ? "PDF hazırlanıyor..." : "Raporu İndir (PDF)"}
+        </button>
+
+        {/* SİLME TALEBİ */}
+        <button onClick={handleDeleteRequest} style={btnSecondary}>
+          {deleteLoading ? "Gönderiliyor..." : "Silme Talebi Gönder"}
+        </button>
+
+        {/* SONUÇ BLOKU */}
         {scanResult && (
-          <div style={resultBox}>
-            <h3 style={{ marginBottom: "10px" }}>Tarama Sonuçları</h3>
-            <pre style={resultText}>
-              {JSON.stringify(scanResult, null, 2)}
-            </pre>
+          <div
+            style={{
+              marginTop: "20px",
+              padding: "12px",
+              background: "rgba(0,0,30,0.6)",
+              borderRadius: "10px",
+              color: "#AEE",
+              fontSize: "14px",
+              whiteSpace: "pre-wrap",
+              maxHeight: "300px",
+              overflowY: "auto",
+              border: "1px solid rgba(0,150,255,0.3)",
+            }}
+          >
+            <strong>Tarama Sonuçları</strong>
+            <br />
+            {JSON.stringify(scanResult, null, 2)}
           </div>
         )}
 
-        <button onClick={logout} style={logoutButton}>
+        {/* ÇIKIŞ */}
+        <button
+          onClick={() => signOut(auth)}
+          style={{ ...btnSecondary, background: "#444", marginTop: "20px" }}
+        >
           Çıkış
         </button>
       </div>
@@ -119,119 +235,41 @@ export default function Dashboard() {
   );
 }
 
-//
-// ---------- STYLES ----------
-//
+/* Stil Ayarları */
 
-const background = {
-  height: "100vh",
-  width: "100vw",
-  background: "url('/matrix.gif') center/cover no-repeat",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "20px",
-};
-
-const panel = {
-  width: "420px",
-  background: "rgba(0, 0, 20, 0.75)",
-  padding: "35px",
-  borderRadius: "20px",
-  backdropFilter: "blur(18px)",
-  boxShadow: "0 0 40px #00c8ff44",
-  border: "1px solid rgba(0, 200, 255, 0.25)",
-};
-
-const logo = {
-  textAlign: "center",
-  color: "#80E6FF",
-  fontSize: "28px",
-  fontWeight: "700",
-  letterSpacing: "3px",
-  marginBottom: "10px",
-};
-
-const welcome = {
-  textAlign: "center",
-  color: "#fff",
-  fontSize: "18px",
-  marginBottom: "10px",
-};
-
-const subtitle = {
-  textAlign: "center",
-  color: "#ccc",
-  marginBottom: "20px",
-  fontSize: "13px",
-};
-
-const inputContainer = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "10px",
-  marginBottom: "15px",
-};
-
-const input = {
+const inputStyle = {
   width: "100%",
   padding: "12px",
-  borderRadius: "8px",
-  border: "1px solid #0a3450",
-  background: "#071520",
-  color: "#fff",
-  fontSize: "14px",
-  transition: "0.25s",
+  margin: "6px 0",
+  borderRadius: "10px",
+  border: "1px solid #1C4",
+  background: "rgba(0,0,20,0.4)",
+  color: "#AEE",
+  fontSize: "15px",
+  outline: "none",
 };
 
-const mainButton = {
+const btnPrimary = {
   width: "100%",
   padding: "14px",
-  borderRadius: "8px",
-  background: "linear-gradient(90deg, #00c8ff, #0077ff)",
-  color: "#000",
-  border: "none",
-  cursor: "pointer",
   marginTop: "10px",
-  fontWeight: "700",
-  fontSize: "15px",
-  boxShadow: "0 0 15px #00c8ff66",
-  transition: "0.25s",
-};
-
-const resultBox = {
-  background: "rgba(0,0,30,0.7)",
-  padding: "15px",
-  marginTop: "20px",
-  borderRadius: "12px",
-  border: "1px solid rgba(0,200,255,0.2)",
+  background: "linear-gradient(90deg, #00D2FF, #0066FF)",
+  border: "none",
+  borderRadius: "10px",
   color: "#fff",
-  maxHeight: "200px",
-  overflowY: "auto",
-};
-
-const resultText = {
-  whiteSpace: "pre-wrap",
-  fontSize: "12px",
-  color: "#cceeff",
-};
-
-const logoutButton = {
-  width: "100%",
-  padding: "12px",
-  borderRadius: "8px",
-  background: "#333",
-  color: "#eee",
-  border: "1px solid #444",
   cursor: "pointer",
-  marginTop: "15px",
-  fontSize: "14px",
+  fontSize: "16px",
+  fontWeight: "bold",
 };
 
-const loadingScreen = {
-  display: "grid",
-  placeItems: "center",
-  height: "100vh",
-  background: "#000",
-  color: "#80E6FF",
+const btnSecondary = {
+  width: "100%",
+  padding: "14px",
+  marginTop: "10px",
+  background: "rgba(0,180,255,0.3)",
+  border: "1px solid rgba(0,180,255,0.5)",
+  borderRadius: "10px",
+  color: "#AEE",
+  cursor: "pointer",
+  fontSize: "15px",
 };
