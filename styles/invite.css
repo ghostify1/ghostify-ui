@@ -1,0 +1,483 @@
+/* styles/invite.css */
+
+/* Kök container */
+.invite-root {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #041a2a 0, #02070d 40%, #01030a 100%);
+  color: #e5f6ff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Roboto", "Segoe UI", sans-serif;
+}
+
+/* Canvas matrix */
+.matrix-bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.35;
+}
+
+/* Hafif degrade overlay */
+.invite-overlay-gradient {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(
+    circle at top,
+    rgba(77, 246, 255, 0.25),
+    transparent 55%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* İçerik */
+.invite-content {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+/* Kart */
+.invite-card {
+  position: relative;
+  max-width: 520px;
+  width: 100%;
+  padding: 56px 40px 40px;
+  background: radial-gradient(
+      circle at top,
+      rgba(77, 246, 255, 0.16),
+      rgba(2, 7, 15, 0.96)
+    ),
+    rgba(2, 7, 15, 0.9);
+  border-radius: 26px;
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  box-shadow:
+    0 0 40px rgba(0, 255, 255, 0.22),
+    0 40px 90px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  text-align: center;
+}
+
+/* Hologram halo + logo */
+.invite-logo-halo {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(77, 246, 255, 0.85) 0,
+    rgba(77, 246, 255, 0.08) 38%,
+    transparent 60%
+  );
+  filter: blur(4px);
+  opacity: 0.85;
+  animation: halo-spin 18s linear infinite;
+  pointer-events: none;
+}
+
+.invite-logo-circle {
+  position: absolute;
+  inset: 14px;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 0%, #02101f, #02070d 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  box-shadow:
+    0 0 22px rgba(0, 255, 255, 0.7),
+    0 0 70px rgba(0, 255, 255, 0.5);
+  animation: logo-pulse 3.4s ease-in-out infinite;
+}
+
+.ghost-icon {
+  font-size: 52px;
+  filter: drop-shadow(0 0 12px rgba(77, 246, 255, 0.9));
+}
+
+/* Başlıklar */
+.invite-title {
+  margin-top: 40px;
+  font-size: 32px;
+  letter-spacing: 0.25em;
+  font-weight: 700;
+  color: #4df6ff;
+  text-transform: uppercase;
+  text-shadow:
+    0 0 8px rgba(77, 246, 255, 0.8),
+    0 0 24px rgba(77, 246, 255, 0.6);
+  animation: title-flicker 4.6s linear infinite;
+}
+
+.invite-subtitle {
+  margin-top: 6px;
+  margin-bottom: 24px;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(191, 235, 255, 0.85);
+}
+
+/* Core divider */
+.invite-core-divider {
+  margin: 0 auto 30px;
+  max-width: 360px;
+}
+
+.invite-core-line {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 255, 0.8),
+    transparent
+  );
+  position: relative;
+  overflow: hidden;
+}
+
+.invite-core-line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(191, 235, 255, 0.9),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: core-line-scan 3.6s linear infinite;
+}
+
+.invite-core-icons {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  font-size: 14px;
+  color: rgba(191, 235, 255, 0.9);
+}
+
+.core-icon {
+  filter: drop-shadow(0 0 4px rgba(77, 246, 255, 0.9));
+}
+
+/* Headline */
+.invite-headline {
+  margin-top: 18px;
+  margin-bottom: 24px;
+  font-size: 18px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c8f4ff;
+}
+
+/* Form */
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Input */
+.invite-input-wrapper {
+  position: relative;
+}
+
+.invite-input {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 255, 255, 0.5);
+  background: radial-gradient(
+      circle at top left,
+      rgba(77, 246, 255, 0.12),
+      transparent 55%
+    ),
+    rgba(1, 9, 19, 0.96);
+  color: #e5f6ff;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  outline: none;
+  box-shadow:
+    0 0 0 1px rgba(8, 47, 73, 0.4),
+    0 0 18px rgba(0, 255, 255, 0.3);
+}
+
+.invite-input::placeholder {
+  color: rgba(128, 230, 255, 0.7);
+}
+
+.invite-input:focus {
+  border-color: rgba(77, 246, 255, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(77, 246, 255, 0.9),
+    0 0 26px rgba(77, 246, 255, 0.8);
+}
+
+.invite-input-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: -1px;
+  border-radius: 14px;
+  background: radial-gradient(
+    circle,
+    rgba(77, 246, 255, 0.28),
+    transparent 60%
+  );
+  opacity: 0;
+  animation: input-glow 4.4s ease-in-out infinite;
+}
+
+/* Hata mesajı */
+.invite-error {
+  margin: -6px 0 4px;
+  font-size: 12px;
+  color: #fca5a5;
+}
+
+/* Buton */
+.invite-button {
+  position: relative;
+  width: 100%;
+  margin-top: 6px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  letter-spacing: 0.16em;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #e7fafe;
+  background: linear-gradient(90deg, #27c3ff, #0078ff);
+  box-shadow:
+    0 0 22px rgba(0, 190, 255, 0.8),
+    0 14px 40px rgba(3, 105, 161, 0.85);
+  overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.invite-button span:first-child {
+  position: relative;
+  z-index: 2;
+}
+
+.invite-button-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 10% 0,
+    rgba(255, 255, 255, 0.45),
+    transparent 50%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  pointer-events: none;
+  animation: button-glow 4.2s ease-in-out infinite;
+}
+
+.invite-button:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 0 26px rgba(0, 220, 255, 0.95),
+    0 18px 60px rgba(12, 148, 196, 0.95);
+  filter: brightness(1.05);
+}
+
+.invite-button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+}
+
+/* Loading state */
+.invite-button.invite-button-loading {
+  cursor: wait;
+  opacity: 0.9;
+}
+
+/* Footer */
+.invite-footer {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(191, 235, 255, 0.8);
+}
+
+.invite-footer-text {
+  opacity: 0.8;
+}
+
+.invite-footer-link {
+  position: relative;
+  border: none;
+  background: none;
+  color: #4df6ff;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+.invite-footer-link:hover {
+  filter: brightness(1.15);
+}
+
+.underline-animate {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.underline-animate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(77, 246, 255, 0.9),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: underline-scan 1.8s ease-in-out infinite;
+}
+
+/* Animasyonlar */
+@keyframes halo-spin {
+  0% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+@keyframes logo-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 18px rgba(77, 246, 255, 0.7),
+      0 0 55px rgba(77, 246, 255, 0.52);
+  }
+  50% {
+    box-shadow:
+      0 0 28px rgba(77, 246, 255, 0.95),
+      0 0 80px rgba(77, 246, 255, 0.75);
+  }
+}
+
+@keyframes title-flicker {
+  0%,
+  19%,
+  21%,
+  100% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  70% {
+    text-shadow:
+      0 0 10px rgba(77, 246, 255, 0.9),
+      0 0 28px rgba(77, 246, 255, 0.7);
+  }
+}
+
+@keyframes core-line-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes input-glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes button-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes underline-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Mobil uyum */
+@media (max-width: 640px) {
+  .invite-card {
+    padding: 48px 22px 30px;
+    border-radius: 22px;
+  }
+
+  .invite-title {
+    font-size: 26px;
+    letter-spacing: 0.18em;
+  }
+
+  .invite-headline {
+    font-size: 16px;
+  }
+
+  .invite-input,
+  .invite-button {
+    font-size: 13px;
+  }
+
+  .invite-logo-halo {
+    width: 130px;
+    height: 130px;
+    top: -70px;
+  }
+
+  .ghost-icon {
+    font-size: 44px;
+  }
+}
