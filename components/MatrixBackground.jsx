@@ -1,38 +1,91 @@
+// components/MatrixBackground.js
 import { useEffect, useRef } from "react";
 
-export default function MatrixBackground(){
-  const ref = useRef(null);
+export default function MatrixBackground() {
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = ref.current;
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    let w, h, cols, yPos, anim;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    canvas.width = width;
+    canvas.height = height;
 
     const resize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      cols = Math.floor(w / 18);
-      yPos = Array(cols).fill(0);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
     };
+
+    window.addEventListener("resize", resize);
+
+    // Karakter seti: katakana + ghostify sembolleri
+    const chars =
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789◇◆○●☉☼▒░░▓█◎∞⊕⊗Ω";
+    const charArray = chars.split("");
+
+    const fontSize = 18;
+    const columns = Math.floor(width / fontSize);
+
+    const drops = [];
+    for (let i = 0; i < columns; i++) {
+      drops[i] = Math.random() * -20; // biraz yukarıdan başlasın
+    }
+
+    let animationFrameId;
 
     const draw = () => {
-      ctx.fillStyle = "rgba(0,0,0,0.08)";
-      ctx.fillRect(0,0,w,h);
-      ctx.fillStyle = "#00d1ff";
-      ctx.font = "14px monospace";
-      yPos.forEach((y, i) => {
-        const ch = String.fromCharCode(0x30A0 + Math.random() * 96);
-        const x = i * 18;
-        ctx.fillText(ch, x, y);
-        yPos[i] = y > h + Math.random()*100 ? 0 : y + 16;
-      });
-      anim = requestAnimationFrame(draw);
+      // arkayı hafifçe karartarak “trail” efekti
+      ctx.fillStyle = "rgba(2, 7, 15, 0.35)";
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = charArray[Math.floor(Math.random() * charArray.length)];
+
+        // layer’a göre renk seç
+        const depth = Math.random();
+        if (depth < 0.6) {
+          ctx.fillStyle = "rgba(128, 230, 255, 0.7)";
+        } else if (depth < 0.9) {
+          ctx.fillStyle = "rgba(77, 246, 255, 0.9)";
+        } else {
+          ctx.fillStyle = "rgba(0, 255, 176, 0.9)";
+        }
+
+        ctx.font = `${fontSize}px monospace`;
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        // satır aşağı
+        drops[i] += 0.8 + Math.random() * 0.3;
+
+        // ekran dışına çıkınca yukarı resetle
+        if (drops[i] * fontSize > height + 50) {
+          drops[i] = Math.random() * -20;
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(draw);
     };
 
-    resize(); draw();
-    window.addEventListener("resize", resize);
-    return () => { cancelAnimationFrame(anim); window.removeEventListener("resize", resize); };
+    draw();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
-  return <canvas ref={ref} className="matrix-layer" aria-hidden />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className="matrix-bg-canvas"
+      aria-hidden="true"
+    />
+  );
 }
