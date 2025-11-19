@@ -2,8 +2,6 @@
 
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res
@@ -11,76 +9,102 @@ export default async function handler(req, res) {
       .json({ error: "Yalnızca POST istekleri kabul edilir." });
   }
 
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
   const { email, summary, results } = req.body || {};
 
-  if (!email || !summary || !results) {
+  // ---- ZORUNLU ALAN KONTROLÜ ----
+  if (
+    !email ||
+    !summary ||
+    typeof summary.totalBreaches === "undefined" ||
+    !results
+  ) {
     return res.status(400).json({
-      error: "email, summary ve results alanları zorunludur.",
-    });
-  }
-
-  if (!process.env.RESEND_API_KEY) {
-    return res.status(500).json({
-      error: "RESEND_API_KEY tanımlı değil.",
+      error: "Eksik veri: email, summary ve results zorunludur.",
     });
   }
 
   const privacyEmail =
     process.env.PRIVACY_EMAIL || "privacy@ghostifyhq.com";
 
-  const formatBreaches = (title, data) => {
-    if (!data || !data.success || !data.breaches.length)
-      return `${title}: Kayıt bulunamadı.\n`;
+  // ---- DATA FORMAT HELPERS ----
+  const sanitize = (val) =>
+    typeof val === "string" ? val.replace(/</g, "&lt;") : val;
 
-    let text = `${title}:\n`;
-    data.breaches.forEach((b, idx) => {
-      text += `  #${idx + 1}  Satır: ${b.line}\n`;
-      if (b.sources && b.sources.length) {
-        text += `     Kaynaklar: ${b.sources.join(", ")}\n`;
-      }
-      if (b.last_breach) {
-        text += `     Son ihlal: ${b.last_breach}\n`;
-      }
+  const formatList = (title, data) => {
+    if (!data || !data.success || !Array.isArray(data.breaches)) {
+      return `<h3>${title}</h3><p>Kayıt bulunamadı.</p>`;
+    }
+
+    let html = `<h3>${title}</h3>`;
+    html += "<ul>";
+
+    data.breaches.forEach((item, idx) => {
+      html += `
+        <li>
+          <strong>#${idx + 1}</strong><br/>
+          Satır: ${sanitize(item.line)}<br/>
+          ${
+            item.sources?.length
+              ? "Kaynaklar: " + item.sources.join(", ")
+              : ""
+          }<br/>
+          ${item.last_breach ? "Son ihlal: " + item.last_breach : ""}
+        </li>
+      `;
     });
-    return text + "\n";
+
+    html += "</ul>";
+    return html;
   };
 
-  const bodyText = `
-GHOSTIFY - Kişisel Veri Silme Talebi
+  // ---- HTML MAIL BODY ----
+  const htmlBody = `
+    <div style="font-family: Arial, sans-serif; padding:20px; color:#0f1d2e">
+      <h2>GHOSTIFY - Kişisel Veri Silme Talebi</h2>
 
-Kullanıcı e-posta: ${email}
+      <p><strong>Kullanıcı e-posta:</strong> ${sanitize(email)}</p>
 
-Toplam ihlal: ${summary.totalBreaches}
-Risk skoru (0-100): ${summary.riskScore}
+      <p>
+        <strong>Toplam ihlal:</strong> ${summary.totalBreaches}<br/>
+        <strong>Risk skoru (0-100):</strong> ${summary.riskScore}
+      </p>
 
-Özet:
-- E-posta ihlali: ${summary.emailBreaches}
-- Telefon ihlali: ${summary.phoneBreaches}
-- Kullanıcı adı ihlali: ${summary.usernameBreaches}
-- Adres/anahtar kelime ihlali: ${summary.addressBreaches}
+      <h3>Özet</h3>
+      <ul>
+        <li>E-posta ihlali: ${summary.emailBreaches}</li>
+        <li>Telefon ihlali: ${summary.phoneBreaches}</li>
+        <li>Kullanıcı adı ihlali: ${summary.usernameBreaches}</li>
+        <li>Adres ihlali: ${summary.addressBreaches}</li>
+      </ul>
 
-Detaylı kırılım:
+      ${formatList("E-posta İhlalleri", results.email)}
+      ${formatList("Telefon İhlalleri", results.phone)}
+      ${formatList("Kullanıcı Adı İhlalleri", results.username)}
+      ${formatList("Adres / Keyword İhlalleri", results.address)}
 
-${formatBreaches("E-posta ihlalleri", results.email)}
-${formatBreaches("Telefon ihlalleri", results.phone)}
-${formatBreaches("Kullanıcı adı ihlalleri", results.username)}
-${formatBreaches("Adres / anahtar kelime ihlalleri", results.address)}
-
-Bu e-posta Ghostify otomasyon sistemi tarafından oluşturulmuştur.
-Kullanıcı, ilgili platformlarda hesabının ve verilerinin silinmesini talep etmektedir.
-`;
+      <p style="margin-top:20px; font-size:13px; color:#567">
+        Bu e-posta Ghostify otomasyon sistemi tarafından oluşturulmuştur.<br/>
+        Kullanıcı, ilgili platformlarda verilerinin silinmesini talep etmektedir.
+      </p>
+    </div>
+  `;
 
   try {
     await resend.emails.send({
-      from: "Ghostify <no-reply@ghostifyhq.com>",
-      to: [privacyEmail, email], // hem sana hem kullanıcıya gidebilir
+      from:
+        process.env.RESEND_FROM_EMAIL ||
+        "Ghostify <no-reply@resend.dev>", // fallback
+      to: [privacyEmail, email],
       subject: "Ghostify - Kişisel Veri Silme Talebi",
-      text: bodyText,
+      html: htmlBody,
+      text: htmlBody.replace(/<[^>]+>/g, ""), // HTML → Text fallback
     });
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error("Silme talebi mail hatası:", err);
+    console.error("✖ Silme talebi mail hatası:", err);
     return res.status(500).json({
       error: "Silme talebi e-postası gönderilemedi.",
     });
