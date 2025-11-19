@@ -13,60 +13,93 @@ export default function MatrixBackground() {
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    canvas.width = width;
-    canvas.height = height;
-
-    const resize = () => {
+    const setSize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width * window.devicePixelRatio;
+      canvas.height = height * window.devicePixelRatio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
     };
 
-    window.addEventListener("resize", resize);
+    setSize();
+    window.addEventListener("resize", setSize);
 
-    // Karakter seti: katakana + ghostify sembolleri
+    // Ghostify karakter seti
     const chars =
-      "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789◇◆○●☉☼▒░░▓█◎∞⊕⊗Ω";
+      "アイウエオカキクケコサシスセソタチツテトナニヌネノ" +
+      "0123456789" +
+      "◇◆○●◎∞⊕⊗Ω" +
+      "@#$%&";
+
     const charArray = chars.split("");
 
     const fontSize = 18;
-    const columns = Math.floor(width / fontSize);
+    let columns = Math.floor(width / fontSize);
 
-    const drops = [];
-    for (let i = 0; i < columns; i++) {
-      drops[i] = Math.random() * -20; // biraz yukarıdan başlasın
-    }
+    // Her kolon için durum
+    let columnsState = Array.from({ length: columns }, (_, i) => ({
+      y: Math.random() * -20,
+      speed: 0.8 + Math.random() * 1.4, // farklı hızlar
+      glowPhase: Math.random() * Math.PI * 2, // nefes efekti
+    }));
 
     let animationFrameId;
 
     const draw = () => {
-      // arkayı hafifçe karartarak “trail” efekti
+      // Arka planı hafif karart – trail efekti
       ctx.fillStyle = "rgba(2, 7, 15, 0.35)";
       ctx.fillRect(0, 0, width, height);
 
-      for (let i = 0; i < drops.length; i++) {
-        const text = charArray[Math.floor(Math.random() * charArray.length)];
+      ctx.font = `${fontSize}px "Space Grotesk", "JetBrains Mono", monospace`;
+      ctx.textBaseline = "top";
 
-        // layer’a göre renk seç
+      for (let i = 0; i < columnsState.length; i++) {
+        const state = columnsState[i];
+        const char = charArray[Math.floor(Math.random() * charArray.length)];
+
+        // Glow fazını ilerlet
+        state.glowPhase += 0.03 + Math.random() * 0.01;
+        const glow = (Math.sin(state.glowPhase) + 1) / 2; // 0–1
+
+        // Renk geçişi: koyu mavi → neon cyan → hafif yeşilimsi
+        const baseCyan = { r: 0, g: 190, b: 255 };
+        const brightCyan = { r: 120, g: 240, b: 255 };
+        const ghostGreen = { r: 0, g: 255, b: 176 };
+
+        // Derinlik/random katman
         const depth = Math.random();
-        if (depth < 0.6) {
-          ctx.fillStyle = "rgba(128, 230, 255, 0.7)";
-        } else if (depth < 0.9) {
-          ctx.fillStyle = "rgba(77, 246, 255, 0.9)";
-        } else {
-          ctx.fillStyle = "rgba(0, 255, 176, 0.9)";
-        }
+        let target;
 
-        ctx.font = `${fontSize}px monospace`;
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (depth < 0.6) target = baseCyan;
+        else if (depth < 0.9) target = brightCyan;
+        else target = ghostGreen;
 
-        // satır aşağı
-        drops[i] += 0.8 + Math.random() * 0.3;
+        const r = Math.round(target.r + glow * 20);
+        const g = Math.round(target.g + glow * 20);
+        const b = Math.round(target.b + glow * 20);
 
-        // ekran dışına çıkınca yukarı resetle
-        if (drops[i] * fontSize > height + 50) {
-          drops[i] = Math.random() * -20;
+        const alpha = 0.55 + glow * 0.35;
+
+        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+
+        // Glow efekti
+        ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${0.35 + glow * 0.4})`;
+        ctx.shadowBlur = 8 + glow * 10;
+
+        const x = i * fontSize;
+        const y = state.y * fontSize;
+
+        ctx.fillText(char, x, y);
+
+        // Kolonu aşağı indir
+        state.y += state.speed;
+
+        // Ekran dışına çıktıysa resetle
+        if (y > height + 50) {
+          state.y = Math.random() * -20;
+          state.speed = 0.8 + Math.random() * 1.4;
         }
       }
 
@@ -76,7 +109,7 @@ export default function MatrixBackground() {
     draw();
 
     return () => {
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", setSize);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
