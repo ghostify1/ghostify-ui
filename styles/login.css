@@ -1,590 +1,74 @@
-/* styles/login.css */
+// pages/index.js
+import { useState } from "react";
+import { useRouter } from "next/router";
 
-/* Root */
-.login-root {
-  position: relative;
-  min-height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  background: radial-gradient(circle at top, #041523 0, #02070d 40%, #01030a 100%);
-  color: #e5f6ff;
-}
+export default function InvitePage() {
+  const router = useRouter();
+  const [code, setCode] = useState("");
 
-/* Matrix canvas arkadan geldiği için invite ile uyumlu kalacak */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!code.trim()) {
+      alert("Lütfen davet kodu girin.");
+      return;
+    }
+    router.push(`/login?invite=${encodeURIComponent(code.trim())}`);
+  };
 
-/* Overlay */
-.login-overlay-gradient {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  background: radial-gradient(
-    circle at top,
-    rgba(77, 246, 255, 0.18),
-    transparent 55%
+  return (
+    <div className="page-shell invite-page">
+      <div className="matrix-layer" />
+
+      <div className="glass-panel center">
+        {/* Logo */}
+        <div className="logo-ring">
+          <div className="logo-ring-inner">
+            <img src="/ghost-logo.png" alt="Ghostify" />
+          </div>
+        </div>
+
+        <div className="ghostify-wordmark">GHOSTIFY</div>
+        <div className="subheading">GHOSTIFY CORE LOADING</div>
+
+        <div className="light-divider" />
+
+        <div className="icon-row">
+          <span>🔒</span>
+          <span>🛡️</span>
+          <span>🌀</span>
+        </div>
+
+        <h2 className="primary-title">
+          DAVET KODUNUZU
+          <br />
+          GİRİN
+        </h2>
+
+        <p className="helper-text">
+          Ghostify core&apos;a erişmek için size özel davet kodunu girin.
+        </p>
+
+        <form style={{ width: "100%" }} onSubmit={handleSubmit}>
+          <div className="field">
+            <label>DAVET KODUNUZ</label>
+            <input
+              type="text"
+              placeholder="DAVET KODUNUZU YAZIN"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className="primary-button">
+            DEVAM ET
+          </button>
+        </form>
+
+        <div className="secondary-link">
+          DAVET KODUNUZ YOK MU?{" "}
+          <a href="#">KOD TALEP ET</a>
+        </div>
+      </div>
+    </div>
   );
-  mix-blend-mode: screen;
-  pointer-events: none;
-}
-
-/* İçerik */
-.login-content {
-  position: relative;
-  z-index: 2;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 16px;
-}
-
-/* Kart */
-.login-card {
-  position: relative;
-  max-width: 520px;
-  width: 100%;
-  padding: 64px 40px 32px;
-  background:
-    radial-gradient(
-      circle at top,
-      rgba(77, 246, 255, 0.13),
-      rgba(2, 7, 15, 0.96)
-    ),
-    rgba(2, 7, 15, 0.92);
-  border-radius: 26px;
-  border: 1px solid rgba(0, 255, 255, 0.35);
-  box-shadow:
-    0 0 40px rgba(0, 255, 255, 0.2),
-    0 32px 80px rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  overflow: hidden;
-  animation: login-card-in 0.4s ease-out;
-}
-
-/* Dikey neon çizgiler */
-.login-card::before,
-.login-card::after {
-  content: "";
-  position: absolute;
-  top: -20%;
-  bottom: -20%;
-  width: 2px;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    rgba(77, 246, 255, 0.7),
-    transparent
-  );
-  opacity: 0.35;
-}
-
-.login-card::before {
-  left: 16px;
-  animation: neon-strip 5.6s linear infinite;
-}
-
-.login-card::after {
-  right: 16px;
-  animation: neon-strip 6.2s linear infinite reverse;
-}
-
-/* Logo halo */
-.login-logo-halo {
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 150px;
-  height: 150px;
-  border-radius: 999px;
-  background: radial-gradient(
-    circle,
-    rgba(77, 246, 255, 0.9) 0,
-    rgba(77, 246, 255, 0.12) 38%,
-    transparent 60%
-  );
-  filter: blur(5px);
-  opacity: 0.85;
-  animation: login-halo-spin 18s linear infinite;
-  pointer-events: none;
-}
-
-.login-logo-circle {
-  position: absolute;
-  inset: 16px;
-  border-radius: inherit;
-  background: radial-gradient(circle at 30% 0%, #02101f, #02070d 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(0, 255, 255, 0.5);
-  box-shadow:
-    0 0 22px rgba(77, 246, 255, 0.9),
-    0 0 80px rgba(77, 246, 255, 0.6);
-  animation: login-logo-pulse 3.6s ease-in-out infinite;
-}
-
-.login-ghost-icon {
-  font-size: 50px;
-  filter: drop-shadow(0 0 14px rgba(77, 246, 255, 0.9));
-}
-
-/* Header */
-.login-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.login-init-text {
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(191, 235, 255, 0.85);
-  margin-top: 28px;
-  margin-bottom: 6px;
-  animation: typing-fade 3s ease-out forwards;
-}
-
-.login-title {
-  font-size: 30px;
-  letter-spacing: 0.23em;
-  text-transform: uppercase;
-  color: #4df6ff;
-  font-weight: 700;
-  text-shadow:
-    0 0 8px rgba(77, 246, 255, 0.8),
-    0 0 24px rgba(77, 246, 255, 0.6);
-}
-
-.login-subtitle {
-  margin-top: 6px;
-  font-size: 11px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(191, 235, 255, 0.85);
-}
-
-.login-core-divider {
-  margin: 18px auto 0;
-  max-width: 340px;
-}
-
-.login-core-line {
-  height: 1px;
-  width: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(0, 255, 255, 0.85),
-    transparent
-  );
-  position: relative;
-  overflow: hidden;
-}
-
-.login-core-line::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(191, 235, 255, 0.9),
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: login-core-scan 3.8s linear infinite;
-}
-
-.login-core-icons {
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  font-size: 14px;
-  color: rgba(191, 235, 255, 0.9);
-}
-
-.login-core-icon {
-  filter: drop-shadow(0 0 4px rgba(77, 246, 255, 0.9));
-}
-
-/* Form */
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.login-headline {
-  font-size: 13px;
-  color: rgba(207, 250, 254, 0.95);
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
-}
-
-/* Input group */
-.login-input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.login-label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: rgba(148, 216, 255, 0.9);
-}
-
-/* Input wrapper */
-.login-input-wrapper {
-  position: relative;
-}
-
-.login-input {
-  width: 100%;
-  padding: 14px 42px 14px 34px;
-  border-radius: 14px;
-  border: 1px solid rgba(0, 255, 255, 0.5);
-  background: radial-gradient(
-      circle at top left,
-      rgba(77, 246, 255, 0.1),
-      transparent 55%
-    ),
-    rgba(1, 9, 19, 0.96);
-  color: #e5f6ff;
-  font-size: 14px;
-  outline: none;
-  box-shadow:
-    0 0 0 1px rgba(8, 47, 73, 0.4),
-    0 0 16px rgba(0, 255, 255, 0.3);
-}
-
-.login-input::placeholder {
-  color: rgba(128, 230, 255, 0.7);
-}
-
-.login-input:focus {
-  border-color: rgba(77, 246, 255, 0.95);
-  box-shadow:
-    0 0 0 1px rgba(77, 246, 255, 0.9),
-    0 0 24px rgba(77, 246, 255, 0.8);
-}
-
-.login-input-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  color: rgba(191, 235, 255, 0.9);
-  pointer-events: none;
-}
-
-.login-eye-button {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: none;
-  font-size: 14px;
-  color: rgba(191, 235, 255, 0.85);
-  cursor: pointer;
-  padding: 0;
-}
-
-.login-eye-button:hover {
-  filter: brightness(1.2);
-}
-
-.login-input-glow {
-  pointer-events: none;
-  position: absolute;
-  inset: -1px;
-  border-radius: 14px;
-  background: radial-gradient(
-    circle,
-    rgba(77, 246, 255, 0.25),
-    transparent 60%
-  );
-  opacity: 0;
-  animation: login-input-glow 4.2s ease-in-out infinite;
-}
-
-/* Hata */
-.login-error {
-  font-size: 12px;
-  color: #fca5a5;
-}
-
-/* Buton */
-.login-button {
-  position: relative;
-  width: 100%;
-  margin-top: 2px;
-  padding: 15px 18px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  font-size: 15px;
-  letter-spacing: 0.16em;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #e7fafe;
-  background: linear-gradient(90deg, #27c3ff, #0078ff);
-  box-shadow:
-    0 0 22px rgba(0, 190, 255, 0.8),
-    0 14px 40px rgba(3, 105, 161, 0.85);
-  overflow: hidden;
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    filter 0.18s ease;
-}
-
-.login-button span:first-child {
-  position: relative;
-  z-index: 2;
-}
-
-.login-button-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at 10% 0,
-    rgba(255, 255, 255, 0.5),
-    transparent 50%
-  );
-  mix-blend-mode: screen;
-  opacity: 0.55;
-  pointer-events: none;
-  animation: login-button-glow 4s ease-in-out infinite;
-}
-
-.login-button:hover:not(:disabled) {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow:
-    0 0 26px rgba(0, 220, 255, 0.95),
-    0 18px 60px rgba(12, 148, 196, 0.95);
-  filter: brightness(1.05);
-}
-
-.login-button:active:not(:disabled) {
-  transform: translateY(1px) scale(0.99);
-}
-
-.login-button.login-button-loading {
-  cursor: wait;
-  opacity: 0.92;
-}
-
-/* Footer links */
-.login-footer-links {
-  margin-top: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  font-size: 12px;
-}
-
-.login-link,
-.login-link-strong {
-  position: relative;
-  border: none;
-  background: none;
-  padding: 0;
-  color: rgba(191, 235, 255, 0.85);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-.login-link-strong {
-  color: #4df6ff;
-}
-
-.login-link:hover,
-.login-link-strong:hover {
-  filter: brightness(1.15);
-}
-
-.login-underline-animate {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -4px;
-  height: 1px;
-  overflow: hidden;
-}
-
-.login-underline-animate::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(77, 246, 255, 0.9),
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: login-underline-scan 2s ease-in-out infinite;
-}
-
-.login-register-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.login-footer-text {
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(148, 216, 255, 0.85);
-}
-
-/* Alt ikonlar */
-.login-footer-icons {
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  font-size: 14px;
-  color: rgba(191, 235, 255, 0.8);
-}
-
-/* Animasyonlar */
-
-@keyframes login-card-in {
-  0% {
-    opacity: 0;
-    transform: translateY(8px) scale(0.98);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes neon-strip {
-  0% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
-    opacity: 0.2;
-  }
-}
-
-@keyframes login-halo-spin {
-  0% {
-    transform: translateX(-50%) rotate(0deg);
-  }
-  100% {
-    transform: translateX(-50%) rotate(360deg);
-  }
-}
-
-@keyframes login-logo-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 18px rgba(77, 246, 255, 0.7),
-      0 0 55px rgba(77, 246, 255, 0.52);
-  }
-  50% {
-    box-shadow:
-      0 0 28px rgba(77, 246, 255, 0.95),
-      0 0 80px rgba(77, 246, 255, 0.75);
-  }
-}
-
-@keyframes typing-fade {
-  0% {
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  60% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes login-core-scan {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes login-input-glow {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  40% {
-    opacity: 0.7;
-  }
-}
-
-@keyframes login-button-glow {
-  0%,
-  100% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 0.9;
-  }
-}
-
-@keyframes login-underline-scan {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* Mobil */
-@media (max-width: 640px) {
-  .login-card {
-    padding: 54px 22px 26px;
-    border-radius: 22px;
-  }
-
-  .login-title {
-    font-size: 26px;
-    letter-spacing: 0.2em;
-  }
-
-  .login-headline {
-    font-size: 12px;
-  }
-
-  .login-input,
-  .login-button {
-    font-size: 13px;
-  }
-
-  .login-logo-halo {
-    width: 130px;
-    height: 130px;
-    top: -70px;
-  }
-
-  .login-ghost-icon {
-    font-size: 44px;
-  }
 }
