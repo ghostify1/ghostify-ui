@@ -5,38 +5,252 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   height: 100%;
-  background: #000;
-  font-family: 'Orbitron', sans-serif;
-  color: #fff;
+  background: #01030a;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
-/* SCROLLBAR GİZLEME */
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+/* SAYFA KABUĞU (hem davet hem login kullanacak) */
+.page-shell {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #031327 0, #000 55%, #000 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* YAZI PARLAKLIK BOOSTER */
-.glow-text {
-  text-shadow: 0 0 8px rgba(0, 255, 255, 0.8),
-               0 0 15px rgba(0, 255, 255, 0.4);
+/* MATRIX ARKA PLAN */
+.matrix-layer {
+  position: absolute;
+  inset: 0;
+  background-image: url("/matrix-bg.png"); /* yoksa sadece siyah görünür, hata vermez */
+  background-size: cover;
+  background-position: center;
+  opacity: 0.18;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* GLOW PANEL GENEL */
+.glass-panel {
+  position: relative;
+  width: 90%;
+  max-width: 560px;
+  padding: 48px 40px 40px;
+  border-radius: 32px;
+  background: radial-gradient(circle at top, rgba(0, 255, 255, 0.1), transparent 55%)
+      border-box,
+    linear-gradient(145deg, rgba(0, 255, 255, 0.28), rgba(0, 128, 255, 0.12))
+      border-box;
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  box-shadow: 0 0 40px rgba(0, 255, 255, 0.3),
+    0 0 120px rgba(0, 150, 255, 0.4);
+  backdrop-filter: blur(22px);
+}
+
+/* ORTA HİZALAMA */
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* GHOSTIFY LOGO YAZISI */
+.ghostify-wordmark {
+  letter-spacing: 0.42em;
+  font-size: 24px;
+  text-indent: 0.42em;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  color: #6ff5ff;
+  text-shadow: 0 0 16px rgba(0, 255, 255, 0.7);
+}
+
+/* ALT BAŞLIK */
+.subheading {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-indent: 0.28em;
+  text-transform: uppercase;
+  color: rgba(155, 238, 255, 0.9);
+}
+
+/* AYIRICI ÇİZGİ */
+.light-divider {
+  width: 140px;
+  height: 1px;
+  margin: 20px auto 12px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 255, 0.7),
+    transparent
+  );
+}
+
+/* GENEL BAŞLIK */
+.primary-title {
+  margin: 30px 0 18px;
+  font-size: 22px;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  color: #8cf3ff;
+}
+
+/* ALT YAZI METNİ */
+.helper-text {
+  font-size: 13px;
+  text-align: center;
+  color: rgba(190, 244, 255, 0.9);
+  margin-bottom: 24px;
 }
 
 /* INPUT GENEL */
-input {
-  outline: none;
-  border: none;
+.field {
+  width: 100%;
+  margin-bottom: 16px;
 }
 
-/* BUTTON GENEL */
-button {
+.field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-indent: 0.18em;
+  margin-bottom: 6px;
+  color: rgba(167, 238, 255, 0.9);
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: radial-gradient(
+      circle at top left,
+      rgba(0, 255, 255, 0.14),
+      transparent 55%
+    ),
+    rgba(2, 12, 24, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  color: #f5fdff;
+  font-size: 14px;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.8);
+}
+
+.field input::placeholder {
+  color: rgba(150, 216, 230, 0.6);
+}
+
+.field input:focus {
+  outline: none;
+  border-color: rgba(130, 255, 255, 0.95);
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.6);
+}
+
+/* ANA BUTON */
+.primary-button {
+  width: 100%;
+  margin-top: 6px;
+  padding: 13px 18px;
+  border-radius: 16px;
+  background: radial-gradient(circle at top, #45f3ff, #00a2ff);
+  box-shadow: 0 0 24px rgba(0, 255, 255, 0.8),
+    0 0 60px rgba(0, 140, 255, 0.8);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-indent: 0.22em;
+  text-transform: uppercase;
+  font-size: 13px;
+  color: #021018;
   cursor: pointer;
   border: none;
-  transition: 0.25s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease,
+    filter 0.12s ease;
 }
-button:hover {
-  transform: scale(1.02);
+
+.primary-button:hover {
+  transform: translateY(-1px) scale(1.01);
+  filter: brightness(1.08);
+}
+
+/* İKİNCİL BUTON */
+.secondary-link {
+  margin-top: 22px;
+  font-size: 12px;
+  color: rgba(176, 241, 255, 0.9);
+  text-align: center;
+}
+
+.secondary-link a {
+  color: #63f0ff;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(99, 240, 255, 0.6);
+  padding-bottom: 2px;
+}
+.secondary-link a:hover {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+/* KÜÇÜK İKON SATIRI */
+.icon-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: rgba(140, 230, 255, 0.9);
+}
+
+/* LOGO DAİRESİ */
+.logo-ring {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 255, 0.35);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.7),
+    0 0 90px rgba(0, 180, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-ring-inner {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-ring-inner img {
+  width: 54px;
+  height: 54px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .glass-panel {
+    padding: 32px 22px 30px;
+    border-radius: 26px;
+  }
+
+  .primary-title {
+    font-size: 18px;
+  }
+
+  .ghostify-wordmark {
+    font-size: 20px;
+  }
 }
