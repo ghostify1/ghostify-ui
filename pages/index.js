@@ -1,7 +1,6 @@
 // pages/index.js
 import { useState } from "react";
 import { useRouter } from "next/router";
-import MatrixBackground from "@/components/MatrixBackground";
 import { motion } from "framer-motion";
 
 export default function InvitePage() {
