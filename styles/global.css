@@ -1,0 +1,146 @@
+/* === GLOBAL RESET === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  color: #dffaff;
+}
+
+/* === PAGE SHELL === */
+.page-shell {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* === MATRIX BACKGROUND LAYER === */
+.matrix-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* === GLASS PANEL === */
+.glass-panel {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 480px;
+  padding: 40px 32px;
+  background: rgba(0, 17, 28, 0.45);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
+  border: 1px solid rgba(0, 255, 255, 0.25);
+  box-shadow: 0 0 22px rgba(0, 255, 255, 0.2);
+}
+
+.center {
+  margin: auto;
+  text-align: center;
+}
+
+/* === LOGO === */
+.logo-ring {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-ring-inner img {
+  width: 100%;
+  filter: drop-shadow(0 0 14px #00eaff);
+}
+
+.ghostify-wordmark {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #7feaff;
+  margin-bottom: 8px;
+  text-shadow: 0 0 16px #00eaff;
+}
+
+.subheading {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 22px;
+  letter-spacing: 1.5px;
+}
+
+/* === INPUT FIELDS === */
+.field {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 22px;
+}
+
+.field label {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,255,255,0.25);
+  background: rgba(0, 8, 14, 0.6);
+  color: #dffaff;
+  font-size: 14px;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+.field input:hover,
+.field input:focus {
+  border-color: #00eaff;
+  box-shadow: 0 0 12px rgba(0,255,255,0.3);
+}
+
+/* === BUTTONS === */
+.primary-button {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(0,255,255,0.15);
+  border: 1px solid rgba(0,255,255,0.4);
+  color: #bffaff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.primary-button:hover {
+  background: rgba(0,255,255,0.25);
+  box-shadow: 0 0 18px rgba(0,255,255,0.3);
+}
+
+.secondary-link {
+  margin-top: 18px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.secondary-link a {
+  color: #7feaff;
+}
