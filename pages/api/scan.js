@@ -1,53 +1,56 @@
 // pages/api/scan.js
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+// Küçük gecikme (rate-limit koruması için)
+function wait(ms) {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
-function normalizeResult(raw) {
+// LeakCheck'ten gelen veri çok değişken.
+// Bu fonksiyon tüm versiyonları normalize eder.
+function normalize(raw) {
   if (!raw) {
-    return { success: false, found: 0, error: "No response", breaches: [] };
+    return { success: false, found: 0, breaches: [], error: "Boş yanıt" };
   }
 
-  // LeakCheck v1 tipi: success + found + result[]
-  if (raw.success && Array.isArray(raw.result)) {
-    return {
-      success: true,
-      found: raw.found || raw.result.length,
-      error: null,
-      breaches: raw.result.map((item) => ({
-        line: item.line || "",
-        sources: item.sources || [],
-        last_breach: item.last_breach || null,
-        email_only: item.email_only || 0,
-      })),
-    };
-  }
+  const breaches =
+    raw.result ||
+    raw.results ||
+    raw.data ||
+    raw.breaches ||
+    [];
 
-  // Başarısız durumlar
+  const success =
+    raw.success === true ||
+    raw.success === 1 ||
+    Array.isArray(breaches);
+
+  const found =
+    raw.found ??
+    breaches.length ??
+    0;
+
   return {
-    success: false,
-    found: 0,
-    error: raw.error || "Unknown error",
-    breaches: [],
+    success,
+    found,
+    error: raw.error || null,
+    breaches: Array.isArray(breaches)
+      ? breaches.map((b) => ({
+          line: b.line || "",
+          sources: b.sources || [],
+          last_breach: b.last_breach || null,
+          email_only: b.email_only || 0,
+        }))
+      : [],
   };
 }
 
-function calculateRiskScore(summary) {
-  const {
-    emailBreaches,
-    phoneBreaches,
-    usernameBreaches,
-    addressBreaches,
-  } = summary;
-
-  // Basit ama anlaşılır bir scoring:
-  // email: x15, phone: x20, username: x10, address: x5, +5 taban
+// Daha gerçekçi risk hesaplama
+function riskScore(summary) {
   let score =
-    emailBreaches * 15 +
-    phoneBreaches * 20 +
-    usernameBreaches * 10 +
-    addressBreaches * 5 +
+    summary.emailBreaches * 10 +
+    summary.phoneBreaches * 25 +
+    summary.usernameBreaches * 8 +
+    summary.addressBreaches * 4 +
     5;
 
   if (score > 100) score = 100;
@@ -56,87 +59,79 @@ function calculateRiskScore(summary) {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res
-      .status(405)
-      .json({ error: "Sadece POST istekleri kabul edilir." });
+    return res.status(405).json({ error: "Sadece POST kabul edilir." });
   }
 
   const { email, phone, username, address } = req.body || {};
   const apiKey = process.env.LEAKCHECK_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({
-      error: "LEAKCHECK_API_KEY tanımlı değil.",
-    });
+    return res.status(500).json({ error: "LEAKCHECK_API_KEY eksik." });
   }
 
-  const runLeakCheck = async (type, query) => {
-    if (!query) return null;
+  // Tek bir leakcheck isteği
+  const leak = async (type, query) => {
+    if (!query) return { success: false, found: 0, breaches: [] };
 
     const url = `https://leakcheck.io/api?key=${apiKey}&check=${encodeURIComponent(
       query
     )}&type=${type}`;
 
     try {
-      const response = await fetch(url, {
-        headers: { Accept: "application/json" },
-      });
-      return response.json();
+      const r = await fetch(url, { headers: { Accept: "application/json" } });
+      return r.json();
     } catch (err) {
-      console.error("LeakCheck bağlantı hatası:", err);
-      return { success: false, error: "API bağlantı hatası" };
+      console.error("LeakCheck HATASI:", err);
+      return { success: false, error: "API erişim hatası", breaches: [] };
     }
   };
 
   try {
-    // 1) EMAIL
-    const emailRaw = await runLeakCheck("email", email);
-    await sleep(450);
+    // Tüm istekleri paralel başlatıyoruz
+    const [emailRaw, phoneRaw, usernameRaw, addressRaw] = await Promise.all([
+      leak("email", email),
+      leak("phone", phone),
+      leak("login", username),
+      leak("mass", address),
+    ]);
 
-    // 2) PHONE
-    const phoneRaw = await runLeakCheck("phone", phone);
-    await sleep(450);
+    // Normalize edilmiş sonuçlar
+    const emailResult = normalize(emailRaw);
+    const phoneResult = normalize(phoneRaw);
+    const usernameResult = normalize(usernameRaw);
+    const addressResult = normalize(addressRaw);
 
-    // 3) USERNAME
-    const usernameRaw = await runLeakCheck("login", username);
-    await sleep(450);
-
-    // 4) ADDRESS (keyword / mass search)
-    const addressRaw = await runLeakCheck("mass", address);
-    await sleep(450);
-
-    const emailResult = normalizeResult(emailRaw);
-    const phoneResult = normalizeResult(phoneRaw);
-    const usernameResult = normalizeResult(usernameRaw);
-    const addressResult = normalizeResult(addressRaw);
-
+    // Özet
     const summary = {
       emailBreaches: emailResult.found,
       phoneBreaches: phoneResult.found,
       usernameBreaches: usernameResult.found,
       addressBreaches: addressResult.found,
     };
+
     summary.totalBreaches =
       summary.emailBreaches +
       summary.phoneBreaches +
       summary.usernameBreaches +
       summary.addressBreaches;
-    summary.riskScore = calculateRiskScore(summary);
 
+    summary.riskScore = riskScore(summary);
+
+    // Yanıt
     return res.status(200).json({
       success: true,
+      summary,
       results: {
         email: emailResult,
         phone: phoneResult,
         username: usernameResult,
         address: addressResult,
       },
-      summary,
     });
   } catch (err) {
-    console.error("SCAN ERROR:", err);
-    return res.status(500).json({
-      error: "Sunucu hatası, tarama tamamlanamadı.",
-    });
+    console.error("GENEL SCAN ERROR:", err);
+    return res
+      .status(500)
+      .json({ error: "Tarama sırasında sunucu hatası oluştu." });
   }
 }
