@@ -1,18 +1,44 @@
 {
-  "name": "ghostify-ui",
+  "name": "ghostify-v5",
   "version": "1.0.0",
   "private": true,
+
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint"
   },
+
   "dependencies": {
     "next": "14.2.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "firebase": "^10.7.0",
+
+    // Firebase
+    "firebase": "^10.8.0",
+
+    // PDF üretici
     "pdfkit": "^0.13.0",
-    "resend": "^3.3.0"
+
+    // Mail servisi
+    "resend": "^3.3.0",
+
+    // Sunucu tarafı için fetch polyfill (Vercel uyumlu)
+    "node-fetch": "^3.3.2",
+
+    // Cookie yönetimi (ileride login/session için lazım olacak)
+    "cookie": "^0.6.0",
+
+    // UI için animasyon kütüphanesi (Ghostify V5'te kullanılacak)
+    "framer-motion": "^11.0.0",
+
+    // Güvenli email doğrulama (ileri sürümlerde kullanacağız)
+    "validator": "^13.11.0"
+  },
+
+  "devDependencies": {
+    "eslint": "8.56.0",
+    "eslint-config-next": "14.2.4"
   }
 }
