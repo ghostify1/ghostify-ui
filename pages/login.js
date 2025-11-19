@@ -1,7 +1,11 @@
 // pages/login.js
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
 import { app } from "../lib/firebaseClient";
 
 export default function LoginPage() {
@@ -14,14 +18,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // URL'den davet kodunu oku
   useEffect(() => {
     if (router.query.invite) {
       setInvite(String(router.query.invite));
     }
   }, [router.query.invite]);
 
-  // Zaten login ise dashboard'a gönder
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       if (user) router.replace("/dashboard");
@@ -33,6 +35,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/dashboard");
@@ -46,12 +49,14 @@ export default function LoginPage() {
 
   return (
     <div className="page-shell login-page">
+      {/* Matrix arka plan */}
       <div className="matrix-layer" />
 
-      <div className="glass-panel center">
-        <div className="logo-ring">
-          <div className="logo-ring-inner">
-            <img src="/ghost-logo.png" alt="Ghostify" />
+      <div className="glass-panel login-panel center">
+        {/* Logo */}
+        <div className="logo-halo">
+          <div className="logo-glow">
+            <img src="/ghost-logo.png" alt="ghost" />
           </div>
         </div>
 
@@ -60,37 +65,22 @@ export default function LoginPage() {
 
         <div className="light-divider" />
 
-        <h2 className="primary-title">CORE&apos;A GİRİŞ YAP</h2>
+        <h2 className="primary-title">CORE'A GİRİŞ YAP</h2>
 
         <p className="helper-text">
-          Ghostify core paneline erişmek için kayıtlı e-posta ve şifrenizle giriş
-          yapın.
+          Hesabınıza güvenli erişim için e-posta ve şifrenizi girin.
         </p>
 
         {invite && (
-          <p
-            className="helper-text"
-            style={{ fontSize: 11, opacity: 0.85, marginTop: -8 }}
-          >
+          <p className="invite-active">
             Aktif davet kodu: <strong>{invite}</strong>
           </p>
         )}
 
-        {error && (
-          <p
-            style={{
-              marginTop: 10,
-              marginBottom: 10,
-              color: "#ffb3b3",
-              fontSize: 12,
-            }}
-          >
-            {error}
-          </p>
-        )}
+        {error && <p className="error-box">{error}</p>}
 
-        <form style={{ width: "100%" }} onSubmit={handleSubmit}>
-          <div className="field">
+        <form onSubmit={handleSubmit} className="form-shell">
+          <div className="field neon-field">
             <label>E-POSTA</label>
             <input
               type="email"
@@ -100,7 +90,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div className="field">
+          <div className="field neon-field">
             <label>ŞİFRE</label>
             <input
               type="password"
@@ -110,18 +100,17 @@ export default function LoginPage() {
             />
           </div>
 
-          <button type="submit" className="primary-button" disabled={loading}>
+          <button className="primary-button neon-button" disabled={loading}>
             {loading ? "GİRİŞ YAPILIYOR..." : "GİRİŞ YAP"}
           </button>
         </form>
 
         <div className="auth-links">
-          <a href="#">Şifremi unuttum</a> · <a href="#">Yeni hesap oluştur</a>
+          <a href="#">Şifremi unuttum</a> · <a href="/register">Yeni hesap oluştur</a>
         </div>
 
-        <div className="secondary-link" style={{ marginTop: 18 }}>
-          DAVET EKRANINA DÖN ·{" "}
-          <a href="/">DAVET KODU GİR</a>
+        <div className="secondary-link">
+          <a href="/">← Davet ekranına dön</a>
         </div>
       </div>
     </div>
