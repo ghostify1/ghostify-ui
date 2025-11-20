@@ -1,7 +1,6 @@
 // pages/index.js
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { motion } from "framer-motion";
 
 export default function InvitePage() {
   const router = useRouter();
@@ -17,27 +16,14 @@ export default function InvitePage() {
   };
 
   return (
-    <div className="ghostify-root">
-      {/* Artık MatrixBackground burada değil, _app.js dış katmanda veriyor */}
-
-      <motion.div
-        className="ghostify-card hover-lift"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        style={{ width: "100%", maxWidth: 480 }}
-      >
+    <div className="ghostify-page">
+      <div className="ghostify-card">
         {/* LOGO */}
-        <motion.div
-          className="logo-ring"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
+        <div className="logo-ring">
           <div className="logo-ring-inner">
             <img src="/ghost-logo.png" alt="Ghostify" />
           </div>
-        </motion.div>
+        </div>
 
         {/* WORDMARK */}
         <div className="ghostify-logo-text">GHOSTIFY</div>
@@ -53,18 +39,18 @@ export default function InvitePage() {
         </div>
 
         {/* TITLE */}
-        <h2 className="ghostify-title" style={{ marginTop: 18 }}>
+        <h2 className="ghostify-title">
           DAVET KODUNUZU
           <br />
           GİRİN
         </h2>
 
-        <p className="ghostify-muted" style={{ marginTop: 4 }}>
+        <p className="ghostify-muted">
           Ghostify Core&apos;a erişmek için size özel davet kodunu girin.
         </p>
 
         {/* FORM */}
-        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+        <form onSubmit={handleSubmit} className="ghostify-form">
           <div className="ghostify-field">
             <input
               className="ghostify-input"
@@ -79,10 +65,10 @@ export default function InvitePage() {
           </button>
         </form>
 
-        <div className="ghostify-link" style={{ marginTop: 22 }}>
+        <div className="ghostify-link">
           DAVET KODUNUZ YOK MU? <span>KOD TALEP ET</span>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
