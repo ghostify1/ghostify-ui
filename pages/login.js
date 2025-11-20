@@ -49,11 +49,10 @@ export default function LoginPage() {
 
   return (
     <div className="page-shell login-page">
-      {/* Matrix arka plan */}
+      {/* Matrix arka plan için canvas zaten _app.js’de, bu div sadece ek efekt */}
       <div className="matrix-layer" />
 
       <div className="glass-panel login-panel center">
-        {/* Logo */}
         <div className="logo-halo">
           <div className="logo-glow">
             <img src="/ghost-logo.png" alt="ghost" />
@@ -65,7 +64,7 @@ export default function LoginPage() {
 
         <div className="light-divider" />
 
-        <h2 className="primary-title">CORE'A GİRİŞ YAP</h2>
+        <h2 className="primary-title">CORE&apos;A GİRİŞ YAP</h2>
 
         <p className="helper-text">
           Hesabınıza güvenli erişim için e-posta ve şifrenizi girin.
@@ -106,7 +105,8 @@ export default function LoginPage() {
         </form>
 
         <div className="auth-links">
-          <a href="#">Şifremi unuttum</a> · <a href="/register">Yeni hesap oluştur</a>
+          <a href="#">Şifremi unuttum</a> ·{" "}
+          <a href="/register">Yeni hesap oluştur</a>
         </div>
 
         <div className="secondary-link">
