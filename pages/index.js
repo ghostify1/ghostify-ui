@@ -18,10 +18,8 @@ export default function InvitePage() {
 
   return (
     <div className="ghostify-root">
-      {/* MATRIX BG */}
-      <MatrixBackground />
+      {/* Artık MatrixBackground burada değil, _app.js dış katmanda veriyor */}
 
-      {/* MAIN CARD */}
       <motion.div
         className="ghostify-card hover-lift"
         initial={{ opacity: 0, y: 40 }}
