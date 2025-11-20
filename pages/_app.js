@@ -1,18 +1,21 @@
 // pages/_app.js
-import "../styles/global.css";
+import "../styles/globals.css";
 import dynamic from "next/dynamic";
 
-// Matrix sadece client’ta çalışsın diye dynamic import
+// Matrix sadece client tarafında çalışsın
 const MatrixBackground = dynamic(
-  () => import("../components/MatrixBackground"),
+  () => import("../components/MatrixBackground.jsx"),
   { ssr: false }
 );
 
 export default function MyApp({ Component, pageProps }) {
   return (
     <div className="app-root">
+      {/* Arka planda matrix canvas */}
       <MatrixBackground />
+      {/* Sayfa içeriği */}
       <Component {...pageProps} />
     </div>
   );
 }
+
