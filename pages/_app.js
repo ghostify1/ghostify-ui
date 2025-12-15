@@ -1,20 +1,13 @@
-// pages/_app.js
 import "../styles/globals.css";
-import dynamic from "next/dynamic";
+import MatrixBackground from "../components/MatrixBackground";
 
-// Matrix arka planı sadece client'ta render et
-const MatrixBackground = dynamic(
-  () => import("../components/MatrixBackground"),
-  { ssr: false }
-);
-
-export default function MyApp({ Component, pageProps }) {
+export default function App({ Component, pageProps }) {
   return (
-    <div className="app-root">
-      {/* Tüm sayfaların arkasında Matrix */}
-      <MatrixBackground />
-      {/* Sayfa içeriği */}
-      <Component {...pageProps} />
-    </div>
+    <>
+      <MatrixBackground opacity={0.18} speed={0.35} />
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
+        <Component {...pageProps} />
+      </div>
+    </>
   );
 }
