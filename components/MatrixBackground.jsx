@@ -1,124 +1,74 @@
-// components/MatrixBackground.js
 import { useEffect, useRef } from "react";
 
-export default function MatrixBackground() {
+export default function MatrixBackground({ opacity = 0.18, speed = 0.35 }) {
   const canvasRef = useRef(null);
+  const rafRef = useRef(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
+    let w = (canvas.width = window.innerWidth);
+    let h = (canvas.height = window.innerHeight);
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    const chars = "01";
+    const fontSize = 14;
+    const columns = Math.floor(w / fontSize);
+    const drops = new Array(columns).fill(1);
 
-    const setSize = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width * window.devicePixelRatio;
-      canvas.height = height * window.devicePixelRatio;
-      canvas.style.width = `${width}px`;
-      canvas.style.height = `${height}px`;
-      ctx.setTransform(window.devicePixelRatio, 0, 0, window.devicePixelRatio, 0, 0);
+    const resize = () => {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
     };
+    window.addEventListener("resize", resize);
 
-    setSize();
-    window.addEventListener("resize", setSize);
+    let last = performance.now();
+    const frame = (now) => {
+      const dt = now - last;
+      last = now;
 
-    // Ghostify karakter seti
-    const chars =
-      "アイウエオカキクケコサシスセソタチツテトナニヌネノ" +
-      "0123456789" +
-      "◇◆○●◎∞⊕⊗Ω" +
-      "@#$%&";
+      // background fade (soft trail)
+      ctx.fillStyle = `rgba(0,0,0,${0.08})`;
+      ctx.fillRect(0, 0, w, h);
 
-    const charArray = chars.split("");
+      ctx.font = `${fontSize}px JetBrains Mono, monospace`;
+      ctx.fillStyle = `rgba(128,230,255,${opacity})`;
 
-    const fontSize = 18;
-    let columns = Math.floor(width / fontSize);
+      // slow factor
+      const step = Math.max(1, Math.floor(dt * speed * 0.08));
 
-    // Her kolon için durum
-    let columnsState = Array.from({ length: columns }, (_, i) => ({
-      y: Math.random() * -20,
-      speed: 0.8 + Math.random() * 1.4, // farklı hızlar
-      glowPhase: Math.random() * Math.PI * 2, // nefes efekti
-    }));
+      for (let i = 0; i < drops.length; i++) {
+        if (Math.random() < 0.08 / step) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-    let animationFrameId;
-
-    const draw = () => {
-      // Arka planı hafif karart – trail efekti
-      ctx.fillStyle = "rgba(2, 7, 15, 0.35)";
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.font = `${fontSize}px "Space Grotesk", "JetBrains Mono", monospace`;
-      ctx.textBaseline = "top";
-
-      for (let i = 0; i < columnsState.length; i++) {
-        const state = columnsState[i];
-        const char = charArray[Math.floor(Math.random() * charArray.length)];
-
-        // Glow fazını ilerlet
-        state.glowPhase += 0.03 + Math.random() * 0.01;
-        const glow = (Math.sin(state.glowPhase) + 1) / 2; // 0–1
-
-        // Renk geçişi: koyu mavi → neon cyan → hafif yeşilimsi
-        const baseCyan = { r: 0, g: 190, b: 255 };
-        const brightCyan = { r: 120, g: 240, b: 255 };
-        const ghostGreen = { r: 0, g: 255, b: 176 };
-
-        // Derinlik/random katman
-        const depth = Math.random();
-        let target;
-
-        if (depth < 0.6) target = baseCyan;
-        else if (depth < 0.9) target = brightCyan;
-        else target = ghostGreen;
-
-        const r = Math.round(target.r + glow * 20);
-        const g = Math.round(target.g + glow * 20);
-        const b = Math.round(target.b + glow * 20);
-
-        const alpha = 0.55 + glow * 0.35;
-
-        ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-
-        // Glow efekti
-        ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${0.35 + glow * 0.4})`;
-        ctx.shadowBlur = 8 + glow * 10;
-
-        const x = i * fontSize;
-        const y = state.y * fontSize;
-
-        ctx.fillText(char, x, y);
-
-        // Kolonu aşağı indir
-        state.y += state.speed;
-
-        // Ekran dışına çıktıysa resetle
-        if (y > height + 50) {
-          state.y = Math.random() * -20;
-          state.speed = 0.8 + Math.random() * 1.4;
+          if (drops[i] * fontSize > h && Math.random() > 0.985) drops[i] = 0;
+          drops[i] += 1;
         }
       }
 
-      animationFrameId = requestAnimationFrame(draw);
+      rafRef.current = requestAnimationFrame(frame);
     };
 
-    draw();
+    rafRef.current = requestAnimationFrame(frame);
 
     return () => {
-      window.removeEventListener("resize", setSize);
-      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", resize);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [opacity, speed]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="matrix-bg-canvas"
-      aria-hidden="true"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 0,
+        pointerEvents: "none",
+        filter: "blur(0.2px)",
+      }}
     />
   );
 }
