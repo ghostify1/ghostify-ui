@@ -20,7 +20,7 @@ export default function InvitePage() {
 
       const data = await res.json();
       if (!res.ok) {
-        setError("Geçersiz davet kodu.");
+        setError(`Geçersiz davet kodu. (${data?.reason || "NO_REASON"})`);
         setLoading(false);
         return;
       }
