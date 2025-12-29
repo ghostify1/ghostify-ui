@@ -1,51 +1,27 @@
-// pages/index.js
-import { useState } from "react";
-import { useRouter } from "next/router";
+// pages/login.js
 
-export default function InvitePage() {
-  const router = useRouter();
-  const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+export async function getServerSideProps({ req }) {
+  const cookie = req.headers.cookie || "";
+  const hasInvite = cookie.includes("invite_ok=true");
 
-  const submitInvite = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("/api/invite/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
+  if (
+    process.env.INVITE_MODE !== "OFF" &&
+    (process.env.INVITE_REQUIRED || "true") === "true" &&
+    !hasInvite
+  ) {
+    return {
+      redirect: { destination: "/", permanent: false },
+    };
+  }
 
-      const data = await res.json();
-      if (!res.ok) {
-        setError(`Geçersiz davet kodu. (${data?.reason || "NO_REASON"})`);
-        setLoading(false);
-        return;
-      }
+  return { props: {} };
+}
 
-      // başarılı → login
-      router.push("/login");
-    } catch (e) {
-      setError("Sunucu hatası.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function LoginPage() {
   return (
     <div>
-      {/* mevcut UI’n kalabilir */}
-      <input
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        placeholder="Davet kodu"
-      />
-      <button onClick={submitInvite} disabled={loading}>
-        {loading ? "Kontrol ediliyor..." : "Devam Et"}
-      </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <h1>Login</h1>
+      {/* senin mevcut login UI burada */}
     </div>
   );
 }
