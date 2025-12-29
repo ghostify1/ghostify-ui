@@ -5,70 +5,47 @@ import { useRouter } from "next/router";
 export default function InvitePage() {
   const router = useRouter();
   const [code, setCode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!code.trim()) {
-      alert("Lütfen davet kodu girin.");
-      return;
+  const submitInvite = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/invite/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError("Geçersiz davet kodu.");
+        setLoading(false);
+        return;
+      }
+
+      // başarılı → login
+      router.push("/login");
+    } catch (e) {
+      setError("Sunucu hatası.");
+    } finally {
+      setLoading(false);
     }
-    router.push(`/login?invite=${encodeURIComponent(code.trim())}`);
   };
 
   return (
-    <div className="ghostify-page">
-      <div className="ghostify-card">
-        {/* LOGO */}
-        <div className="logo-ring">
-          <div className="logo-ring-inner">
-            <img src="/ghost-logo.png" alt="Ghostify" />
-          </div>
-        </div>
-
-        {/* WORDMARK */}
-        <div className="ghostify-logo-text">GHOSTIFY</div>
-        <div className="ghostify-subtitle">GHOSTIFY CORE LOADING</div>
-
-        <div className="divider-glow" />
-
-        {/* ICON ROW */}
-        <div className="icon-row-cyan">
-          <span>🔒</span>
-          <span>🛡️</span>
-          <span>🌀</span>
-        </div>
-
-        {/* TITLE */}
-        <h2 className="ghostify-title">
-          DAVET KODUNUZU
-          <br />
-          GİRİN
-        </h2>
-
-        <p className="ghostify-muted">
-          Ghostify Core&apos;a erişmek için size özel davet kodunu girin.
-        </p>
-
-        {/* FORM */}
-        <form onSubmit={handleSubmit} className="ghostify-form">
-          <div className="ghostify-field">
-            <input
-              className="ghostify-input"
-              placeholder="DAVET KODUNUZU YAZIN"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </div>
-
-          <button className="ghostify-button" type="submit">
-            DEVAM ET
-          </button>
-        </form>
-
-        <div className="ghostify-link">
-          DAVET KODUNUZ YOK MU? <span>KOD TALEP ET</span>
-        </div>
-      </div>
+    <div>
+      {/* mevcut UI’n kalabilir */}
+      <input
+        value={code}
+        onChange={(e) => setCode(e.target.value)}
+        placeholder="Davet kodu"
+      />
+      <button onClick={submitInvite} disabled={loading}>
+        {loading ? "Kontrol ediliyor..." : "Devam Et"}
+      </button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
