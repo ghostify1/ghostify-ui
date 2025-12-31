@@ -3,36 +3,62 @@ import { useRouter } from "next/router";
 
 export default function InvitePage() {
   const router = useRouter();
+
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Kullanıcı mesajı
   const [error, setError] = useState("");
+  const [okMsg, setOkMsg] = useState("");
+
+  // Debug/kanıt (API ne döndürdü?)
   const [debug, setDebug] = useState("");
 
   const submit = async () => {
     setLoading(true);
     setError("");
+    setOkMsg("");
     setDebug("");
 
     try {
-      const url = "/api/invite/verify";
-      const res = await fetch(url, {
+      const res = await fetch("/api/invite/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code })
       });
 
-      const text = await res.text(); // JSON değilse bile yakalar
-      setDebug(`URL: ${url}\nSTATUS: ${res.status}\nBODY: ${text}`);
+      // JSON bekliyoruz ama bazen string dönebilir -> güvenli yakala
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        const t = await res.text();
+        data = { raw: t };
+      }
 
-      // Eğer ok dönüyorsa login'e gönder
-      if (res.ok) {
-        router.push("/login");
+      // Kanıt/debug: status + body
+      setDebug(
+        `STATUS: ${res.status}\n` +
+        `STAMP: ${data?.stamp || "-"}\n` +
+        `REASON: ${data?.reason || "-"}\n` +
+        `MODE: ${data?.mode || "-"}\n` +
+        `REQUIRED: ${String(data?.required ?? "-")}\n` +
+        `CODES_COUNT: ${String(data?.codesCount ?? "-")}\n` +
+        `RAW_LEN: ${String(data?.rawLen ?? "-")}`
+      );
+
+      if (!res.ok) {
+        setError(`Davet reddedildi: ${data?.reason || "UNKNOWN"} • ${data?.stamp || ""}`);
         return;
       }
 
-      setError("Davet kodu reddedildi. (debug aşağıda)");
+      // Başarılı
+      setOkMsg(`OK: ${data?.reason || "OK"} • ${data?.stamp || ""}`);
+
+      // küçük bir gecikme (UI hissi) — zorunlu değil
+      setTimeout(() => router.push("/login"), 200);
     } catch (e) {
-      setError("Fetch hatası (debug aşağıda).");
+      setError("Sunucuya erişilemedi.");
       setDebug(String(e));
     } finally {
       setLoading(false);
@@ -49,7 +75,9 @@ export default function InvitePage() {
           placeholder="Davet kodu"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && submit()}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") submit();
+          }}
         />
 
         <div style={{ height: 12 }} />
@@ -58,12 +86,29 @@ export default function InvitePage() {
         </button>
 
         {error && <div className="err">{error}</div>}
+        {okMsg && <div className="ok">{okMsg}</div>}
 
+        {/* Kanıt/debug alanı */}
         {debug && (
-          <pre style={{ marginTop: 12, whiteSpace: "pre-wrap", fontSize: 12, opacity: 0.9 }}>
+          <pre
+            style={{
+              marginTop: 12,
+              whiteSpace: "pre-wrap",
+              fontSize: 12,
+              opacity: 0.9,
+              padding: 10,
+              borderRadius: 12,
+              border: "1px solid rgba(120,180,255,0.18)",
+              background: "rgba(0,0,0,0.25)"
+            }}
+          >
             {debug}
           </pre>
         )}
+
+        <div className="small" style={{ marginTop: 10 }}>
+          Davet kodu olmadan giriş yapılamaz.
+        </div>
       </div>
     </div>
   );
