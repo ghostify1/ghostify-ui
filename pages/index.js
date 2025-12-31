@@ -21,7 +21,6 @@ export default function InvitePage() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
         setError(`Davet kodu geçersiz. (${data?.reason || "UNKNOWN"})`);
-        setLoading(false);
         return;
       }
 
@@ -37,6 +36,7 @@ export default function InvitePage() {
     <div className="container">
       <div className="card">
         <div className="h1">GHOSTIFY • INVITE</div>
+
         <input
           className="input"
           placeholder="Davet kodu"
@@ -44,10 +44,12 @@ export default function InvitePage() {
           onChange={(e) => setCode(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && submit()}
         />
+
         <div style={{ height: 12 }} />
         <button className="btn" onClick={submit} disabled={loading}>
           {loading ? "Kontrol ediliyor..." : "Devam Et"}
         </button>
+
         {error && <div className="err">{error}</div>}
         <div className="small" style={{ marginTop: 10 }}>
           Davet kodu olmadan giriş yapılamaz.
