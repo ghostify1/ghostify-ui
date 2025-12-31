@@ -6,27 +6,34 @@ export default function InvitePage() {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [debug, setDebug] = useState("");
 
   const submit = async () => {
     setLoading(true);
     setError("");
+    setDebug("");
 
     try {
-      const res = await fetch("/api/invite/verify", {
+      const url = "/api/invite/verify";
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code })
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setError(`Davet kodu geçersiz. (${data?.reason || "UNKNOWN"})`);
+      const text = await res.text(); // JSON değilse bile yakalar
+      setDebug(`URL: ${url}\nSTATUS: ${res.status}\nBODY: ${text}`);
+
+      // Eğer ok dönüyorsa login'e gönder
+      if (res.ok) {
+        router.push("/login");
         return;
       }
 
-      router.push("/login");
-    } catch {
-      setError("Sunucu hatası.");
+      setError("Davet kodu reddedildi. (debug aşağıda)");
+    } catch (e) {
+      setError("Fetch hatası (debug aşağıda).");
+      setDebug(String(e));
     } finally {
       setLoading(false);
     }
@@ -51,9 +58,12 @@ export default function InvitePage() {
         </button>
 
         {error && <div className="err">{error}</div>}
-        <div className="small" style={{ marginTop: 10 }}>
-          Davet kodu olmadan giriş yapılamaz.
-        </div>
+
+        {debug && (
+          <pre style={{ marginTop: 12, whiteSpace: "pre-wrap", fontSize: 12, opacity: 0.9 }}>
+            {debug}
+          </pre>
+        )}
       </div>
     </div>
   );
