@@ -21,18 +21,14 @@ function setCookie(res, name, value, options = {}) {
   res.setHeader("Set-Cookie", parts.join("; "));
 }
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ ok: false, reason: "METHOD_NOT_ALLOWED" });
-  }
+export default function handler(req, res) {
+  if (req.method !== "POST") return res.status(405).json({ ok: false, reason: "METHOD_NOT_ALLOWED" });
 
   try {
     const { code } = req.body || {};
     const result = verifyInviteCode(code);
 
-    if (!result.ok) {
-      return res.status(401).json({ ok: false, reason: result.reason });
-    }
+    if (!result.ok) return res.status(401).json({ ok: false, reason: result.reason });
 
     setCookie(res, "invite_ok", "true", { httpOnly: true });
     return res.status(200).json({ ok: true });
